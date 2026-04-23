@@ -2,8 +2,10 @@
 
 Usage:
   python scripts/discover_wecom_apis.py \
-    --seed https://developer.work.weixin.qq.com/document/path/90665 \
-    --max-pages 200 \
+    --seed-file specs/wecom/seeds.txt \
+    --doc-id-from 90000 \
+    --doc-id-to 100200 \
+    --max-pages 400 \
     --output specs/wecom/catalog.discovery.yaml
 """
 
@@ -21,6 +23,7 @@ from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
 
 ALLOWED_HOST = "developer.work.weixin.qq.com"
+DOC_PATH_PREFIX = "https://developer.work.weixin.qq.com/document/path/"
 ENDPOINT_RE = re.compile(r"/cgi-bin/[a-zA-Z0-9_./-]+")
 METHOD_RE = re.compile(r"(?:请求方式|Request Method)\s*[:：]?\s*(GET|POST)", re.IGNORECASE)
 
@@ -43,6 +46,31 @@ class LinkParser(HTMLParser):
         for key, value in attrs:
             if key == "href" and value:
                 self.links.append(value)
+
+
+def build_seed_urls(
+    explicit_seeds: list[str],
+    seed_file: Path | None,
+    doc_id_from: int | None,
+    doc_id_to: int | None,
+) -> list[str]:
+    seeds = list(explicit_seeds)
+
+    if seed_file and seed_file.exists():
+        for line in seed_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                seeds.append(line)
+
+    if doc_id_from is not None and doc_id_to is not None and doc_id_to >= doc_id_from:
+        for doc_id in range(doc_id_from, doc_id_to + 1):
+            seeds.append(f"{DOC_PATH_PREFIX}{doc_id}")
+
+    if not seeds:
+        seeds = [f"{DOC_PATH_PREFIX}90665"]
+
+    # keep order + dedupe
+    return list(dict.fromkeys(seeds))
 
 
 def fetch_html(url: str, timeout: float = 15.0) -> str:
@@ -112,19 +140,18 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Discover WeCom APIs from doc pages")
     parser.add_argument("--seed", action="append", default=[], help="Seed doc URLs")
     parser.add_argument("--seed-file", type=Path, help="File containing seed URLs, one per line")
+    parser.add_argument("--doc-id-from", type=int, help="Optional doc id range start")
+    parser.add_argument("--doc-id-to", type=int, help="Optional doc id range end")
     parser.add_argument("--max-pages", type=int, default=300)
     parser.add_argument("--output", type=Path, default=Path("specs/wecom/catalog.discovery.yaml"))
     args = parser.parse_args()
 
-    seeds = list(args.seed)
-    if args.seed_file and args.seed_file.exists():
-        for line in args.seed_file.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if line and not line.startswith("#"):
-                seeds.append(line)
-
-    if not seeds:
-        seeds = ["https://developer.work.weixin.qq.com/document/path/90665"]
+    seeds = build_seed_urls(
+        explicit_seeds=list(args.seed),
+        seed_file=args.seed_file,
+        doc_id_from=args.doc_id_from,
+        doc_id_to=args.doc_id_to,
+    )
 
     operations = crawl(seeds, args.max_pages)
     payload = {

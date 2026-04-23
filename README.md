@@ -134,7 +134,7 @@ mypy
 pytest -q
 python scripts/check_api_coverage.py
 # 可选：抓取官方文档候选接口目录
-python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --max-pages 2000
+python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id-from 90000 --doc-id-to 100500 --max-pages 2000
 ```
 
 ---
@@ -158,3 +158,6 @@ python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --max-pa
 欢迎继续补充需求，我们可以按 TDD 节奏逐步迭代。
 
 补充：接口全量覆盖治理可见 `docs/coverage.md`。
+
+
+> 提示：`catalog.yaml` 仅是目录同步（覆盖率分母），要真正生效还需要补 `specs/wecom/<domain>.yaml` 并执行 `python scripts/codegen.py`。

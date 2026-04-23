@@ -46,6 +46,8 @@ python scripts/check_api_coverage.py
 ```bash
 python scripts/discover_wecom_apis.py \
   --seed-file specs/wecom/seeds.txt \
+  --doc-id-from 90000 \
+  --doc-id-to 100500 \
   --max-pages 2000 \
   --output artifacts/catalog.discovery.yaml
 ```
@@ -93,4 +95,19 @@ python scripts/catalog_diff_report.py \
 - 每天 UTC 01:00 自动执行（也支持手动触发）；
 - 从 `specs/wecom/seeds.txt` 多入口抓取候选接口；
 - 生成新增/删除/修改报告（`artifacts/wecom-catalog-report.md`）；
-- 有变化时自动创建 Issue，并发起同步 PR（草稿）。
+- 有变化时自动创建 Issue，并发起同步 PR（草稿，默认不直接覆盖 baseline catalog）。
+
+
+## 6. `catalog.yaml` 的作用（很重要）
+
+- 写入 `catalog.yaml` 只代表**目录同步**（分母更新），不是最终业务实现完成。
+- 真实可调用逻辑来自 `specs/wecom/<domain>.yaml` + `python scripts/codegen.py` 生成的代码。
+- 如果只改了 `catalog.yaml` 没补 domain spec，`python scripts/check_api_coverage.py` 会报缺失。
+
+推荐顺序：
+
+1. 抓取并生成报告；
+2. 人工确认后再更新 `catalog.yaml`；
+3. 补齐对应 domain spec；
+4. 运行 `python scripts/codegen.py`；
+5. 补测试和文档示例。

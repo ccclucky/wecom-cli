@@ -37,8 +37,7 @@ jobs:
             --baseline specs/wecom/catalog.yaml \
             --discovered artifacts/catalog.discovery.yaml \
             --report artifacts/wecom-catalog-report.md \
-            --sync-output artifacts/catalog.synced.yaml \
-            --apply-baseline specs/wecom/catalog.yaml
+            --sync-output artifacts/catalog.synced.yaml
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Upload report artifacts
