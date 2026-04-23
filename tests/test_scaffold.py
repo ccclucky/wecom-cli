@@ -48,3 +48,25 @@ def test_build_missing_plan_and_apply(tmp_path):
     result = json.loads((spec_dir / "contacts.yaml").read_text(encoding="utf-8"))
     names = [op["name"] for op in result["operations"]]
     assert names == ["list_users", "get_user"]
+
+
+def test_build_missing_plan_prefers_id_over_domain_name_fields(tmp_path):
+    spec_dir = tmp_path / "specs"
+    spec_dir.mkdir()
+
+    catalog = {
+        "operations": [
+            {
+                "id": "todo.cgi_bin_agent_get",
+                "domain": "unknown",
+                "name": "cgi_bin_agent_get",
+                "endpoint": "/cgi-bin/agent/get",
+                "method": "GET",
+            }
+        ]
+    }
+
+    plan = build_missing_plan(catalog, spec_dir)
+    assert "todo" in plan
+    assert "unknown" not in plan
+    assert plan["todo"][0]["name"] == "cgi_bin_agent_get"

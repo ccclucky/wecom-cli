@@ -34,8 +34,15 @@ def build_missing_plan(catalog: dict[str, Any], spec_dir: Path) -> dict[str, lis
         if not op_id or op_id in existing:
             continue
 
-        domain = op.get("domain") or op_id.split(".", 1)[0]
-        name = op.get("name") or op_id.split(".", 1)[-1]
+        if "." in op_id:
+            id_domain, id_name = op_id.split(".", 1)
+        else:
+            id_domain, id_name = "unknown", op_id
+
+        # Keep scaffold ids consistent with catalog ids.
+        # If catalog has mismatched domain/name fields, op_id is authoritative.
+        domain = id_domain
+        name = id_name
         scaffold = {
             "name": name,
             "cli_action": name.replace("_", "-"),
