@@ -1,0 +1,49 @@
+{
+  "domain": "messages",
+  "operations": [
+    {
+      "name": "send_text",
+      "cli_action": "send-text",
+      "summary": "发送文本消息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/message/send",
+      "args": [
+        {
+          "name": "to_user",
+          "flag": "--to-user",
+          "type": "str",
+          "required": true,
+          "help": "接收者用户 ID"
+        },
+        {
+          "name": "agent_id",
+          "flag": "--agent-id",
+          "type": "int",
+          "required": true,
+          "help": "应用 agent id"
+        },
+        {
+          "name": "content",
+          "flag": "--content",
+          "type": "str",
+          "required": true,
+          "help": "文本内容"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "touser": {"from_arg": "to_user"},
+          "msgtype": {"const": "text"},
+          "agentid": {"from_arg": "agent_id"},
+          "text": {
+            "content": {"from_arg": "content"}
+          },
+          "safe": {"const": 0}
+        }
+      },
+      "examples": [
+        "wecom messages send-text --to-user zhangsan --agent-id 1000002 --content hello"
+      ]
+    }
+  ]
+}

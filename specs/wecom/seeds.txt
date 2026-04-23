@@ -1,0 +1,5 @@
+# WeCom developer doc entry pages (can be extended continuously)
+https://developer.work.weixin.qq.com/document/path/90664
+https://developer.work.weixin.qq.com/document/path/90200
+https://developer.work.weixin.qq.com/document/path/90313
+https://developer.work.weixin.qq.com/document/path/90236
