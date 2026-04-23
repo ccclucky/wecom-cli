@@ -1,0 +1,24 @@
+{
+  "snapshot_date": "2026-04-23",
+  "source": "https://developer.work.weixin.qq.com/document",
+  "operations": [
+    {
+      "id": "contacts.list_users",
+      "domain": "contacts",
+      "name": "list_users",
+      "endpoint": "/cgi-bin/user/simplelist"
+    },
+    {
+      "id": "messages.send_text",
+      "domain": "messages",
+      "name": "send_text",
+      "endpoint": "/cgi-bin/message/send"
+    },
+    {
+      "id": "customers.list_follow_users",
+      "domain": "customers",
+      "name": "list_follow_users",
+      "endpoint": "/cgi-bin/externalcontact/get_follow_user_list"
+    }
+  ]
+}

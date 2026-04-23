@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_specs_have_examples_and_required_fields():
     for spec_file in sorted((ROOT / "specs" / "wecom").glob("*.yaml")):
+        if spec_file.name == "catalog.yaml":
+            continue
         spec = json.loads(spec_file.read_text(encoding="utf-8"))
         assert spec["domain"]
         for op in spec["operations"]:

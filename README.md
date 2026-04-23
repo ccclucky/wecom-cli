@@ -132,6 +132,7 @@ python scripts/codegen.py
 ruff check .
 mypy
 pytest -q
+python scripts/check_api_coverage.py
 ```
 
 ---
@@ -153,3 +154,5 @@ pytest -q
 - **v0.3.x**：引入更完整的输出格式（table/json）、分页与重试策略
 
 欢迎继续补充需求，我们可以按 TDD 节奏逐步迭代。
+
+补充：接口全量覆盖治理可见 `docs/coverage.md`。

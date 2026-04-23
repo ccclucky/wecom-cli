@@ -38,6 +38,8 @@ def _indent_block(text: str, spaces: int) -> str:
 def _load_specs() -> list[dict[str, Any]]:
     specs: list[dict[str, Any]] = []
     for file in sorted(SPEC_DIR.glob("*.yaml")):
+        if file.name == "catalog.yaml":
+            continue
         with file.open("r", encoding="utf-8") as fp:
             data = json.load(fp)
         specs.append(data)
