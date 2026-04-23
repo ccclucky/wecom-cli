@@ -22,12 +22,13 @@ python scripts/check_api_coverage.py
 - `missing_ids`：catalog 有但 spec 未实现；
 - `unknown_ids`：spec 有但 catalog 未登记；
 - `missing_examples`：缺少文档示例的接口。
+- `invalid_contracts`：接口契约不完整/不一致（例如 required 参数未映射到 request，或 request 引用了不存在的参数）。
 
 退出码约束：
 
-- `0`：覆盖率 100%，且无 unknown / missing_examples；
+- `0`：覆盖率 100%，且无 unknown / missing_examples / invalid_contracts；
 - `2`：覆盖率 < 100%；
-- `3`：有未登记接口或缺示例。
+- `3`：有未登记接口、缺示例或契约校验失败。
 
 ## 3. 落地流程（建议）
 
@@ -95,7 +96,7 @@ python scripts/catalog_diff_report.py \
 - 每天 UTC 01:00 自动执行（也支持手动触发）；
 - 从 `specs/wecom/seeds.txt` 多入口抓取候选接口；
 - 生成新增/删除/修改报告（`artifacts/wecom-catalog-report.md`）；
-- 有变化时自动创建 Issue，并发起同步 PR（草稿，默认不直接覆盖 baseline catalog）。
+- 有变化时自动更新同一个 tracking Issue（避免重复开单），并尝试发起同步 PR（草稿，默认不直接覆盖 baseline catalog）。
 
 
 ## 6. `catalog.yaml` 的作用（很重要）
@@ -114,3 +115,6 @@ python scripts/catalog_diff_report.py \
 
 
 补充：快速上手见 `docs/sync-playbook.md`。
+
+
+工单落地操作见 `docs/issue-runbook.md`。

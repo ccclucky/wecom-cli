@@ -25,7 +25,7 @@ def main() -> int:
     parser.add_argument("--doc-id-from", type=int, default=90000)
     parser.add_argument("--doc-id-to", type=int, default=100500)
     parser.add_argument("--max-pages", type=int, default=2000)
-    parser.add_argument("--mode", choices=["dry-run", "apply"], default="dry-run")
+    parser.add_argument("--mode", choices=["dry-run", "apply", "auto-apply"], default="dry-run")
     parser.add_argument("--discovered", default="artifacts/catalog.discovery.yaml")
     parser.add_argument("--report", default="artifacts/wecom-catalog-report.md")
     parser.add_argument("--synced", default="artifacts/catalog.synced.yaml")
@@ -61,19 +61,37 @@ def main() -> int:
         "--sync-output",
         args.synced,
     ]
-    if args.mode == "apply":
+    if args.mode in {"apply", "auto-apply"}:
         diff_cmd += ["--apply-baseline", args.baseline]
     _run(diff_cmd, ok_codes={0, 1})
+
+    if args.mode == "auto-apply":
+        _run(
+            [
+                "python",
+                "scripts/scaffold_from_catalog.py",
+                "--catalog",
+                args.baseline,
+                "--spec-dir",
+                "specs/wecom",
+                "--apply",
+            ]
+        )
+        _run(["python", "scripts/codegen.py"])
+        _run(["python", "scripts/check_api_coverage.py"])
 
     print("\n=== NEXT ===")
     if args.mode == "dry-run":
         print("1) 打开报告 artifacts/wecom-catalog-report.md 审阅差异")
         print("2) 如确认同步：重新执行加 --mode apply")
-    else:
+    elif args.mode == "apply":
         print("1) baseline catalog 已更新")
-    print("3) 补齐 specs/wecom/<domain>.yaml")
-    print("4) 运行 python scripts/codegen.py")
-    print("5) 运行 pytest -q 和 python scripts/check_api_coverage.py")
+        print("3) 补齐 specs/wecom/<domain>.yaml")
+        print("4) 运行 python scripts/codegen.py")
+        print("5) 运行 pytest -q 和 python scripts/check_api_coverage.py")
+    else:
+        print("1) baseline/specs/codegen 已自动同步并完成契约校验")
+        print("2) 如需放行，请人工 spot-check 报告后合并 PR")
     return 0
 
 

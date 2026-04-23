@@ -134,9 +134,13 @@ mypy
 pytest -q
 python scripts/check_api_coverage.py
 python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
+# 一键自动同步（发现 -> catalog apply -> scaffold -> codegen -> contract check）
+python scripts/run_catalog_sync.py --mode auto-apply
 # 可选：抓取官方文档候选接口目录
 python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id-from 90000 --doc-id-to 100500 --max-pages 2000
 ```
+
+`check_api_coverage.py` 会同时校验 catalog 覆盖率与接口契约一致性（如 required 参数是否映射到 request）。
 
 ---
 
@@ -165,3 +169,8 @@ python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id
 
 
 同步流程说明（不看代码版）：`docs/sync-playbook.md`
+
+
+自动 issue 处理手册：`docs/issue-runbook.md`
+
+无脑执行版 SOP：`docs/workflow-sop.md`

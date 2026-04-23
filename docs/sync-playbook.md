@@ -35,6 +35,14 @@ python scripts/run_catalog_sync.py --mode apply
 
 这会把 `artifacts/catalog.synced.yaml` 的结果回写到 `specs/wecom/catalog.yaml`。
 
+### 全自动同步（目录 + spec 骨架 + codegen）
+
+```bash
+python scripts/run_catalog_sync.py --mode auto-apply
+```
+
+这会自动执行：apply baseline -> scaffold spec -> codegen -> coverage 契约校验。
+
 ---
 
 ## 关键澄清
