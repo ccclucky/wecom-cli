@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wecom-cli"
+version = "0.1.0a1"
+description = "WeCom CLI"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+wecom = "cli.main:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["core", "cli", "apis", "models", "tests"]
+ignore_missing_imports = false
