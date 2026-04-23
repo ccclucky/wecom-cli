@@ -38,3 +38,18 @@ python scripts/check_api_coverage.py
 5. 在 CI 里把 `python scripts/check_api_coverage.py` 设为必过项。
 
 这样即使接口很多，也可以持续证明“当前分母下的 100% 已实现”。
+
+
+## 4. 接口目录抓取方案（半自动）
+
+可先用抓取脚本生成候选全集，再人工校对后写入 `catalog.yaml`：
+
+```bash
+python scripts/discover_wecom_apis.py   --seed https://developer.work.weixin.qq.com/document/path/90665   --max-pages 300   --output specs/wecom/catalog.discovery.yaml
+```
+
+说明：
+
+- 脚本会在官方文档站内（`developer.work.weixin.qq.com`）抓取 `/document/path/*` 页面；
+- 通过正则提取 `/cgi-bin/...` endpoint，并尝试识别页面上的 GET/POST；
+- 产物是“候选目录”，建议人工 review 后再合并到 `catalog.yaml`。
