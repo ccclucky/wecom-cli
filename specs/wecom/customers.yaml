@@ -1,0 +1,17 @@
+{
+  "domain": "customers",
+  "operations": [
+    {
+      "name": "list_follow_users",
+      "cli_action": "list-follow-users",
+      "summary": "列出配置了客户联系的成员",
+      "method": "GET",
+      "endpoint": "/cgi-bin/externalcontact/get_follow_user_list",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom customers list-follow-users"
+      ]
+    }
+  ]
+}

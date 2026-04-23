@@ -90,6 +90,18 @@ python -m cli.main messages send-text \
 python -m cli.main customers list-follow-users
 ```
 
+### 4.5 生成代码（基于 specs）
+
+```bash
+python scripts/codegen.py
+```
+
+接口元数据位于 `specs/wecom/*.yaml`，生成物包括：
+
+- `apis/generated_client.py`
+- `cli/generated_commands.py`
+- 文档示例：`docs/examples/generated-apis.md`
+
 ---
 
 ## 5. 当前已实现能力说明
@@ -120,6 +132,10 @@ python -m cli.main customers list-follow-users
 ruff check .
 mypy
 pytest -q
+python scripts/check_api_coverage.py
+python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
+# 可选：抓取官方文档候选接口目录
+python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id-from 90000 --doc-id-to 100500 --max-pages 2000
 ```
 
 ---
@@ -141,3 +157,11 @@ pytest -q
 - **v0.3.x**：引入更完整的输出格式（table/json）、分页与重试策略
 
 欢迎继续补充需求，我们可以按 TDD 节奏逐步迭代。
+
+补充：接口全量覆盖治理可见 `docs/coverage.md`。
+
+
+> 提示：`catalog.yaml` 仅是目录同步（覆盖率分母），要真正生效还需要补 `specs/wecom/<domain>.yaml` 并执行 `python scripts/codegen.py`。
+
+
+同步流程说明（不看代码版）：`docs/sync-playbook.md`

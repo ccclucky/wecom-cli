@@ -1,0 +1,70 @@
+name: WeCom Catalog Watch
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  watch-catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Discover latest API catalog
+        run: |
+          python scripts/discover_wecom_apis.py \
+            --seed-file specs/wecom/seeds.txt \
+            --max-pages 2000 \
+            --output artifacts/catalog.discovery.yaml
+
+      - name: Build diff report
+        id: diff
+        run: |
+          set +e
+          python scripts/catalog_diff_report.py \
+            --baseline specs/wecom/catalog.yaml \
+            --discovered artifacts/catalog.discovery.yaml \
+            --report artifacts/wecom-catalog-report.md \
+            --sync-output artifacts/catalog.synced.yaml
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Upload report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wecom-catalog-report
+          path: artifacts/
+
+      - name: Open issue when changes detected
+        if: steps.diff.outputs.exit_code == '1'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "[WeCom Catalog Watch] API changes detected"
+          content-filepath: artifacts/wecom-catalog-report.md
+          labels: |
+            wecom
+            catalog-watch
+
+      - name: Create sync PR draft when changes detected
+        if: steps.diff.outputs.exit_code == '1'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: sync discovered wecom catalog snapshot"
+          branch: chore/sync-wecom-catalog
+          title: "chore: sync discovered WeCom catalog snapshot"
+          body-path: artifacts/wecom-catalog-report.md
+          add-paths: |
+            artifacts/catalog.discovery.yaml
+            artifacts/catalog.synced.yaml
+          draft: true
