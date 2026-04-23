@@ -90,6 +90,18 @@ python -m cli.main messages send-text \
 python -m cli.main customers list-follow-users
 ```
 
+### 4.5 生成代码（基于 specs）
+
+```bash
+python scripts/codegen.py
+```
+
+接口元数据位于 `specs/wecom/*.yaml`，生成物包括：
+
+- `apis/generated_client.py`
+- `cli/generated_commands.py`
+- 文档示例：`docs/examples/generated-apis.md`
+
 ---
 
 ## 5. 当前已实现能力说明
