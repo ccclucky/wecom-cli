@@ -39,27 +39,58 @@ python scripts/check_api_coverage.py
 
 这样即使接口很多，也可以持续证明“当前分母下的 100% 已实现”。
 
+## 4. 接口目录抓取方案（多入口，不是单页面）
 
-## 4. 接口目录抓取方案（半自动）
-
-可先用抓取脚本生成候选全集，再人工校对后写入 `catalog.yaml`：
+抓取不是只看一个页面，而是使用 `specs/wecom/seeds.txt` 多入口 crawl：
 
 ```bash
-python scripts/discover_wecom_apis.py   --seed https://developer.work.weixin.qq.com/document/path/90665   --max-pages 300   --output specs/wecom/catalog.discovery.yaml
+python scripts/discover_wecom_apis.py \
+  --seed-file specs/wecom/seeds.txt \
+  --max-pages 2000 \
+  --output artifacts/catalog.discovery.yaml
 ```
 
 说明：
 
 - 脚本会在官方文档站内（`developer.work.weixin.qq.com`）抓取 `/document/path/*` 页面；
-- 通过正则提取 `/cgi-bin/...` endpoint，并尝试识别页面上的 GET/POST；
-- 产物是“候选目录”，建议人工 review 后再合并到 `catalog.yaml`。
+- 支持维护多个种子页（持续扩展 `seeds.txt`），降低漏抓风险；
+- 通过正则提取 `/cgi-bin/...` endpoint，并尝试识别页面上的 GET/POST。
 
+## 5. 差异判断与修复
 
-## 5. 每日自动巡检（GitHub Actions）
+差异类型（`scripts/catalog_diff_report.py`）：
+
+- `Added`：新出现 endpoint；
+- `Removed`：基线有但发现结果没有；
+- `Modified(method)`：endpoint 相同但请求方法变化。
+
+先出报告（人工审阅）：
+
+```bash
+python scripts/catalog_diff_report.py \
+  --baseline specs/wecom/catalog.yaml \
+  --discovered artifacts/catalog.discovery.yaml \
+  --report artifacts/wecom-catalog-report.md \
+  --sync-output artifacts/catalog.synced.yaml
+```
+
+确认后可自动回写基线（修复动作）：
+
+```bash
+python scripts/catalog_diff_report.py \
+  --baseline specs/wecom/catalog.yaml \
+  --discovered artifacts/catalog.discovery.yaml \
+  --report artifacts/wecom-catalog-report.md \
+  --apply-baseline specs/wecom/catalog.yaml
+```
+
+> 建议策略：默认“报告 + 人工审阅”，确认后再执行 `--apply-baseline`。
+
+## 6. 每日自动巡检（GitHub Actions）
 
 仓库新增 `.github/workflows/wecom-catalog-watch.yml`：
 
 - 每天 UTC 01:00 自动执行（也支持手动触发）；
-- 抓取 `https://developer.work.weixin.qq.com/document/path/90664` 及其子页面候选接口；
+- 从 `specs/wecom/seeds.txt` 多入口抓取候选接口；
 - 生成新增/删除/修改报告（`artifacts/wecom-catalog-report.md`）；
 - 有变化时自动创建 Issue，并发起同步 PR（草稿）。

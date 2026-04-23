@@ -52,7 +52,6 @@ def build_diff(baseline: dict[str, Any], discovered: dict[str, Any]) -> dict[str
         if b.method != d.method:
             modified.append(d)
 
-    modified_endpoints = {item.endpoint for item in modified}
     added = [
         discovered_by_endpoint[e]
         for e in sorted(set(discovered_by_endpoint) - set(baseline_by_endpoint))
@@ -62,11 +61,56 @@ def build_diff(baseline: dict[str, Any], discovered: dict[str, Any]) -> dict[str
         for e in sorted(set(baseline_by_endpoint) - set(discovered_by_endpoint))
     ]
 
-    # method changes are reported only in "modified" section.
-    added = [item for item in added if item.endpoint not in modified_endpoints]
-    removed = [item for item in removed if item.endpoint not in modified_endpoints]
-
     return {"added": added, "removed": removed, "modified": modified}
+
+
+def _slug_from_endpoint(endpoint: str) -> str:
+    return endpoint.strip("/").replace("/", "_").replace("-", "_").replace(".", "_")
+
+
+def build_reconciled_catalog(
+    baseline: dict[str, Any],
+    discovered: dict[str, Any],
+) -> dict[str, Any]:
+    baseline_by_endpoint = {
+        op["endpoint"]: op for op in baseline.get("operations", []) if op.get("endpoint")
+    }
+
+    reconciled_ops: list[dict[str, Any]] = []
+    for op in sorted(discovered.get("operations", []), key=lambda x: x.get("endpoint", "")):
+        endpoint = op.get("endpoint")
+        if not endpoint:
+            continue
+
+        old = baseline_by_endpoint.get(endpoint)
+        if old:
+            reconciled_ops.append(
+                {
+                    "id": old.get("id"),
+                    "domain": old.get("domain", "unknown"),
+                    "name": old.get("name", _slug_from_endpoint(endpoint)),
+                    "endpoint": endpoint,
+                    "method": op.get("method") or old.get("method"),
+                }
+            )
+            continue
+
+        slug = _slug_from_endpoint(endpoint)
+        reconciled_ops.append(
+            {
+                "id": f"todo.{slug}",
+                "domain": "unknown",
+                "name": slug,
+                "endpoint": endpoint,
+                "method": op.get("method"),
+            }
+        )
+
+    return {
+        "snapshot_date": discovered.get("snapshot_date"),
+        "source": discovered.get("source"),
+        "operations": reconciled_ops,
+    }
 
 
 def to_markdown(
@@ -87,6 +131,17 @@ def to_markdown(
         f"- Added: **{len(diff['added'])}**",
         f"- Removed: **{len(diff['removed'])}**",
         f"- Modified(method): **{len(diff['modified'])}**",
+        "",
+        "## How to fix",
+        "",
+        "- Review `Added/Removed/Modified` below.",
+        "- If confirmed, run `python scripts/catalog_diff_report.py` with:",
+        "  - `--baseline specs/wecom/catalog.yaml`",
+        "  - `--discovered artifacts/catalog.discovery.yaml`",
+        "  - `--report artifacts/wecom-catalog-report.md`",
+        "  - `--apply-baseline specs/wecom/catalog.yaml`",
+        "- Then update `specs/wecom/<domain>.yaml`,",
+        "  run `python scripts/codegen.py`, and add tests/examples.",
         "",
     ]
 
@@ -113,6 +168,7 @@ def main() -> int:
     parser.add_argument("--discovered", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--sync-output", type=Path, help="Optional synced catalog output path")
+    parser.add_argument("--apply-baseline", type=Path, help="Write reconciled catalog to this path")
     args = parser.parse_args()
 
     baseline = _load_json_yaml(args.baseline)
@@ -123,23 +179,15 @@ def main() -> int:
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(report_text, encoding="utf-8")
 
+    reconciled = build_reconciled_catalog(baseline, discovered)
     if args.sync_output:
-        sync_payload = {
-            "snapshot_date": discovered.get("snapshot_date"),
-            "source": discovered.get("source"),
-            "operations": [
-                {
-                    "id": op.get("id") or f"todo.{idx}",
-                    "domain": op.get("domain", "unknown"),
-                    "name": op.get("name", "unknown"),
-                    "endpoint": op.get("endpoint"),
-                    "method": op.get("method"),
-                }
-                for idx, op in enumerate(discovered.get("operations", []), start=1)
-            ],
-        }
         args.sync_output.write_text(
-            json.dumps(sync_payload, ensure_ascii=False, indent=2),
+            json.dumps(reconciled, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+    if args.apply_baseline:
+        args.apply_baseline.write_text(
+            json.dumps(reconciled, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
 

@@ -25,8 +25,8 @@ jobs:
       - name: Discover latest API catalog
         run: |
           python scripts/discover_wecom_apis.py \
-            --seed https://developer.work.weixin.qq.com/document/path/90664 \
-            --max-pages 800 \
+            --seed-file specs/wecom/seeds.txt \
+            --max-pages 2000 \
             --output artifacts/catalog.discovery.yaml
 
       - name: Build diff report
@@ -37,7 +37,8 @@ jobs:
             --baseline specs/wecom/catalog.yaml \
             --discovered artifacts/catalog.discovery.yaml \
             --report artifacts/wecom-catalog-report.md \
-            --sync-output artifacts/catalog.synced.yaml
+            --sync-output artifacts/catalog.synced.yaml \
+            --apply-baseline specs/wecom/catalog.yaml
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Upload report artifacts

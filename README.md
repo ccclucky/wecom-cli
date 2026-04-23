@@ -134,7 +134,7 @@ mypy
 pytest -q
 python scripts/check_api_coverage.py
 # 可选：抓取官方文档候选接口目录
-python scripts/discover_wecom_apis.py --max-pages 300
+python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --max-pages 2000
 ```
 
 ---
