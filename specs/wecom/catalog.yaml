@@ -6,19 +6,22 @@
       "id": "contacts.list_users",
       "domain": "contacts",
       "name": "list_users",
-      "endpoint": "/cgi-bin/user/simplelist"
+      "endpoint": "/cgi-bin/user/simplelist",
+      "method": "GET"
     },
     {
       "id": "messages.send_text",
       "domain": "messages",
       "name": "send_text",
-      "endpoint": "/cgi-bin/message/send"
+      "endpoint": "/cgi-bin/message/send",
+      "method": "POST"
     },
     {
       "id": "customers.list_follow_users",
       "domain": "customers",
       "name": "list_follow_users",
-      "endpoint": "/cgi-bin/externalcontact/get_follow_user_list"
+      "endpoint": "/cgi-bin/externalcontact/get_follow_user_list",
+      "method": "GET"
     }
   ]
 }

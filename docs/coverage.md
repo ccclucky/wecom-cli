@@ -53,3 +53,13 @@ python scripts/discover_wecom_apis.py   --seed https://developer.work.weixin.qq.
 - 脚本会在官方文档站内（`developer.work.weixin.qq.com`）抓取 `/document/path/*` 页面；
 - 通过正则提取 `/cgi-bin/...` endpoint，并尝试识别页面上的 GET/POST；
 - 产物是“候选目录”，建议人工 review 后再合并到 `catalog.yaml`。
+
+
+## 5. 每日自动巡检（GitHub Actions）
+
+仓库新增 `.github/workflows/wecom-catalog-watch.yml`：
+
+- 每天 UTC 01:00 自动执行（也支持手动触发）；
+- 抓取 `https://developer.work.weixin.qq.com/document/path/90664` 及其子页面候选接口；
+- 生成新增/删除/修改报告（`artifacts/wecom-catalog-report.md`）；
+- 有变化时自动创建 Issue，并发起同步 PR（草稿）。
