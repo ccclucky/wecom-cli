@@ -161,3 +161,6 @@ python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id
 
 
 > 提示：`catalog.yaml` 仅是目录同步（覆盖率分母），要真正生效还需要补 `specs/wecom/<domain>.yaml` 并执行 `python scripts/codegen.py`。
+
+
+同步流程说明（不看代码版）：`docs/sync-playbook.md`

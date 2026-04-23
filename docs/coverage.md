@@ -111,3 +111,6 @@ python scripts/catalog_diff_report.py \
 3. 补齐对应 domain spec；
 4. 运行 `python scripts/codegen.py`；
 5. 补测试和文档示例。
+
+
+补充：快速上手见 `docs/sync-playbook.md`。
