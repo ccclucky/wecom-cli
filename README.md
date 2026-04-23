@@ -133,6 +133,7 @@ ruff check .
 mypy
 pytest -q
 python scripts/check_api_coverage.py
+python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
 # 可选：抓取官方文档候选接口目录
 python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id-from 90000 --doc-id-to 100500 --max-pages 2000
 ```

@@ -58,3 +58,30 @@ python scripts/run_catalog_sync.py --mode apply
 2. 维护者审阅报告。
 3. 仅在确认后做 `apply`。
 4. 同步补齐 domain spec / 文档示例 / 测试。
+
+
+
+## 把“目录变化”落实为“代码变化”
+
+当报告确认有新增接口时，推荐这条落地链路：
+
+```bash
+# 1) 基于 catalog 给 domain spec 打骨架（先 dry-run 看统计）
+python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
+
+# 2) 确认后写入 spec 文件
+python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
+
+# 3) 生成 client + CLI 骨架代码
+python scripts/codegen.py
+
+# 4) 补充每个接口的 args/request/examples/test 后再跑校验
+pytest -q
+python scripts/check_api_coverage.py
+```
+
+说明：
+
+- `scaffold_from_catalog.py` 只负责“把 catalog 的新增项落到 domain spec 占位骨架”；
+- 真正可用还需要你补全参数映射、请求体和示例；
+- 最后必须通过测试与覆盖率检查。
