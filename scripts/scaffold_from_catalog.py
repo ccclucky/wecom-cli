@@ -73,11 +73,36 @@ def apply_plan(plan: dict[str, list[dict[str, Any]]], spec_dir: Path) -> list[Pa
     return changed
 
 
+def prune_unknown_operations(catalog: dict[str, Any], spec_dir: Path) -> list[Path]:
+    catalog_ids = {op.get("id") for op in catalog.get("operations", []) if op.get("id")}
+    changed: list[Path] = []
+
+    for spec_file in sorted(spec_dir.glob("*.yaml")):
+        if spec_file.name == "catalog.yaml":
+            continue
+        payload = _load_json_yaml(spec_file)
+        domain = payload.get("domain")
+        if not domain:
+            continue
+        operations = payload.get("operations", [])
+        filtered = [op for op in operations if _op_id(domain, op.get("name", "")) in catalog_ids]
+        if len(filtered) != len(operations):
+            payload["operations"] = filtered
+            spec_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+            changed.append(spec_file)
+    return changed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Scaffold missing specs from catalog")
     parser.add_argument("--catalog", type=Path, default=Path("specs/wecom/catalog.yaml"))
     parser.add_argument("--spec-dir", type=Path, default=Path("specs/wecom"))
     parser.add_argument("--apply", action="store_true", help="Apply scaffolding to spec files")
+    parser.add_argument(
+        "--prune-unknown",
+        action="store_true",
+        help="Remove operations that are no longer present in catalog ids",
+    )
     args = parser.parse_args()
 
     catalog = _load_json_yaml(args.catalog)
@@ -91,6 +116,8 @@ def main() -> int:
         return 0
 
     changed = apply_plan(plan, args.spec_dir)
+    if args.prune_unknown:
+        changed.extend(prune_unknown_operations(catalog, args.spec_dir))
     for path in changed:
         print(f"updated {path}")
     return 0

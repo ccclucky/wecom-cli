@@ -60,7 +60,7 @@ python scripts/run_catalog_sync.py --mode auto-apply
 
 1. 发现并生成 report；
 2. 对比并 apply 到 `specs/wecom/catalog.yaml`；
-3. scaffold 缺失 spec；
+3. scaffold 缺失 spec，并清理已从 catalog 移除的旧 operation；
 4. 运行 codegen；
 5. 运行 coverage + contract check。
 
@@ -128,4 +128,3 @@ python scripts/check_api_coverage.py
 ## 8. 一句话流程图
 
 下载 artifact -> 抽样核对 -> `auto-apply` -> 测试/覆盖率 -> 审核 Draft PR -> 合并。
-

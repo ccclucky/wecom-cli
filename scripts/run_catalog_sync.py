@@ -75,6 +75,7 @@ def main() -> int:
                 "--spec-dir",
                 "specs/wecom",
                 "--apply",
+                "--prune-unknown",
             ]
         )
         _run(["python", "scripts/codegen.py"])

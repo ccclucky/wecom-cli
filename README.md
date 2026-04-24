@@ -133,7 +133,7 @@ ruff check .
 mypy
 pytest -q
 python scripts/check_api_coverage.py
-python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
+python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply --prune-unknown
 # 一键自动同步（发现 -> catalog apply -> scaffold -> codegen -> contract check）
 python scripts/run_catalog_sync.py --mode auto-apply
 # 可选：抓取官方文档候选接口目录

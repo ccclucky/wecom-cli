@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from scripts.scaffold_from_catalog import apply_plan, build_missing_plan
+from scripts.scaffold_from_catalog import apply_plan, build_missing_plan, prune_unknown_operations
 
 
 def test_build_missing_plan_and_apply(tmp_path):
@@ -70,3 +70,31 @@ def test_build_missing_plan_prefers_id_over_domain_name_fields(tmp_path):
     assert "todo" in plan
     assert "unknown" not in plan
     assert plan["todo"][0]["name"] == "cgi_bin_agent_get"
+
+
+def test_prune_unknown_operations_removes_ops_not_in_catalog(tmp_path):
+    spec_dir = tmp_path / "specs"
+    spec_dir.mkdir()
+    (spec_dir / "contacts.yaml").write_text(
+        json.dumps(
+            {
+                "domain": "contacts",
+                "operations": [
+                    {"name": "list_users"},
+                    {"name": "stale_op"},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    catalog = {
+        "operations": [
+            {"id": "contacts.list_users"},
+        ]
+    }
+
+    changed = prune_unknown_operations(catalog, spec_dir)
+    assert changed == [spec_dir / "contacts.yaml"]
+
+    payload = json.loads((spec_dir / "contacts.yaml").read_text(encoding="utf-8"))
+    assert [op["name"] for op in payload["operations"]] == ["list_users"]

@@ -78,7 +78,7 @@ python scripts/run_catalog_sync.py --mode auto-apply
 python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
 
 # 2) 确认后写入 spec 文件
-python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
+python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply --prune-unknown
 
 # 3) 生成 client + CLI 骨架代码
 python scripts/codegen.py
@@ -90,6 +90,6 @@ python scripts/check_api_coverage.py
 
 说明：
 
-- `scaffold_from_catalog.py` 只负责“把 catalog 的新增项落到 domain spec 占位骨架”；
+- `scaffold_from_catalog.py` 会“补齐 catalog 新增项 + 清理 catalog 已移除项（--prune-unknown）”；
 - 真正可用还需要你补全参数映射、请求体和示例；
 - 最后必须通过测试与覆盖率检查。
