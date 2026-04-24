@@ -1,0 +1,38 @@
+{
+  "domain": "contacts",
+  "operations": [
+    {
+      "name": "list_users",
+      "cli_action": "list",
+      "summary": "列出成员",
+      "method": "GET",
+      "endpoint": "/cgi-bin/user/simplelist",
+      "args": [
+        {
+          "name": "department_id",
+          "flag": "--department-id",
+          "type": "int",
+          "default": 1,
+          "help": "部门 ID"
+        },
+        {
+          "name": "fetch_child",
+          "flag": "--fetch-child",
+          "type": "bool",
+          "default": false,
+          "action": "store_true",
+          "help": "是否递归拉取子部门"
+        }
+      ],
+      "request": {
+        "query": {
+          "department_id": {"from_arg": "department_id"},
+          "fetch_child": {"int_bool_arg": "fetch_child"}
+        }
+      },
+      "examples": [
+        "wecom contacts list --department-id 1 --fetch-child"
+      ]
+    }
+  ]
+}
