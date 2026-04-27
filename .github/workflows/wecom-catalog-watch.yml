@@ -37,6 +37,7 @@ jobs:
             --baseline specs/wecom/catalog.yaml \
             --discovered artifacts/catalog.discovery.yaml \
             --report artifacts/wecom-catalog-report.md \
+            --diff-output artifacts/catalog.diff.yaml \
             --sync-output artifacts/catalog.synced.yaml \
             --apply-baseline specs/wecom/catalog.yaml
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
@@ -82,8 +83,12 @@ jobs:
         if: steps.diff.outputs.exit_code == '1'
         run: |
           python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply --prune-unknown
+          python scripts/sync_spec_docs.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
           python scripts/codegen.py
           python scripts/check_api_coverage.py
+      - name: Build Coding Agent artifacts
+        run: |
+          python scripts/build_agent_tasks.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --diff artifacts/catalog.diff.yaml
       - name: Create sync PR draft when changes detected
         if: steps.diff.outputs.exit_code == '1'
         continue-on-error: true

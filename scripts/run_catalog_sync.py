@@ -28,6 +28,7 @@ def main() -> int:
     parser.add_argument("--mode", choices=["dry-run", "apply", "auto-apply"], default="dry-run")
     parser.add_argument("--discovered", default="artifacts/catalog.discovery.yaml")
     parser.add_argument("--report", default="artifacts/wecom-catalog-report.md")
+    parser.add_argument("--diff-output", default="artifacts/catalog.diff.yaml")
     parser.add_argument("--synced", default="artifacts/catalog.synced.yaml")
     parser.add_argument("--baseline", default="specs/wecom/catalog.yaml")
     args = parser.parse_args()
@@ -58,6 +59,8 @@ def main() -> int:
         args.discovered,
         "--report",
         args.report,
+        "--diff-output",
+        args.diff_output,
         "--sync-output",
         args.synced,
     ]
@@ -78,8 +81,34 @@ def main() -> int:
                 "--prune-unknown",
             ]
         )
+        _run(["python", "scripts/sync_spec_docs.py", "--catalog", args.baseline, "--spec-dir", "specs/wecom", "--apply"])
         _run(["python", "scripts/codegen.py"])
         _run(["python", "scripts/check_api_coverage.py"])
+        _run(
+            [
+                "python",
+                "scripts/build_agent_tasks.py",
+                "--catalog",
+                args.baseline,
+                "--spec-dir",
+                "specs/wecom",
+                "--diff",
+                args.diff_output,
+            ]
+        )
+    else:
+        _run(
+            [
+                "python",
+                "scripts/build_agent_tasks.py",
+                "--catalog",
+                args.baseline,
+                "--spec-dir",
+                "specs/wecom",
+                "--diff",
+                args.diff_output,
+            ]
+        )
 
     print("\n=== NEXT ===")
     if args.mode == "dry-run":

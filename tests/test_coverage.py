@@ -52,3 +52,45 @@ def test_contract_validation_detects_unmapped_required_args(tmp_path):
     report = build_coverage_report(spec_dir=tmp_path, catalog_path=tmp_path / "catalog.yaml")
     assert report.coverage == 1.0
     assert any("required args not mapped content" in item for item in report.invalid_contracts)
+
+
+def test_contract_validation_detects_invalid_output_schema(tmp_path):
+    (tmp_path / "catalog.yaml").write_text(
+        json.dumps(
+            {
+                "operations": [
+                    {
+                        "id": "contacts.list_users",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "contacts.yaml").write_text(
+        json.dumps(
+            {
+                "domain": "contacts",
+                "operations": [
+                    {
+                        "name": "list_users",
+                        "method": "GET",
+                        "endpoint": "/cgi-bin/user/simplelist",
+                        "args": [],
+                        "request": {},
+                        "examples": ["ok"],
+                        "output": {
+                            "formats": ["table"],
+                            "json_schema": {"type": "array"},
+                        },
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    report = build_coverage_report(spec_dir=tmp_path, catalog_path=tmp_path / "catalog.yaml")
+    assert report.coverage == 1.0
+    assert any("output.formats must include json" in item for item in report.invalid_contracts)
+    assert any("output.json_schema.type must be object" in item for item in report.invalid_contracts)

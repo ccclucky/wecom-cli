@@ -16,6 +16,151 @@ def _op_id(domain: str, name: str) -> str:
     return f"{domain}.{name}"
 
 
+def _slug_to_cli_action(name: str) -> str:
+    return name.replace("_", "-")
+
+
+def _infer_json_schema(value: Any) -> dict[str, Any]:
+    if isinstance(value, bool):
+        return {"type": "boolean"}
+    if isinstance(value, int) and not isinstance(value, bool):
+        return {"type": "integer"}
+    if isinstance(value, float):
+        return {"type": "number"}
+    if isinstance(value, str):
+        return {"type": "string"}
+    if value is None:
+        return {"type": "null"}
+    if isinstance(value, list):
+        if not value:
+            return {"type": "array", "items": {}}
+        return {"type": "array", "items": _infer_json_schema(value[0])}
+    if isinstance(value, dict):
+        properties = {key: _infer_json_schema(item) for key, item in value.items()}
+        return {
+            "type": "object",
+            "properties": properties,
+            "required": list(value.keys()),
+        }
+    return {}
+
+
+def _response_descriptions(response_params: list[dict[str, Any]]) -> dict[str, str]:
+    descriptions: dict[str, str] = {}
+    for field in response_params:
+        name = field.get("name")
+        description = field.get("description")
+        if isinstance(name, str) and isinstance(description, str) and description.strip():
+            descriptions[name] = description.strip()
+    return descriptions
+
+
+def _annotate_schema_descriptions(schema: dict[str, Any], descriptions: dict[str, str]) -> dict[str, Any]:
+    if schema.get("type") != "object":
+        return schema
+    properties = schema.get("properties")
+    if not isinstance(properties, dict):
+        return schema
+    for key, prop in properties.items():
+        if not isinstance(prop, dict):
+            continue
+        if key in descriptions and "description" not in prop:
+            prop["description"] = descriptions[key]
+        if prop.get("type") == "object":
+            _annotate_schema_descriptions(prop, descriptions)
+        elif prop.get("type") == "array":
+            items = prop.get("items")
+            if isinstance(items, dict) and items.get("type") == "object":
+                _annotate_schema_descriptions(items, descriptions)
+    return schema
+
+
+def _build_output_from_doc(doc: dict[str, Any]) -> dict[str, Any]:
+    response_example = doc.get("response_example_json")
+    response_params = doc.get("response_params", [])
+    if not isinstance(response_params, list):
+        response_params = []
+    if not isinstance(response_example, (dict, list)):
+        return {}
+
+    json_schema = _infer_json_schema(response_example)
+    descriptions = _response_descriptions(response_params)
+    if descriptions and isinstance(json_schema, dict):
+        json_schema = _annotate_schema_descriptions(json_schema, descriptions)
+
+    return {
+        "formats": ["json"],
+        "json_schema": json_schema,
+    }
+
+
+def _infer_arg_type(field: dict[str, Any]) -> str:
+    field_type = str(field.get("type") or "").lower()
+    name = str(field.get("name") or "").lower()
+    description = str(field.get("description") or "").lower()
+    if "bool" in field_type or "是否" in description:
+        return "bool"
+    if field_type in {"int", "integer"}:
+        return "int"
+    return "str"
+
+
+def _build_args_and_request(
+    method: str | None,
+    request_params: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    if method != "GET":
+        return [], {}
+
+    args: list[dict[str, Any]] = []
+    query: dict[str, Any] = {}
+    for field in request_params:
+        name = field.get("name")
+        if not isinstance(name, str) or not name or name == "access_token":
+            continue
+        arg_type = _infer_arg_type(field)
+        arg = {
+            "name": name,
+            "flag": f"--{name.replace('_', '-')}",
+            "type": arg_type,
+            "help": field.get("description") or f"TODO: {name}",
+        }
+        if field.get("required") is True:
+            arg["required"] = True
+        args.append(arg)
+        if arg_type == "bool":
+            arg["action"] = "store_true"
+            query[name] = {"int_bool_arg": name}
+        else:
+            query[name] = {"from_arg": name}
+
+    return args, {"query": query} if query else {}
+
+
+def _build_doc_payload(op: dict[str, Any]) -> dict[str, Any]:
+    doc = op.get("doc")
+    if not isinstance(doc, dict):
+        return {}
+    payload: dict[str, Any] = {}
+    for key in (
+        "title",
+        "source_url",
+        "request_url",
+        "request_params",
+        "response_params",
+        "request_example_text",
+        "request_example_json",
+        "response_example_text",
+        "response_example_json",
+        "permissions",
+        "notes",
+    ):
+        value = doc.get(key)
+        if value not in (None, "", [], ()):
+            payload[key] = value
+    return payload
+
+
 def build_missing_plan(catalog: dict[str, Any], spec_dir: Path) -> dict[str, list[dict[str, Any]]]:
     existing: set[str] = set()
     for spec_file in sorted(spec_dir.glob("*.yaml")):
@@ -43,16 +188,31 @@ def build_missing_plan(catalog: dict[str, Any], spec_dir: Path) -> dict[str, lis
         # If catalog has mismatched domain/name fields, op_id is authoritative.
         domain = id_domain
         name = id_name
+        doc_payload = _build_doc_payload(op)
+        request_params = doc_payload.get("request_params", [])
+        if not isinstance(request_params, list):
+            request_params = []
+        args, request = _build_args_and_request(op.get("method"), request_params)
+        output = _build_output_from_doc(doc_payload)
+        summary = (
+            str(doc_payload.get("title")).strip()
+            if doc_payload.get("title")
+            else f"TODO: {name}"
+        )
         scaffold = {
             "name": name,
-            "cli_action": name.replace("_", "-"),
-            "summary": f"TODO: {name}",
+            "cli_action": _slug_to_cli_action(name),
+            "summary": summary,
             "method": op.get("method", "GET"),
             "endpoint": op.get("endpoint"),
-            "args": [],
-            "request": {},
-            "examples": [f"TODO: wecom {domain} {name.replace('_', '-')}"] ,
+            "args": args,
+            "request": request,
+            "examples": [f"TODO: wecom {domain} {_slug_to_cli_action(name)}"],
         }
+        if output:
+            scaffold["output"] = output
+        if doc_payload:
+            scaffold["doc"] = doc_payload
         plan.setdefault(domain, []).append(scaffold)
 
     return plan

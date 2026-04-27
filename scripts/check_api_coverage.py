@@ -85,6 +85,41 @@ def _collect_spec_operations(spec_dir: Path) -> tuple[set[str], list[str], list[
                     f"{op_id}: required args not mapped {', '.join(missing_required_mappings)}"
                 )
 
+            output = op.get("output")
+            if output is not None:
+                if not isinstance(output, dict):
+                    invalid_contracts.append(f"{op_id}: output must be an object")
+                    continue
+                formats = output.get("formats")
+                if not isinstance(formats, list) or "json" not in formats:
+                    invalid_contracts.append(f"{op_id}: output.formats must include json")
+                json_schema = output.get("json_schema")
+                if not isinstance(json_schema, dict):
+                    invalid_contracts.append(f"{op_id}: output.json_schema must be an object")
+                    continue
+                if json_schema.get("type") != "object":
+                    invalid_contracts.append(f"{op_id}: output.json_schema.type must be object")
+                    continue
+                properties = json_schema.get("properties")
+                if not isinstance(properties, dict):
+                    invalid_contracts.append(f"{op_id}: output.json_schema.properties must be an object")
+                    continue
+                table = output.get("table")
+                if table is not None:
+                    columns = table.get("columns") if isinstance(table, dict) else None
+                    if not isinstance(columns, list):
+                        invalid_contracts.append(f"{op_id}: output.table.columns must be a list")
+                    else:
+                        bad_columns = [
+                            col.get("key")
+                            for col in columns
+                            if not isinstance(col, dict) or col.get("key") not in properties
+                        ]
+                        if bad_columns:
+                            invalid_contracts.append(
+                                f"{op_id}: output.table.columns reference unknown keys {', '.join(str(x) for x in bad_columns)}"
+                            )
+
     return operation_ids, missing_examples, invalid_contracts
 
 

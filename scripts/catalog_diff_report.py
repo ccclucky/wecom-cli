@@ -64,8 +64,62 @@ def build_diff(baseline: dict[str, Any], discovered: dict[str, Any]) -> dict[str
     return {"added": added, "removed": removed, "modified": modified}
 
 
+def _serialize_item(item: ApiItem) -> dict[str, Any]:
+    payload = {
+        "endpoint": item.endpoint,
+        "method": item.method,
+    }
+    source_url = item.raw.get("source_url")
+    if source_url:
+        payload["source_url"] = source_url
+    title = item.raw.get("title")
+    if title:
+        payload["title"] = title
+    return payload
+
+
+def build_diff_payload(
+    diff: dict[str, list[ApiItem]],
+    baseline: dict[str, Any],
+    discovered: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "baseline_snapshot": baseline.get("snapshot_date"),
+        "discovery_snapshot": discovered.get("snapshot_date"),
+        "summary": {
+            "added": len(diff["added"]),
+            "removed": len(diff["removed"]),
+            "modified": len(diff["modified"]),
+        },
+        "added": [_serialize_item(item) for item in diff["added"]],
+        "removed": [_serialize_item(item) for item in diff["removed"]],
+        "modified": [_serialize_item(item) for item in diff["modified"]],
+    }
+
+
 def _slug_from_endpoint(endpoint: str) -> str:
     return endpoint.strip("/").replace("/", "_").replace("-", "_").replace(".", "_")
+
+
+def _doc_from_discovered(op: dict[str, Any]) -> dict[str, Any]:
+    doc: dict[str, Any] = {}
+    for key in (
+        "title",
+        "source_url",
+        "request_url",
+        "request_params",
+        "response_params",
+        "request_example_text",
+        "request_example_json",
+        "response_example_text",
+        "response_example_json",
+        "permissions",
+        "notes",
+    ):
+        value = op.get(key)
+        if value not in (None, "", [], ()):
+            doc[key] = value
+    return doc
 
 
 def build_reconciled_catalog(
@@ -84,6 +138,9 @@ def build_reconciled_catalog(
 
         old = baseline_by_endpoint.get(endpoint)
         if old:
+            doc = _doc_from_discovered(op)
+            if not doc and isinstance(old.get("doc"), dict):
+                doc = old["doc"]
             reconciled_ops.append(
                 {
                     "id": old.get("id"),
@@ -91,11 +148,13 @@ def build_reconciled_catalog(
                     "name": old.get("name", _slug_from_endpoint(endpoint)),
                     "endpoint": endpoint,
                     "method": op.get("method") or old.get("method"),
+                    **({"doc": doc} if doc else {}),
                 }
             )
             continue
 
         slug = _slug_from_endpoint(endpoint)
+        doc = _doc_from_discovered(op)
         reconciled_ops.append(
             {
                 "id": f"todo.{slug}",
@@ -103,6 +162,7 @@ def build_reconciled_catalog(
                 "name": slug,
                 "endpoint": endpoint,
                 "method": op.get("method"),
+                **({"doc": doc} if doc else {}),
             }
         )
 
@@ -168,6 +228,7 @@ def main() -> int:
     parser.add_argument("--discovered", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--sync-output", type=Path, help="Optional synced catalog output path")
+    parser.add_argument("--diff-output", type=Path, help="Optional machine-readable diff output path")
     parser.add_argument("--apply-baseline", type=Path, help="Write reconciled catalog to this path")
     args = parser.parse_args()
 
@@ -178,6 +239,11 @@ def main() -> int:
     report_text = to_markdown(diff, baseline, discovered)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(report_text, encoding="utf-8")
+    if args.diff_output:
+        args.diff_output.write_text(
+            json.dumps(build_diff_payload(diff, baseline, discovered), ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
 
     reconciled = build_reconciled_catalog(baseline, discovered)
     if args.sync_output:

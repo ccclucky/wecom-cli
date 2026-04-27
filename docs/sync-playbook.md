@@ -80,10 +80,16 @@ python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spe
 # 2) 确认后写入 spec 文件
 python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply --prune-unknown
 
-# 3) 生成 client + CLI 骨架代码
+# 3) 用 discovery/catalog 中的结构化文档字段回填已有 spec
+python scripts/sync_spec_docs.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
+
+# 4) 生成 client + CLI 骨架代码
 python scripts/codegen.py
 
-# 4) 补充每个接口的 args/request/examples/test 后再跑校验
+# 5) 生成给外部 Coding Agent 的任务清单和固定 prompt
+python scripts/build_agent_tasks.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
+
+# 6) 补充每个接口的 args/request/examples/test 后再跑校验
 pytest -q
 python scripts/check_api_coverage.py
 ```

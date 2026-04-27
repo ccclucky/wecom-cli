@@ -17,6 +17,7 @@ import re
 from collections import deque
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -26,6 +27,50 @@ ALLOWED_HOST = "developer.work.weixin.qq.com"
 DOC_PATH_PREFIX = "https://developer.work.weixin.qq.com/document/path/"
 ENDPOINT_RE = re.compile(r"/cgi-bin/[a-zA-Z0-9_./-]+")
 METHOD_RE = re.compile(r"(?:请求方式|Request Method)\s*[:：]?\s*(GET|POST)", re.IGNORECASE)
+REQUEST_URL_RE = re.compile(
+    r"(?:请求地址|Request URL)\s*[:：]?\s*(https://qyapi\.weixin\.qq\.com/cgi-bin/[^\s<]+)",
+    re.IGNORECASE,
+)
+TITLE_RE = re.compile(r"<title>(.*?)</title>", re.IGNORECASE | re.DOTALL)
+
+
+def _normalize_whitespace(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _normalize_block_text(text: str) -> str:
+    text = text.replace("\r", "")
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
+def _bool_from_required(value: str) -> bool | None:
+    normalized = _normalize_whitespace(value).lower()
+    if normalized in {"是", "必须", "true", "yes", "required"}:
+        return True
+    if normalized in {"否", "false", "no", "optional"}:
+        return False
+    return None
+
+
+def _strip_title_suffix(text: str) -> str:
+    title = _normalize_whitespace(unescape(text))
+    suffixes = [
+        " - 文档 - 企业微信开发者中心",
+        " - 企业微信开发者中心",
+    ]
+    for suffix in suffixes:
+        if title.endswith(suffix):
+            return title[: -len(suffix)].strip()
+    return title
+
+
+@dataclass(frozen=True)
+class DiscoveredField:
+    name: str
+    required: bool | None = None
+    description: str | None = None
+    type: str | None = None
 
 
 @dataclass(frozen=True)
@@ -33,6 +78,136 @@ class DiscoveredOperation:
     endpoint: str
     method: str | None
     source_url: str
+    title: str | None = None
+    request_url: str | None = None
+    request_params: tuple[DiscoveredField, ...] = ()
+    response_params: tuple[DiscoveredField, ...] = ()
+    request_example_text: str | None = None
+    request_example_json: object | None = None
+    response_example_text: str | None = None
+    response_example_json: object | None = None
+    permissions: tuple[str, ...] = ()
+    notes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class CrawlFailure:
+    url: str
+    error: str
+
+
+@dataclass(frozen=True)
+class CrawlReport:
+    operations: list[DiscoveredOperation]
+    visited_pages: int
+    failed_pages: int
+    failures: list[CrawlFailure]
+
+
+@dataclass
+class DocBlock:
+    kind: str
+    text: str = ""
+    headers: list[str] | None = None
+    rows: list[list[str]] | None = None
+
+
+class DocBlockParser(HTMLParser):
+    TEXT_TAGS = {"p", "blockquote", "title", "h1", "h2", "h3", "h4", "h5", "h6"}
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.blocks: list[DocBlock] = []
+        self._text_tag: str | None = None
+        self._text_chunks: list[str] = []
+        self._in_pre = False
+        self._code_chunks: list[str] = []
+        self._table_headers: list[str] = []
+        self._table_rows: list[list[str]] = []
+        self._current_row: list[str] = []
+        self._current_row_has_header = False
+        self._current_cell: list[str] | None = None
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "a":
+            return
+        if tag in self.TEXT_TAGS and not self._in_pre and self._current_cell is None:
+            self._start_text(tag)
+        elif tag == "br":
+            if self._text_tag is not None:
+                self._text_chunks.append("\n")
+            if self._in_pre:
+                self._code_chunks.append("\n")
+            if self._current_cell is not None:
+                self._current_cell.append("\n")
+        elif tag == "pre":
+            self._in_pre = True
+            self._code_chunks = []
+        elif tag == "table":
+            self._table_headers = []
+            self._table_rows = []
+        elif tag == "tr":
+            self._current_row = []
+            self._current_row_has_header = False
+        elif tag in {"th", "td"}:
+            self._current_cell = []
+            if tag == "th":
+                self._current_row_has_header = True
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == self._text_tag:
+            self._flush_text(kind="blockquote" if tag == "blockquote" else "text")
+        elif tag == "pre" and self._in_pre:
+            code = _normalize_block_text("".join(self._code_chunks))
+            if code:
+                self.blocks.append(DocBlock(kind="code", text=code))
+            self._in_pre = False
+            self._code_chunks = []
+        elif tag in {"th", "td"} and self._current_cell is not None:
+            cell_text = _normalize_whitespace("".join(self._current_cell))
+            self._current_row.append(cell_text)
+            self._current_cell = None
+        elif tag == "tr" and self._current_row:
+            if self._current_row_has_header and not self._table_headers:
+                self._table_headers = self._current_row
+            else:
+                self._table_rows.append(self._current_row)
+            self._current_row = []
+            self._current_row_has_header = False
+        elif tag == "table":
+            if self._table_headers or self._table_rows:
+                self.blocks.append(
+                    DocBlock(
+                        kind="table",
+                        headers=self._table_headers[:],
+                        rows=[row[:] for row in self._table_rows],
+                    )
+                )
+            self._table_headers = []
+            self._table_rows = []
+
+    def handle_data(self, data: str) -> None:
+        if self._current_cell is not None:
+            self._current_cell.append(data)
+            return
+        if self._in_pre:
+            self._code_chunks.append(data)
+            return
+        if self._text_tag is not None:
+            self._text_chunks.append(data)
+
+    def _start_text(self, tag: str) -> None:
+        if self._text_tag is not None:
+            self._flush_text(kind="blockquote" if self._text_tag == "blockquote" else "text")
+        self._text_tag = tag
+        self._text_chunks = []
+
+    def _flush_text(self, kind: str) -> None:
+        text = _normalize_block_text("".join(self._text_chunks))
+        if text:
+            self.blocks.append(DocBlock(kind=kind, text=text))
+        self._text_tag = None
+        self._text_chunks = []
 
 
 class LinkParser(HTMLParser):
@@ -100,20 +275,224 @@ def extract_links(base_url: str, html: str) -> list[str]:
     return out
 
 
+def _extract_title(html: str) -> str | None:
+    match = TITLE_RE.search(html)
+    if not match:
+        return None
+    return _strip_title_suffix(match.group(1))
+
+
+def _extract_request_basics(html: str) -> tuple[str | None, str | None]:
+    plain_text = _normalize_whitespace(unescape(re.sub(r"<[^>]+>", " ", html)))
+    method_match = METHOD_RE.search(plain_text)
+    request_url_match = REQUEST_URL_RE.search(plain_text)
+    method = method_match.group(1).upper() if method_match else None
+    request_url = request_url_match.group(1) if request_url_match else None
+    return method, request_url
+
+
+def _parse_doc_blocks(html: str) -> list[DocBlock]:
+    parser = DocBlockParser()
+    parser.feed(html)
+    return parser.blocks
+
+
+def _heading_type(text: str) -> str | None:
+    normalized = _normalize_whitespace(text).rstrip("：:")
+    if normalized.startswith("参数说明"):
+        return "params"
+    if normalized.startswith("请求示例"):
+        return "request_example"
+    if normalized.startswith("返回示例") or normalized.startswith("返回结果"):
+        return "response_example"
+    if normalized.startswith("权限说明"):
+        return "permissions"
+    return None
+
+
+def _table_to_fields(block: DocBlock) -> tuple[DiscoveredField, ...]:
+    headers = block.headers or []
+    rows = block.rows or []
+    normalized_headers = [_normalize_whitespace(h) for h in headers]
+
+    def _find_index(patterns: tuple[str, ...]) -> int | None:
+        for index, header in enumerate(normalized_headers):
+            if any(pattern in header for pattern in patterns):
+                return index
+        return None
+
+    name_index = _find_index(("参数", "字段", "名称", "属性"))
+    required_index = _find_index(("必须", "是否必须", "必填", "required"))
+    description_index = _find_index(("说明", "描述", "含义"))
+    type_index = _find_index(("类型", "type"))
+
+    fields: list[DiscoveredField] = []
+    for row in rows:
+        if name_index is None or name_index >= len(row):
+            continue
+        name = row[name_index].strip()
+        if not name:
+            continue
+        required = None
+        if required_index is not None and required_index < len(row):
+            required = _bool_from_required(row[required_index])
+        description = row[description_index].strip() if description_index is not None and description_index < len(row) else None
+        field_type = row[type_index].strip() if type_index is not None and type_index < len(row) else None
+        fields.append(
+            DiscoveredField(
+                name=name,
+                required=required,
+                description=description or None,
+                type=field_type or None,
+            )
+        )
+    return tuple(fields)
+
+
+def _parse_json_example(text: str) -> object | None:
+    text = text.strip()
+    if not text:
+        return None
+    start = min((idx for idx in (text.find("{"), text.find("[")) if idx != -1), default=-1)
+    if start == -1:
+        return None
+    candidate = text[start:]
+    end_object = candidate.rfind("}")
+    end_array = candidate.rfind("]")
+    end = max(end_object, end_array)
+    if end == -1:
+        return None
+    candidate = candidate[: end + 1]
+    try:
+        return json.loads(candidate)
+    except json.JSONDecodeError:
+        return None
+
+
+def _extract_doc_details(
+    html: str,
+) -> tuple[
+    tuple[DiscoveredField, ...],
+    tuple[DiscoveredField, ...],
+    str | None,
+    object | None,
+    str | None,
+    object | None,
+    tuple[str, ...],
+    tuple[str, ...],
+]:
+    blocks = _parse_doc_blocks(html)
+    request_params: tuple[DiscoveredField, ...] = ()
+    response_params: tuple[DiscoveredField, ...] = ()
+    request_example_text: str | None = None
+    response_example_text: str | None = None
+    permissions: list[str] = []
+    notes: list[str] = []
+    active_section: str | None = None
+    response_seen = False
+
+    for block in blocks:
+        if block.kind == "text":
+            heading = _heading_type(block.text)
+            if heading == "params":
+                active_section = "response_params" if response_seen and response_example_text else "request_params"
+                continue
+            if heading == "request_example":
+                active_section = "request_example"
+                continue
+            if heading == "response_example":
+                active_section = "response_example"
+                response_seen = True
+                continue
+            if heading == "permissions":
+                active_section = "permissions"
+                continue
+            if active_section == "permissions":
+                permissions.append(block.text)
+            continue
+
+        if block.kind == "blockquote":
+            notes.append(block.text)
+            continue
+
+        if block.kind == "table":
+            if active_section == "request_params" and not request_params:
+                request_params = _table_to_fields(block)
+            elif active_section == "response_params" and not response_params:
+                response_params = _table_to_fields(block)
+            continue
+
+        if block.kind == "code":
+            if active_section == "request_example" and request_example_text is None:
+                request_example_text = block.text
+            elif active_section == "response_example" and response_example_text is None:
+                response_example_text = block.text
+            elif response_seen and response_example_text is None:
+                response_example_text = block.text
+            elif not response_seen and request_example_text is None:
+                request_example_text = block.text
+
+    return (
+        request_params,
+        response_params,
+        request_example_text,
+        _parse_json_example(request_example_text) if request_example_text else None,
+        response_example_text,
+        _parse_json_example(response_example_text) if response_example_text else None,
+        tuple(permissions),
+        tuple(notes),
+    )
+
+
 def extract_operations(source_url: str, html: str) -> list[DiscoveredOperation]:
-    methods = [m.upper() for m in METHOD_RE.findall(html)]
-    method = methods[0] if methods else None
-    endpoints = sorted(set(ENDPOINT_RE.findall(html)))
+    title = _extract_title(html)
+    method, request_url = _extract_request_basics(html)
+    (
+        request_params,
+        response_params,
+        request_example_text,
+        request_example_json,
+        response_example_text,
+        response_example_json,
+        permissions,
+        notes,
+    ) = _extract_doc_details(html)
+
+    endpoints: list[str] = []
+    if request_url:
+        parsed = urlparse(request_url)
+        if parsed.path.startswith("/cgi-bin/"):
+            endpoints.append(parsed.path)
+    if not endpoints:
+        if not any((method, request_params, response_params, request_example_text, response_example_text)):
+            return []
+        endpoints = sorted(set(ENDPOINT_RE.findall(html)))
+
     return [
-        DiscoveredOperation(endpoint=e, method=method, source_url=source_url)
-        for e in endpoints
+        DiscoveredOperation(
+            endpoint=endpoint,
+            method=method,
+            source_url=source_url,
+            title=title,
+            request_url=request_url,
+            request_params=request_params,
+            response_params=response_params,
+            request_example_text=request_example_text,
+            request_example_json=request_example_json,
+            response_example_text=response_example_text,
+            response_example_json=response_example_json,
+            permissions=permissions,
+            notes=notes,
+        )
+        for endpoint in endpoints
     ]
 
 
-def crawl(seed_urls: Iterable[str], max_pages: int) -> list[DiscoveredOperation]:
+def crawl(seed_urls: Iterable[str], max_pages: int) -> CrawlReport:
     q: deque[str] = deque(seed_urls)
     seen: set[str] = set()
     discovered: dict[tuple[str, str | None], DiscoveredOperation] = {}
+    failures: list[CrawlFailure] = []
 
     while q and len(seen) < max_pages:
         url = q.popleft()
@@ -122,7 +501,8 @@ def crawl(seed_urls: Iterable[str], max_pages: int) -> list[DiscoveredOperation]
         seen.add(url)
         try:
             html = fetch_html(url)
-        except Exception:
+        except Exception as exc:
+            failures.append(CrawlFailure(url=url, error=str(exc)))
             continue
 
         for op in extract_operations(url, html):
@@ -133,7 +513,12 @@ def crawl(seed_urls: Iterable[str], max_pages: int) -> list[DiscoveredOperation]
             if child not in seen:
                 q.append(child)
 
-    return sorted(discovered.values(), key=lambda x: (x.endpoint, x.method or ""))
+    return CrawlReport(
+        operations=sorted(discovered.values(), key=lambda x: (x.endpoint, x.method or "")),
+        visited_pages=len(seen),
+        failed_pages=len(failures),
+        failures=failures,
+    )
 
 
 def main() -> int:
@@ -153,16 +538,26 @@ def main() -> int:
         doc_id_to=args.doc_id_to,
     )
 
-    operations = crawl(seeds, args.max_pages)
+    crawl_report = crawl(seeds, args.max_pages)
     payload = {
         "snapshot_date": "2026-04-23",
         "source": ALLOWED_HOST,
         "seed_urls": seeds,
-        "operations": [asdict(op) for op in operations],
+        "crawl": {
+            "visited_pages": crawl_report.visited_pages,
+            "failed_pages": crawl_report.failed_pages,
+            "failures": [asdict(item) for item in crawl_report.failures],
+        },
+        "operations": [asdict(op) for op in crawl_report.operations],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"discovered operations: {len(operations)} -> {args.output}")
+    print(
+        "discovered operations: "
+        f"{len(crawl_report.operations)} "
+        f"(visited={crawl_report.visited_pages}, failed={crawl_report.failed_pages}) "
+        f"-> {args.output}"
+    )
     return 0
 
 

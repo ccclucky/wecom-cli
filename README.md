@@ -134,6 +134,8 @@ mypy
 pytest -q
 python scripts/check_api_coverage.py
 python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply --prune-unknown
+python scripts/sync_spec_docs.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
+python scripts/build_agent_tasks.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
 # 一键自动同步（发现 -> catalog apply -> scaffold -> codegen -> contract check）
 python scripts/run_catalog_sync.py --mode auto-apply
 # 可选：抓取官方文档候选接口目录
@@ -141,6 +143,12 @@ python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id
 ```
 
 `check_api_coverage.py` 会同时校验 catalog 覆盖率与接口契约一致性（如 required 参数是否映射到 request）。
+
+`build_agent_tasks.py` 会生成面向外部 Coding Agent 的产物：
+
+- `artifacts/implementation.tasks.yaml`
+- `artifacts/implementation.summary.md`
+- `artifacts/coding-agent-prompt.md`
 
 ---
 

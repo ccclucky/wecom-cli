@@ -5,16 +5,53 @@ from scripts.discover_wecom_apis import build_seed_urls, extract_links, extract_
 
 def test_extract_operations_from_html():
     html = """
-    <html><body>
-      <h2>请求方式：POST</h2>
-      <code>/cgi-bin/message/send</code>
-      <code>/cgi-bin/user/simplelist</code>
-    </body></html>
+    <html>
+      <head><title>发送消息 - 文档 - 企业微信开发者中心</title></head>
+      <body>
+        <p><strong>请求方式：</strong>POST（<strong>HTTPS</strong>）<br><strong>请求地址：</strong>https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=ACCESS_TOKEN</p>
+        <p><strong>参数说明：</strong></p>
+        <table>
+          <thead><tr><th>参数</th><th>是否必须</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>access_token</td><td>是</td><td>调用接口凭证</td></tr>
+            <tr><td>touser</td><td>否</td><td>接收成员</td></tr>
+          </tbody>
+        </table>
+        <p><strong>请求示例：</strong></p>
+        <pre>{
+  "touser": "zhangsan",
+  "msgtype": "text"
+}</pre>
+        <p><strong>返回结果：</strong></p>
+        <pre>{
+  "errcode": 0,
+  "errmsg": "ok"
+}</pre>
+        <p><strong>参数说明：</strong></p>
+        <table>
+          <thead><tr><th>参数</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>errcode</td><td>返回码</td></tr>
+            <tr><td>errmsg</td><td>返回信息</td></tr>
+          </tbody>
+        </table>
+        <blockquote>频率限制：每分钟 30 次</blockquote>
+      </body>
+    </html>
     """
     ops = extract_operations("https://developer.work.weixin.qq.com/document/path/1", html)
-    assert len(ops) == 2
-    assert {o.endpoint for o in ops} == {"/cgi-bin/message/send", "/cgi-bin/user/simplelist"}
-    assert all(o.method == "POST" for o in ops)
+    assert len(ops) == 1
+    op = ops[0]
+    assert op.endpoint == "/cgi-bin/message/send"
+    assert op.method == "POST"
+    assert op.title == "发送消息"
+    assert op.request_url == "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=ACCESS_TOKEN"
+    assert [field.name for field in op.request_params] == ["access_token", "touser"]
+    assert op.request_params[1].required is False
+    assert op.request_example_json == {"touser": "zhangsan", "msgtype": "text"}
+    assert op.response_example_json == {"errcode": 0, "errmsg": "ok"}
+    assert [field.name for field in op.response_params] == ["errcode", "errmsg"]
+    assert "频率限制" in op.notes[0]
 
 
 def test_extract_links_filters_domain_and_path():
