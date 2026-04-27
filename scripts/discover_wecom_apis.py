@@ -17,6 +17,8 @@ import re
 from collections import deque
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass
+import time
+import random
 from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
@@ -499,11 +501,14 @@ def crawl(seed_urls: Iterable[str], max_pages: int) -> CrawlReport:
         if url in seen:
             continue
         seen.add(url)
+        time.sleep(random.uniform(0.1, 0.4))  # 加入防风控延时
         try:
             html = fetch_html(url)
         except Exception as exc:
             failures.append(CrawlFailure(url=url, error=str(exc)))
             continue
+
+
 
         for op in extract_operations(url, html):
             key = (op.endpoint, op.method)
