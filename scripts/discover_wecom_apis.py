@@ -501,7 +501,7 @@ def crawl(seed_urls: Iterable[str], max_pages: int) -> CrawlReport:
         if url in seen:
             continue
         seen.add(url)
-        time.sleep(random.uniform(0.1, 0.4))  # 加入防风控延时
+        time.sleep(random.uniform(1.0, 3.0))  # 加入防风控延时，调大避免 HTTP 429
         try:
             html = fetch_html(url)
         except Exception as exc:
