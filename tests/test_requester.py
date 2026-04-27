@@ -6,7 +6,7 @@ import pytest
 
 from core.config import WeComConfig
 from core.errors import APIResponseError
-from core.requester import UnifiedRequester
+from core.requester import UnifiedRequester, _strip_none
 
 
 class DummyTokenProvider:
@@ -48,3 +48,21 @@ def test_request_api_error(monkeypatch):
 
     with pytest.raises(APIResponseError):
         requester.request(method="GET", endpoint="/a")
+
+
+def test_strip_none_recursively():
+    payload = {
+        "a": 1,
+        "b": None,
+        "c": {
+            "d": None,
+            "e": 2,
+        },
+        "f": [1, None, {"g": None, "h": 3}],
+    }
+
+    assert _strip_none(payload) == {
+        "a": 1,
+        "c": {"e": 2},
+        "f": [1, {"h": 3}],
+    }

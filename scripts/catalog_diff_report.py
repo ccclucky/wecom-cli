@@ -31,8 +31,9 @@ def _as_items(payload: dict[str, Any]) -> dict[tuple[str, str | None], ApiItem]:
         if not endpoint:
             continue
         method = op.get("method")
-        if isinstance(method, str):
-            method = method.upper()
+        if not isinstance(method, str) or not method.strip():
+            continue
+        method = method.upper()
         item = ApiItem(endpoint=endpoint, method=method, raw=op)
         items[item.key] = item
     return items
@@ -101,6 +102,41 @@ def _slug_from_endpoint(endpoint: str) -> str:
     return endpoint.strip("/").replace("/", "_").replace("-", "_").replace(".", "_")
 
 
+EXACT_ENDPOINT_IDENTITY: dict[str, tuple[str, str]] = {
+    "/cgi-bin/gettoken": ("auth", "get_token"),
+    "/cgi-bin/getcallbackip": ("network", "get_callback_ip"),
+    "/cgi-bin/get_api_domain_ip": ("network", "get_api_domain_ip"),
+}
+
+PATH_DOMAIN_MAP: dict[str, str] = {
+    "agent": "agents",
+    "batch": "batch",
+    "corp": "corp",
+    "department": "departments",
+    "externalcontact": "customers",
+    "idconvert": "idconvert",
+    "message": "messages",
+    "tag": "tags",
+    "user": "users",
+}
+
+
+def _infer_catalog_identity(endpoint: str) -> tuple[str, str]:
+    if endpoint in EXACT_ENDPOINT_IDENTITY:
+        return EXACT_ENDPOINT_IDENTITY[endpoint]
+
+    parts = [part for part in endpoint.strip("/").split("/") if part]
+    if len(parts) < 3 or parts[0] != "cgi-bin":
+        slug = _slug_from_endpoint(endpoint)
+        return "unknown", slug
+
+    head = parts[1].replace("-", "_")
+    tail = [part.replace("-", "_") for part in parts[2:]]
+    domain = PATH_DOMAIN_MAP.get(head, head)
+    name = "_".join(tail) if tail else head
+    return domain, name
+
+
 def _doc_from_discovered(op: dict[str, Any]) -> dict[str, Any]:
     doc: dict[str, Any] = {}
     for key in (
@@ -153,15 +189,20 @@ def build_reconciled_catalog(
             )
             continue
 
-        slug = _slug_from_endpoint(endpoint)
+        method = op.get("method")
+        if not method:
+            # Skip explanatory pages that mention a /cgi-bin path but do not define an API method.
+            continue
+
+        domain, name = _infer_catalog_identity(endpoint)
         doc = _doc_from_discovered(op)
         reconciled_ops.append(
             {
-                "id": f"todo.{slug}",
-                "domain": "unknown",
-                "name": slug,
+                "id": f"{domain}.{name}",
+                "domain": domain,
+                "name": name,
                 "endpoint": endpoint,
-                "method": op.get("method"),
+                "method": method,
                 **({"doc": doc} if doc else {}),
             }
         )

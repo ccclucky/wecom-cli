@@ -133,11 +133,13 @@ ruff check .
 mypy
 pytest -q
 python scripts/check_api_coverage.py
-python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply --prune-unknown
+python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
 python scripts/sync_spec_docs.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
 python scripts/build_agent_tasks.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
 # 一键自动同步（发现 -> catalog apply -> scaffold -> codegen -> contract check）
 python scripts/run_catalog_sync.py --mode auto-apply
+# 如需允许 auto-apply 清理 catalog 已移除项，必须显式确认
+python scripts/run_catalog_sync.py --mode auto-apply --allow-prune-unknown
 # 可选：抓取官方文档候选接口目录
 python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id-from 90000 --doc-id-to 100500 --max-pages 2000
 ```
@@ -149,6 +151,8 @@ python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id
 - `artifacts/implementation.tasks.yaml`
 - `artifacts/implementation.summary.md`
 - `artifacts/coding-agent-prompt.md`
+
+其中 `implementation.tasks.yaml` 是给 Coding Agent 的权威输入；`implementation.summary.md` 仅供人工快速浏览。
 
 ---
 

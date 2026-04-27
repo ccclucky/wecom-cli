@@ -26,13 +26,159 @@
       ],
       "request": {
         "query": {
-          "department_id": {"from_arg": "department_id"},
-          "fetch_child": {"int_bool_arg": "fetch_child"}
+          "department_id": {
+            "from_arg": "department_id"
+          },
+          "fetch_child": {
+            "int_bool_arg": "fetch_child"
+          }
         }
       },
       "examples": [
         "wecom contacts list --department-id 1 --fetch-child"
-      ]
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "userlist": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "userid": {
+                    "type": "string",
+                    "description": "成员UserID。对应管理端的账号"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "成员名称，代开发自建应用需要管理员授权才返回；此字段从2019年12月30日起，对新创建第三方应用不再返回真实name，使用userid代替name，2020年6月30日起，对所有历史第三方应用不再返回真实name，使用userid代替name，后续第三方仅通讯录应用可获取，未返回名称的情况需要通过通讯录展示组件来展示名字"
+                  },
+                  "department": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "成员所属部门列表。列表项为部门ID，32位整型"
+                  },
+                  "open_userid": {
+                    "type": "string",
+                    "description": "全局唯一。对于同一个服务商，不同应用获取到企业内同一个成员的open_userid是相同的，最多64个字节。仅第三方应用可获取"
+                  }
+                },
+                "required": [
+                  "userid",
+                  "name",
+                  "department",
+                  "open_userid"
+                ]
+              },
+              "description": "成员列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "userlist"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取部门成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90200",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/user/simplelist?access_token=ACCESS_TOKEN&department_id=DEPARTMENT_ID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "department_id",
+            "required": true,
+            "description": "获取的部门id",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "userlist",
+            "required": null,
+            "description": "成员列表",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": null,
+            "description": "成员UserID。对应管理端的账号",
+            "type": null
+          },
+          {
+            "name": "name",
+            "required": null,
+            "description": "成员名称，代开发自建应用需要管理员授权才返回；此字段从2019年12月30日起，对新创建第三方应用不再返回真实name，使用userid代替name，2020年6月30日起，对所有历史第三方应用不再返回真实name，使用userid代替name，后续第三方仅通讯录应用可获取，未返回名称的情况需要通过通讯录展示组件来展示名字",
+            "type": null
+          },
+          {
+            "name": "department",
+            "required": null,
+            "description": "成员所属部门列表。列表项为部门ID，32位整型",
+            "type": null
+          },
+          {
+            "name": "open_userid",
+            "required": null,
+            "description": "全局唯一。对于同一个服务商，不同应用获取到企业内同一个成员的open_userid是相同的，最多64个字节。仅第三方应用可获取",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"userlist\": [\n           {\n                  \"userid\": \"zhangsan\",\n                  \"name\": \"张三\",\n                  \"department\": [1, 2],\n\t\t\t\t  \"open_userid\": \"xxxxxx\"\n           }\n     ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "userlist": [
+            {
+              "userid": "zhangsan",
+              "name": "张三",
+              "department": [
+                1,
+                2
+              ],
+              "open_userid": "xxxxxx"
+            }
+          ]
+        },
+        "permissions": [
+          "应用须拥有指定部门的查看权限。"
+        ],
+        "notes": [
+          "如需获取该部门及其子部门的所有成员，需先获取该部门下的子部门，然后再获取子部门下的部门成员，逐层递归获取。"
+        ]
+      }
     }
   ]
 }

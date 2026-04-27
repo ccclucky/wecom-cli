@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 from pathlib import Path
 
@@ -19,6 +20,38 @@ def _run(cmd: list[str], ok_codes: set[int] | None = None) -> int:
     return proc.returncode
 
 
+def _task_catalog_path(mode: str, baseline: str, synced: str) -> str:
+    if mode == "dry-run":
+        return synced
+    return baseline
+
+
+def _load_json(path: str) -> dict:
+    return json.loads((ROOT / path).read_text(encoding="utf-8"))
+
+
+def _clean_summary(diff_path: str, tasks_path: str) -> dict[str, int]:
+    diff_payload = _load_json(diff_path)
+    tasks_payload = _load_json(tasks_path)
+    diff_summary = diff_payload.get("summary", {})
+    return {
+        "added": int(diff_summary.get("added", 0)),
+        "removed": int(diff_summary.get("removed", 0)),
+        "modified": int(diff_summary.get("modified", 0)),
+        "task_count": int(tasks_payload.get("task_count", 0)),
+    }
+
+
+def _assert_clean(diff_path: str, tasks_path: str) -> None:
+    summary = _clean_summary(diff_path, tasks_path)
+    if any(summary.values()):
+        raise RuntimeError(
+            "workflow did not converge to a clean state: "
+            f"added={summary['added']}, removed={summary['removed']}, "
+            f"modified={summary['modified']}, task_count={summary['task_count']}"
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run WeCom catalog sync pipeline")
     parser.add_argument("--seed-file", default="specs/wecom/seeds.txt")
@@ -31,6 +64,11 @@ def main() -> int:
     parser.add_argument("--diff-output", default="artifacts/catalog.diff.yaml")
     parser.add_argument("--synced", default="artifacts/catalog.synced.yaml")
     parser.add_argument("--baseline", default="specs/wecom/catalog.yaml")
+    parser.add_argument(
+        "--allow-prune-unknown",
+        action="store_true",
+        help="Allow auto-apply to delete spec operations missing from the reconciled catalog",
+    )
     args = parser.parse_args()
 
     _run(
@@ -69,40 +107,32 @@ def main() -> int:
     _run(diff_cmd, ok_codes={0, 1})
 
     if args.mode == "auto-apply":
+        scaffold_cmd = [
+            "python",
+            "scripts/scaffold_from_catalog.py",
+            "--catalog",
+            args.baseline,
+            "--spec-dir",
+            "specs/wecom",
+            "--apply",
+        ]
+        if args.allow_prune_unknown:
+            scaffold_cmd.append("--prune-unknown")
         _run(
-            [
-                "python",
-                "scripts/scaffold_from_catalog.py",
-                "--catalog",
-                args.baseline,
-                "--spec-dir",
-                "specs/wecom",
-                "--apply",
-                "--prune-unknown",
-            ]
+            scaffold_cmd
         )
         _run(["python", "scripts/sync_spec_docs.py", "--catalog", args.baseline, "--spec-dir", "specs/wecom", "--apply"])
         _run(["python", "scripts/codegen.py"])
         _run(["python", "scripts/check_api_coverage.py"])
-        _run(
-            [
-                "python",
-                "scripts/build_agent_tasks.py",
-                "--catalog",
-                args.baseline,
-                "--spec-dir",
-                "specs/wecom",
-                "--diff",
-                args.diff_output,
-            ]
-        )
+        task_catalog = args.baseline
     else:
+        task_catalog = _task_catalog_path(args.mode, args.baseline, args.synced)
         _run(
             [
                 "python",
                 "scripts/build_agent_tasks.py",
                 "--catalog",
-                args.baseline,
+                task_catalog,
                 "--spec-dir",
                 "specs/wecom",
                 "--diff",
@@ -110,18 +140,66 @@ def main() -> int:
             ]
         )
 
+    if args.mode == "auto-apply":
+        _run(
+            [
+                "python",
+                "scripts/build_agent_tasks.py",
+                "--catalog",
+                task_catalog,
+                "--spec-dir",
+                "specs/wecom",
+                "--diff",
+                args.diff_output,
+            ]
+        )
+        _run(
+            [
+                "python",
+                "scripts/catalog_diff_report.py",
+                "--baseline",
+                args.baseline,
+                "--discovered",
+                args.discovered,
+                "--report",
+                args.report,
+                "--diff-output",
+                args.diff_output,
+                "--sync-output",
+                args.synced,
+            ]
+        )
+        _run(
+            [
+                "python",
+                "scripts/build_agent_tasks.py",
+                "--catalog",
+                args.baseline,
+                "--spec-dir",
+                "specs/wecom",
+                "--diff",
+                args.diff_output,
+            ]
+        )
+        _assert_clean(args.diff_output, "artifacts/implementation.tasks.yaml")
+
     print("\n=== NEXT ===")
     if args.mode == "dry-run":
         print("1) 打开报告 artifacts/wecom-catalog-report.md 审阅差异")
-        print("2) 如确认同步：重新执行加 --mode apply")
+        print("2) 查看 artifacts/implementation.tasks.yaml，确认任务分配是否合理")
+        print("3) 如确认同步：重新执行加 --mode apply")
     elif args.mode == "apply":
         print("1) baseline catalog 已更新")
-        print("3) 补齐 specs/wecom/<domain>.yaml")
-        print("4) 运行 python scripts/codegen.py")
-        print("5) 运行 pytest -q 和 python scripts/check_api_coverage.py")
+        print("2) 补齐 specs/wecom/<domain>.yaml")
+        print("3) 运行 python scripts/codegen.py")
+        print("4) 运行 pytest -q 和 python scripts/check_api_coverage.py")
+        print("5) 最后重新运行 python scripts/build_agent_tasks.py 刷新 agent 任务产物")
     else:
         print("1) baseline/specs/codegen 已自动同步并完成契约校验")
-        print("2) 如需放行，请人工 spot-check 报告后合并 PR")
+        print("2) 最终 diff/tasks 已回到 clean state")
+        print("3) 如需放行，请人工 spot-check 报告后合并 PR")
+        if not args.allow_prune_unknown:
+            print("4) removed 任务仍需人工确认；本次未自动 prune")
     return 0
 
 

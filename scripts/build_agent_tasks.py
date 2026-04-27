@@ -28,8 +28,9 @@ def _op_id(domain: str, name: str) -> str:
     return f"{domain}.{name}"
 
 
-def _load_spec_index(spec_dir: Path) -> dict[str, dict[str, Any]]:
-    index: dict[str, dict[str, Any]] = {}
+def _load_spec_indices(spec_dir: Path) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
+    by_id: dict[str, dict[str, Any]] = {}
+    by_endpoint: dict[str, dict[str, Any]] = {}
     for spec_path in sorted(spec_dir.glob("*.yaml")):
         if spec_path.name == "catalog.yaml":
             continue
@@ -39,13 +40,18 @@ def _load_spec_index(spec_dir: Path) -> dict[str, dict[str, Any]]:
             continue
         for op in payload.get("operations", []):
             name = op.get("name")
-            if isinstance(name, str):
-                index[_op_id(domain, name)] = {
-                    "spec_path": spec_path,
-                    "spec": payload,
-                    "op": op,
-                }
-    return index
+            endpoint = op.get("endpoint")
+            if not isinstance(name, str):
+                continue
+            entry = {
+                "spec_path": spec_path,
+                "spec": payload,
+                "op": op,
+            }
+            by_id[_op_id(domain, name)] = entry
+            if isinstance(endpoint, str) and endpoint:
+                by_endpoint[endpoint] = entry
+    return by_id, by_endpoint
 
 
 def _load_diff_index(diff_payload: dict[str, Any] | None) -> dict[str, str]:
@@ -79,11 +85,11 @@ def _confidence_for_task(method: str | None, doc: dict[str, Any], review_hints: 
 
 
 def _priority_for_status(status: str, confidence: float) -> str:
-    if status == "remove":
-        return "high"
     if status == "missing":
         return "high" if confidence >= 0.6 else "medium"
     if status == "incomplete":
+        return "medium" if confidence >= 0.5 else "low"
+    if status == "review_required":
         return "medium" if confidence >= 0.5 else "low"
     return "low"
 
@@ -108,7 +114,7 @@ def build_agent_tasks(
     spec_dir: Path,
     diff_payload: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    spec_index = _load_spec_index(spec_dir)
+    spec_index, spec_endpoint_index = _load_spec_indices(spec_dir)
     diff_index = _load_diff_index(diff_payload)
     tasks: list[dict[str, Any]] = []
 
@@ -128,7 +134,7 @@ def build_agent_tasks(
                 "id": f"task.remove.{op_id}",
                 "operation_id": op_id,
                 "change_type": "removed",
-                "status": "remove",
+                "status": "review_required",
                 "priority": "high",
                 "confidence": 0.95,
                 "domain": domain,
@@ -141,7 +147,7 @@ def build_agent_tasks(
                 "doc": {},
                 "draft": {},
                 "review_hints": [
-                    "Discovery no longer reports this endpoint. Confirm removal, then delete the operation from the target spec.",
+                    "Discovery no longer reports this endpoint. Do not delete it automatically. Report it for explicit human confirmation first.",
                 ],
                 "current_spec": {
                     "has_operation": True,
@@ -161,7 +167,7 @@ def build_agent_tasks(
         if not all(isinstance(v, str) for v in (op_id, domain, name, endpoint)):
             continue
 
-        spec_entry = spec_index.get(op_id)
+        spec_entry = spec_index.get(op_id) or spec_endpoint_index.get(endpoint)
         spec_op = spec_entry["op"] if spec_entry else None
         doc = _build_doc_payload(catalog_op)
         request_params = doc.get("request_params", [])
@@ -181,7 +187,19 @@ def build_agent_tasks(
             draft["output"] = draft_output
 
         status = _determine_status(spec_op, draft, review_hints)
-        if status == "implemented" and diff_index.get(endpoint) not in {"added", "modified"}:
+        target_spec: str | None
+        if spec_entry:
+            target_spec = f"specs/wecom/{spec_entry['spec']['domain']}.yaml"
+        elif domain != "unknown":
+            target_spec = f"specs/wecom/{domain}.yaml"
+        else:
+            target_spec = None
+            review_hints.append(
+                "No deterministic target spec mapping is available yet. Do not invent a new domain file without updating catalog/domain mapping first."
+            )
+            status = "review_required"
+            confidence = min(confidence, 0.3)
+        if status == "implemented":
             continue
 
         tasks.append(
@@ -194,7 +212,7 @@ def build_agent_tasks(
                 "confidence": confidence,
                 "domain": domain,
                 "operation_name": name,
-                "target_spec": f"specs/wecom/{domain}.yaml",
+                "target_spec": target_spec,
                 "endpoint": endpoint,
                 "method": method,
                 "summary": doc.get("title") or (spec_op or {}).get("summary") or name,
@@ -274,13 +292,15 @@ def _render_prompt(tasks_path: Path) -> str:
             "",
             f"1. Read `{tasks_path.as_posix()}`.",
             "2. Process tasks in this order: high priority first, then higher confidence first.",
-            "3. Modify only the target spec files referenced by each task unless codegen or validation requires generated outputs to be updated.",
+            "3. Modify only the target spec files referenced by each task unless codegen or validation requires generated outputs to be updated. If `target_spec` is null, report the task as blocked instead of inventing a new file.",
             "4. Preserve existing hand-written request mappings when they already exist; prefer enriching missing fields over overwriting current logic.",
-            "5. For tasks with `status=review_required`, update `doc` or low-risk metadata only. Do not invent complex POST `json_body` mappings unless the draft is explicit.",
-            "6. After edits, run:",
+            "5. Treat `artifacts/implementation.tasks.yaml` as authoritative. Treat the summary markdown as informational only.",
+            "6. For tasks with `change_type=removed` or `status=review_required`, do not delete files or prune operations unless a human explicitly confirms removal. Update low-risk metadata only.",
+            "7. Do not invent complex POST `json_body` mappings unless the draft is explicit.",
+            "8. After edits, run:",
             "   - `python scripts/codegen.py`",
             "   - `python scripts/check_api_coverage.py`",
-            "7. Report completed tasks, blocked tasks, and any remaining manual review items.",
+            "9. Report completed tasks, blocked tasks, and any remaining manual review items.",
             "",
         ]
     )

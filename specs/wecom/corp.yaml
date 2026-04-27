@@ -1,0 +1,271 @@
+{
+  "domain": "corp",
+  "operations": [
+    {
+      "name": "get_join_qrcode",
+      "cli_action": "get-join-qrcode",
+      "summary": "获取加入企业二维码",
+      "method": "GET",
+      "endpoint": "/cgi-bin/corp/get_join_qrcode",
+      "args": [
+        {
+          "name": "size_type",
+          "flag": "--size-type",
+          "type": "str",
+          "help": "qrcode尺寸类型，1: 171 x 171; 2: 399 x 399; 3: 741 x 741; 4: 2052 x 2052"
+        }
+      ],
+      "request": {
+        "query": {
+          "size_type": {
+            "from_arg": "size_type"
+          }
+        }
+      },
+      "examples": [
+        "wecom corp get-join-qrcode"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "join_qrcode": {
+              "type": "string",
+              "description": "二维码链接，有效期7天"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "join_qrcode"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取加入企业二维码",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91714",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corp/get_join_qrcode?access_token=ACCESS_TOKEN&size_type=SIZE_TYPE",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "size_type",
+            "required": false,
+            "description": "qrcode尺寸类型，1: 171 x 171; 2: 399 x 399; 3: 741 x 741; 4: 2052 x 2052",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "join_qrcode",
+            "required": null,
+            "description": "二维码链接，有效期7天",
+            "type": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "opencorpid_to_corpid",
+      "cli_action": "opencorpid-to-corpid",
+      "summary": "自建应用与第三方应用的对接",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corp/opencorpid_to_corpid",
+      "args": [
+        {
+          "name": "open_userid_list",
+          "flag": "--open-userid-list",
+          "type": "json",
+          "help": "open_userid列表，最多不超过1000个。必须是source_agentid对应的应用所获取",
+          "required": true
+        },
+        {
+          "name": "source_agentid",
+          "flag": "--source-agentid",
+          "type": "int",
+          "help": "企业授权的代开发自建应用或第三方应用的agentid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "open_userid_list": {
+            "from_arg": "open_userid_list"
+          },
+          "source_agentid": {
+            "from_arg": "source_agentid"
+          }
+        }
+      },
+      "examples": [
+        "wecom corp opencorpid-to-corpid --open-userid-list [\"xxx\", \"yyy\"] --source-agentid 100001"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "userid_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "open_userid": {
+                    "type": "string"
+                  },
+                  "userid": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "open_userid",
+                  "userid"
+                ]
+              },
+              "description": "明文userid"
+            },
+            "invalid_open_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "不合法的open_userid列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "userid_list",
+            "invalid_open_userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "自建应用与第三方应用的对接",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95884",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corp/opencorpid_to_corpid?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "企业自建应用的调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "open_userid_list",
+            "required": true,
+            "description": "open_userid列表，最多不超过1000个。必须是source_agentid对应的应用所获取",
+            "type": null
+          },
+          {
+            "name": "source_agentid",
+            "required": true,
+            "description": "企业授权的代开发自建应用或第三方应用的agentid",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": null,
+            "description": "明文userid",
+            "type": null
+          },
+          {
+            "name": "userid_list.open_userid",
+            "required": null,
+            "description": "转换成功的open_userid",
+            "type": null
+          },
+          {
+            "name": "userid_list.userid",
+            "required": null,
+            "description": "转换成功的open_userid对应的userid",
+            "type": null
+          },
+          {
+            "name": "invalid_open_userid_list",
+            "required": null,
+            "description": "不合法的open_userid列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"open_userid_list\":[\"xxx\", \"yyy\"],\n  \"source_agentid\":100001\n}",
+        "request_example_json": {
+          "open_userid_list": [
+            "xxx",
+            "yyy"
+          ],
+          "source_agentid": 100001
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"userid_list\": [\n        {\n            \"open_userid\": \"xxx\",\n            \"userid\": \"aaa\"\n        }\n    ],\n    \"invalid_open_userid_list\":[\"yyy\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "userid_list": [
+            {
+              "open_userid": "xxx",
+              "userid": "aaa"
+            }
+          ],
+          "invalid_open_userid_list": [
+            "yyy"
+          ]
+        },
+        "notes": [
+          "需要使用自建应用的access_token\n成员需要同时在access_token和source_agentid所对应应用的可见范围内",
+          "需要使用自建应用的access_token\n客户的跟进人，或者用户所在客户群的群主，需要同时在access_token和source_agentid所对应应用的可见范围内"
+        ]
+      }
+    }
+  ]
+}

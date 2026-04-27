@@ -78,7 +78,7 @@ python scripts/run_catalog_sync.py --mode auto-apply
 python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom
 
 # 2) 确认后写入 spec 文件
-python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply --prune-unknown
+python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
 
 # 3) 用 discovery/catalog 中的结构化文档字段回填已有 spec
 python scripts/sync_spec_docs.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
@@ -96,6 +96,7 @@ python scripts/check_api_coverage.py
 
 说明：
 
-- `scaffold_from_catalog.py` 会“补齐 catalog 新增项 + 清理 catalog 已移除项（--prune-unknown）”；
+- `scaffold_from_catalog.py` 默认只补齐 catalog 新增项；
+- 对 catalog 已移除项，先通过 `implementation.tasks.yaml` 生成 review 任务，显式确认后再决定是否清理；
 - 真正可用还需要你补全参数映射、请求体和示例；
 - 最后必须通过测试与覆盖率检查。

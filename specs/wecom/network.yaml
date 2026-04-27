@@ -1,0 +1,120 @@
+{
+  "domain": "network",
+  "operations": [
+    {
+      "name": "get_api_domain_ip",
+      "cli_action": "get-api-domain-ip",
+      "summary": "获取企业微信接口IP段",
+      "method": "GET",
+      "endpoint": "/cgi-bin/get_api_domain_ip",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom network get-api-domain-ip"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "ip_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ip_list",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取企业微信接口IP段",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92520",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/get_api_domain_ip?access_token=ACCESS_TOKEN",
+        "response_example_text": "{\n    \"ip_list\":[\n\t\t\"182.254.11.176\",\n\t\t\"182.254.78.66\"\n    ],\n    \"errcode\":0,\n    \"errmsg\":\"ok\"\n}",
+        "response_example_json": {
+          "ip_list": [
+            "182.254.11.176",
+            "182.254.78.66"
+          ],
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "无限定。"
+        ]
+      }
+    },
+    {
+      "name": "get_callback_ip",
+      "cli_action": "get-callback-ip",
+      "summary": "获取企业微信回调IP段",
+      "method": "GET",
+      "endpoint": "/cgi-bin/getcallbackip",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom network get-callback-ip"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "ip_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ip_list",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取企业微信回调IP段",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92521",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN",
+        "response_example_text": "{\n    \"ip_list\":[\n        \"1.2.3.4\",\n        \"2.3.3.3\"\n    ],\n    \"errcode\":0,\n    \"errmsg\":\"ok\"\n}",
+        "response_example_json": {
+          "ip_list": [
+            "1.2.3.4",
+            "2.3.3.3"
+          ],
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "无限定。"
+        ],
+        "notes": [
+          "仅供参考，最新IP列表以接口获取到的为准。"
+        ]
+      }
+    }
+  ]
+}

@@ -32,18 +32,181 @@
       ],
       "request": {
         "json_body": {
-          "touser": {"from_arg": "to_user"},
-          "msgtype": {"const": "text"},
-          "agentid": {"from_arg": "agent_id"},
-          "text": {
-            "content": {"from_arg": "content"}
+          "touser": {
+            "from_arg": "to_user"
           },
-          "safe": {"const": 0}
+          "msgtype": {
+            "const": "text"
+          },
+          "agentid": {
+            "from_arg": "agent_id"
+          },
+          "text": {
+            "content": {
+              "from_arg": "content"
+            }
+          },
+          "safe": {
+            "const": 0
+          }
         }
       },
       "examples": [
         "wecom messages send-text --to-user zhangsan --agent-id 1000002 --content hello"
-      ]
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "invaliduser": {
+              "type": "string",
+              "description": "不合法的userid，不区分大小写，统一转为小写"
+            },
+            "invalidparty": {
+              "type": "string",
+              "description": "不合法的partyid"
+            },
+            "invalidtag": {
+              "type": "string",
+              "description": "不合法的标签id"
+            },
+            "unlicenseduser": {
+              "type": "string",
+              "description": "没有基础接口许可(包含已过期)的userid"
+            },
+            "msgid": {
+              "type": "string",
+              "description": "消息id，用于撤回应用消息"
+            },
+            "response_code": {
+              "type": "string",
+              "description": "仅消息类型为“按钮交互型”，“投票选择型”和“多项选择型”，以及填写了action_menu字段的文本通知型、图文展示型的模板卡片消息返回，应用可使用response_code调用更新模版卡片消息接口，72小时内有效，且只能使用一次"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "invaliduser",
+            "invalidparty",
+            "invalidtag",
+            "unlicenseduser",
+            "msgid",
+            "response_code"
+          ]
+        }
+      },
+      "doc": {
+        "title": "发送应用消息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90236",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "invaliduser",
+            "required": null,
+            "description": "不合法的userid，不区分大小写，统一转为小写",
+            "type": null
+          },
+          {
+            "name": "invalidparty",
+            "required": null,
+            "description": "不合法的partyid",
+            "type": null
+          },
+          {
+            "name": "invalidtag",
+            "required": null,
+            "description": "不合法的标签id",
+            "type": null
+          },
+          {
+            "name": "unlicenseduser",
+            "required": null,
+            "description": "没有基础接口许可(包含已过期)的userid",
+            "type": null
+          },
+          {
+            "name": "msgid",
+            "required": null,
+            "description": "消息id，用于撤回应用消息",
+            "type": null
+          },
+          {
+            "name": "response_code",
+            "required": null,
+            "description": "仅消息类型为“按钮交互型”，“投票选择型”和“多项选择型”，以及填写了action_menu字段的文本通知型、图文展示型的模板卡片消息返回，应用可使用response_code调用更新模版卡片消息接口，72小时内有效，且只能使用一次",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"touser\" : \"UserID1|UserID2|UserID3\",\n   \"toparty\" : \"PartyID1|PartyID2\",\n   \"totag\" : \"TagID1 | TagID2\",\n   \"msgtype\" : \"text\",\n   \"agentid\" : 1,\n   \"text\" : {\n       \"content\" : \"你的快递已到，请携带工卡前往邮件中心领取。\\n出发前可查看<a href=\\\"https://work.weixin.qq.com\\\">邮件中心视频实况</a>，聪明避开排队。\"\n   },\n   \"safe\":0,\n   \"enable_id_trans\": 0,\n   \"enable_duplicate_check\": 0,\n   \"duplicate_check_interval\": 1800\n}",
+        "request_example_json": {
+          "touser": "UserID1|UserID2|UserID3",
+          "toparty": "PartyID1|PartyID2",
+          "totag": "TagID1 | TagID2",
+          "msgtype": "text",
+          "agentid": 1,
+          "text": {
+            "content": "你的快递已到，请携带工卡前往邮件中心领取。\n出发前可查看<a href=\"https://work.weixin.qq.com\">邮件中心视频实况</a>，聪明避开排队。"
+          },
+          "safe": 0,
+          "enable_id_trans": 0,
+          "enable_duplicate_check": 0,
+          "duplicate_check_interval": 1800
+        },
+        "response_example_text": "{\n  \"errcode\" : 0,\n  \"errmsg\" : \"ok\",\n  \"invaliduser\" : \"userid1|userid2\",\n  \"invalidparty\" : \"partyid1|partyid2\",\n  \"invalidtag\": \"tagid1|tagid2\",\n  \"unlicenseduser\" : \"userid3|userid4\",\n  \"msgid\": \"xxxx\",\n  \"response_code\": \"xyzxyz\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "invaliduser": "userid1|userid2",
+          "invalidparty": "partyid1|partyid2",
+          "invalidtag": "tagid1|tagid2",
+          "unlicenseduser": "userid3|userid4",
+          "msgid": "xxxx",
+          "response_code": "xyzxyz"
+        },
+        "notes": [
+          "- 各个消息类型的具体POST格式请阅后续“消息类型”部分。\n- 如果有在管理端对应用设置“在微工作台中始终进入主页”，应用在微信端只能接收到文本消息，并且文本消息的长度限制为20字节，超过20字节会被截断。同时其他消息类型也会转换为文本消息，提示用户到企业微信查看。\n- 支持id转译，将userid/部门id转成对应的用户名/部门名，在企业授权了会话内容存档接口权限时，也可以将消息id和群id转成对应的消息内容/群名称，目前仅文本/文本卡片/图文/图文（mpnews）/任务卡片/小程序通知/模版消息/模板卡片消息这八种消息类型的部分字段支持。具体支持的范围和语法，请查看附录id转译说明。\n- 支持重复消息检查，当指定 \"enable_duplicate_check\": 1开启: 表示在一定时间间隔内，同样内容（请求json）的消息，不会重复收到；时间间隔可通过duplicate_check_interval指定，默认1800秒。\n- 从2021年2月4日开始，企业关联添加的「小程序」应用，也可以发送文本、图片、视频、文件、图文等各种类型的消息了。\n调用建议：大部分企业应用在每小时的0分或30分触发推送消息，容易造成资源挤占，从而投递不够及时，建议尽量避开这两个时间点进行调用。\n频率限制：每应用不可超过账号上限数*200人次/天（注：若调用api一次发给1000人，算1000人次；若企业账号上限是500人，则每个应用每天可发送100000人次的消息）。每应用对同一个成员不可超过30次/分钟，1000次/小时，超过部分会被丢弃不下发",
+          "如果部分接收人无权限或不存在，发送仍然执行，但会返回无效的部分（即invaliduser或invalidparty或invalidtag或unlicenseduser），常见的原因是接收人不在应用的可见范围内。\n权限包含应用可见范围和基础接口权限(基础账号、互通账号均可)，unlicenseduser中的用户在应用可见范围内但没有基础接口权限。\n如果全部接收人无权限或不存在，则本次调用返回失败，errcode为81013。\n返回包中的userid，不区分大小写，统一转为小写",
+          "touser、toparty、totag不能同时为空，后面不再强调。",
+          "mpnews类型的图文消息，跟普通的图文消息一致，唯一的差异是图文内容存储在企业微信。\n多次发送mpnews，会被认为是不同的图文，阅读、点赞的统计会被分开计算。",
+          "目前仅支持markdown语法的子集\n微工作台（原企业号）不支持展示markdown消息",
+          "小程序通知消息只允许绑定了小程序的应用发送，之前，消息会通过统一的会话【小程序通知】发送给用户。\n从2019年6月28日起，用户收到的小程序通知会出现在各个独立的应用中。\n不支持@all全员发送\n微工作台（原企业号）不支持展示小程序通知消息",
+          "投票选择型和多项选择型卡片仅企业微信3.1.12及以上版本支持\n文本通知型、图文展示型和按钮交互型三种卡片仅企业微信3.1.6及以上版本支持（但附件下载功能仍需更新至3.1.12）\n微工作台（原企业号）不支持展示模板卡片消息",
+          "若输入的模板不符合语法、不在权限范围内或无效的userid或者部门ID，则不替换该项内容，保留原样\n转译userAlias时，如果用户没有别名，则不替换该项内容，保留原样\n转译userAliasOrName时，如果用户有别名，则替换为别名；否则，将替换为姓名",
+          "若输入的模板不符合语法、群聊ID无效、消息ID无效或对应的密钥不正确，则不替换该项内容，保留原样\n当企业没有授权会话内容存档接口权限是，也不替换该项内容，保留原样\n为防止意外泄漏，消息ID转译失败的情况下，将只会展示MSGID部分的内容，SECRET-KEY部分的内容不会展示",
+          "其他特殊情况转译结果说明：\n企微后台系统失败->消息获取失败\nmsgid不存在或者过期->消息已过期，消息内容无法展示\nSECRET-KEY错误->消息密钥错误"
+        ]
+      }
     }
   ]
 }

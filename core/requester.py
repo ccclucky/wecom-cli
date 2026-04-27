@@ -48,7 +48,7 @@ class UnifiedRequester:
         body_data = None
         headers: dict[str, str] = {"Accept": "application/json"}
         if json_body is not None:
-            body_data = json.dumps(json_body).encode("utf-8")
+            body_data = json.dumps(_strip_none(json_body)).encode("utf-8")
             headers["Content-Type"] = "application/json"
 
         request = urllib.request.Request(
@@ -76,3 +76,15 @@ class UnifiedRequester:
                 errmsg=str(payload.get("errmsg") or "unknown"),
             )
         return payload
+
+
+def _strip_none(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {
+            key: _strip_none(item)
+            for key, item in value.items()
+            if item is not None
+        }
+    if isinstance(value, list):
+        return [_strip_none(item) for item in value if item is not None]
+    return value

@@ -1,0 +1,859 @@
+{
+  "domain": "tags",
+  "operations": [
+    {
+      "name": "delete",
+      "cli_action": "delete",
+      "summary": "删除标签",
+      "method": "GET",
+      "endpoint": "/cgi-bin/tag/delete",
+      "args": [
+        {
+          "name": "tagid",
+          "flag": "--tagid",
+          "type": "str",
+          "help": "标签ID",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "tagid": {
+            "from_arg": "tagid"
+          }
+        }
+      },
+      "examples": [
+        "wecom tags delete --tagid 1"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除标签",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90212",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/tag/delete?access_token=ACCESS_TOKEN&tagid=TAGID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": true,
+            "description": "标签ID",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "permissions": [
+          "调用的应用必须是指定标签的创建者。"
+        ]
+      }
+    },
+    {
+      "name": "get",
+      "cli_action": "get",
+      "summary": "获取标签成员",
+      "method": "GET",
+      "endpoint": "/cgi-bin/tag/get",
+      "args": [
+        {
+          "name": "tagid",
+          "flag": "--tagid",
+          "type": "str",
+          "help": "标签ID",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "tagid": {
+            "from_arg": "tagid"
+          }
+        }
+      },
+      "examples": [
+        "wecom tags get --tagid 1"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "tagname": {
+              "type": "string",
+              "description": "标签名"
+            },
+            "userlist": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "userid": {
+                    "type": "string",
+                    "description": "成员账号"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "成员名称，代开发自建应用需要管理员授权才返回该字段；此字段从2019年12月30日起，对新创建第三方应用不再返回，2020年6月30日起，对所有历史第三方应用不再返回，后续第三方仅通讯录应用可获取，未返回名称的情况需要通过通讯录展示组件来展示名字"
+                  }
+                },
+                "required": [
+                  "userid",
+                  "name"
+                ]
+              },
+              "description": "标签中包含的成员列表"
+            },
+            "partylist": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "标签中包含的部门id列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "tagname",
+            "userlist",
+            "partylist"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取标签成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90213",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/tag/get?access_token=ACCESS_TOKEN&tagid=TAGID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": true,
+            "description": "标签ID",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "tagname",
+            "required": null,
+            "description": "标签名",
+            "type": null
+          },
+          {
+            "name": "userlist",
+            "required": null,
+            "description": "标签中包含的成员列表",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": null,
+            "description": "成员账号",
+            "type": null
+          },
+          {
+            "name": "name",
+            "required": null,
+            "description": "成员名称，代开发自建应用需要管理员授权才返回该字段；此字段从2019年12月30日起，对新创建第三方应用不再返回，2020年6月30日起，对所有历史第三方应用不再返回，后续第三方仅通讯录应用可获取，未返回名称的情况需要通过通讯录展示组件来展示名字",
+            "type": null
+          },
+          {
+            "name": "partylist",
+            "required": null,
+            "description": "标签中包含的部门id列表",
+            "type": null
+          }
+        ],
+        "permissions": [
+          "无限制，但返回列表仅包含应用可见范围的成员；第三方可获取自己创建的标签及应用可见范围内的标签详情"
+        ]
+      }
+    },
+    {
+      "name": "list",
+      "cli_action": "list",
+      "summary": "获取标签列表",
+      "method": "GET",
+      "endpoint": "/cgi-bin/tag/list",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom tags list"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "taglist": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tagid": {
+                    "type": "integer",
+                    "description": "标签id"
+                  },
+                  "tagname": {
+                    "type": "string",
+                    "description": "标签名"
+                  }
+                },
+                "required": [
+                  "tagid",
+                  "tagname"
+                ]
+              },
+              "description": "标签列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "taglist"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取标签列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90216",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/tag/list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "taglist",
+            "required": null,
+            "description": "标签列表",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": null,
+            "description": "标签id",
+            "type": null
+          },
+          {
+            "name": "tagname",
+            "required": null,
+            "description": "标签名",
+            "type": null
+          }
+        ],
+        "permissions": [
+          "自建应用或通讯同步助手可以获取所有标签列表；第三方应用仅可获取自己创建的标签。"
+        ]
+      }
+    },
+    {
+      "name": "create",
+      "cli_action": "create",
+      "summary": "创建标签",
+      "method": "POST",
+      "endpoint": "/cgi-bin/tag/create",
+      "args": [
+        {
+          "name": "tagname",
+          "flag": "--tagname",
+          "type": "str",
+          "help": "标签名称，长度限制为32个字以内（汉字或英文字母），标签名不可与其他标签重名。",
+          "required": true
+        },
+        {
+          "name": "tagid",
+          "flag": "--tagid",
+          "type": "int",
+          "help": "标签id，非负整型，指定此参数时新增的标签会生成对应的标签id，不指定时则以目前最大的id自增。"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "tagname": {
+            "from_arg": "tagname"
+          },
+          "tagid": {
+            "from_arg": "tagid"
+          }
+        }
+      },
+      "examples": [
+        "wecom tags create --tagname UI --tagid 12"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "tagid": {
+              "type": "integer",
+              "description": "标签id"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "tagid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "创建标签",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90210",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/tag/create?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "tagname",
+            "required": true,
+            "description": "标签名称，长度限制为32个字以内（汉字或英文字母），标签名不可与其他标签重名。",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": false,
+            "description": "标签id，非负整型，指定此参数时新增的标签会生成对应的标签id，不指定时则以目前最大的id自增。",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": null,
+            "description": "标签id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"tagname\": \"UI\",\n   \"tagid\": 12\n}",
+        "request_example_json": {
+          "tagname": "UI",
+          "tagid": 12
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"created\"\n   \"tagid\": 12\n}",
+        "permissions": [
+          "创建的标签属于该应用，只有该应用的secret才可以增删成员。"
+        ],
+        "notes": [
+          "注意，标签总数不能超过3000个。"
+        ]
+      }
+    },
+    {
+      "name": "update",
+      "cli_action": "update",
+      "summary": "更新标签名字",
+      "method": "POST",
+      "endpoint": "/cgi-bin/tag/update",
+      "args": [
+        {
+          "name": "tagid",
+          "flag": "--tagid",
+          "type": "int",
+          "help": "标签ID",
+          "required": true
+        },
+        {
+          "name": "tagname",
+          "flag": "--tagname",
+          "type": "str",
+          "help": "标签名称，长度限制为32个字（汉字或英文字母），标签不可与其他标签重名。",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "tagid": {
+            "from_arg": "tagid"
+          },
+          "tagname": {
+            "from_arg": "tagname"
+          }
+        }
+      },
+      "examples": [
+        "wecom tags update --tagid 12 --tagname UI design"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "更新标签名字",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90211",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/tag/update?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": true,
+            "description": "标签ID",
+            "type": null
+          },
+          {
+            "name": "tagname",
+            "required": true,
+            "description": "标签名称，长度限制为32个字（汉字或英文字母），标签不可与其他标签重名。",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"tagid\": 12,\n   \"tagname\": \"UI design\"\n}",
+        "request_example_json": {
+          "tagid": 12,
+          "tagname": "UI design"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"updated\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "updated"
+        },
+        "permissions": [
+          "调用的应用必须是指定标签的创建者。"
+        ]
+      }
+    },
+    {
+      "name": "addtagusers",
+      "cli_action": "addtagusers",
+      "summary": "增加标签成员",
+      "method": "POST",
+      "endpoint": "/cgi-bin/tag/addtagusers",
+      "args": [
+        {
+          "name": "tagid",
+          "flag": "--tagid",
+          "type": "int",
+          "help": "标签ID",
+          "required": true
+        },
+        {
+          "name": "userlist",
+          "flag": "--userlist",
+          "type": "json",
+          "help": "企业成员ID列表，注意：userlist、partylist不能同时为空，单次请求个数不超过1000"
+        },
+        {
+          "name": "partylist",
+          "flag": "--partylist",
+          "type": "json",
+          "help": "企业部门ID列表，注意：userlist、partylist不能同时为空，单次请求个数不超过100"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "tagid": {
+            "from_arg": "tagid"
+          },
+          "userlist": {
+            "from_arg": "userlist"
+          },
+          "partylist": {
+            "from_arg": "partylist"
+          }
+        }
+      },
+      "examples": [
+        "wecom tags addtagusers --tagid 12 --userlist [\"user1\", \"user2\"] --partylist [4]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "增加标签成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90214",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/tag/addtagusers?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": true,
+            "description": "标签ID",
+            "type": null
+          },
+          {
+            "name": "userlist",
+            "required": false,
+            "description": "企业成员ID列表，注意：userlist、partylist不能同时为空，单次请求个数不超过1000",
+            "type": null
+          },
+          {
+            "name": "partylist",
+            "required": false,
+            "description": "企业部门ID列表，注意：userlist、partylist不能同时为空，单次请求个数不超过100",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "invalidlist",
+            "required": null,
+            "description": "非法的成员账号列表",
+            "type": null
+          },
+          {
+            "name": "invalidparty",
+            "required": null,
+            "description": "非法的部门id列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"tagid\": 12,\n   \"userlist\":[ \"user1\",\"user2\"],\n   \"partylist\": [4]\n}",
+        "request_example_json": {
+          "tagid": 12,
+          "userlist": [
+            "user1",
+            "user2"
+          ],
+          "partylist": [
+            4
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "调用的应用必须是指定标签的创建者；成员属于应用的可见范围。"
+        ],
+        "notes": [
+          "注意，每个标签下部门数和人员数总和不能超过3万个。"
+        ]
+      }
+    },
+    {
+      "name": "deltagusers",
+      "cli_action": "deltagusers",
+      "summary": "删除标签成员",
+      "method": "POST",
+      "endpoint": "/cgi-bin/tag/deltagusers",
+      "args": [
+        {
+          "name": "tagid",
+          "flag": "--tagid",
+          "type": "int",
+          "help": "标签ID",
+          "required": true
+        },
+        {
+          "name": "userlist",
+          "flag": "--userlist",
+          "type": "json",
+          "help": "企业成员ID列表，注意：userlist、partylist不能同时为空，单次请求长度不超过1000"
+        },
+        {
+          "name": "partylist",
+          "flag": "--partylist",
+          "type": "json",
+          "help": "企业部门ID列表，注意：userlist、partylist不能同时为空，单次请求长度不超过100"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "tagid": {
+            "from_arg": "tagid"
+          },
+          "userlist": {
+            "from_arg": "userlist"
+          },
+          "partylist": {
+            "from_arg": "partylist"
+          }
+        }
+      },
+      "examples": [
+        "wecom tags deltagusers --tagid 12 --userlist [\"user1\", \"user2\"] --partylist [2, 4]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除标签成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90215",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/tag/deltagusers?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": true,
+            "description": "标签ID",
+            "type": null
+          },
+          {
+            "name": "userlist",
+            "required": false,
+            "description": "企业成员ID列表，注意：userlist、partylist不能同时为空，单次请求长度不超过1000",
+            "type": null
+          },
+          {
+            "name": "partylist",
+            "required": false,
+            "description": "企业部门ID列表，注意：userlist、partylist不能同时为空，单次请求长度不超过100",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "invalidlist",
+            "required": null,
+            "description": "非法的成员账号列表",
+            "type": null
+          },
+          {
+            "name": "invalidparty",
+            "required": null,
+            "description": "非法的部门id列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"tagid\": 12,\n   \"userlist\":[ \"user1\",\"user2\"],\n   \"partylist\":[2,4]\n}",
+        "request_example_json": {
+          "tagid": 12,
+          "userlist": [
+            "user1",
+            "user2"
+          ],
+          "partylist": [
+            2,
+            4
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"deleted\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "deleted"
+        },
+        "permissions": [
+          "调用的应用必须是指定标签的创建者；成员属于应用的可见范围。"
+        ]
+      }
+    }
+  ]
+}

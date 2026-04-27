@@ -48,7 +48,7 @@ def test_build_diff_detects_add_remove_modify():
     by_endpoint = {op["endpoint"]: op for op in reconciled["operations"]}
     assert by_endpoint["/cgi-bin/user/simplelist"]["id"] == "contacts.list_users"
     assert by_endpoint["/cgi-bin/user/simplelist"]["method"] == "POST"
-    assert by_endpoint["/cgi-bin/department/list"]["id"].startswith("todo.")
+    assert by_endpoint["/cgi-bin/department/list"]["id"] == "departments.list"
     assert by_endpoint["/cgi-bin/department/list"]["doc"]["title"] == "获取部门列表"
     assert by_endpoint["/cgi-bin/department/list"]["doc"]["request_params"][0]["name"] == "department_id"
 
@@ -62,3 +62,52 @@ def test_build_diff_detects_add_remove_modify():
     assert payload["summary"] == {"added": 1, "removed": 1, "modified": 1}
     assert payload["added"][0]["endpoint"] == "/cgi-bin/department/list"
     assert payload["removed"][0]["endpoint"] == "/cgi-bin/message/send"
+
+
+def test_build_reconciled_catalog_infers_domain_identity_and_skips_methodless_pages():
+    baseline = {"snapshot_date": "2026-04-22", "operations": []}
+    discovered = {
+        "snapshot_date": "2026-04-23",
+        "operations": [
+            {
+                "endpoint": "/cgi-bin/department/list",
+                "method": "GET",
+                "title": "获取部门列表",
+            },
+            {
+                "endpoint": "/cgi-bin/gettoken",
+                "method": "GET",
+                "title": "获取access_token",
+            },
+            {
+                "endpoint": "/cgi-bin/wxpush",
+                "method": None,
+                "title": "加解密方案说明",
+            },
+        ],
+    }
+
+    reconciled = build_reconciled_catalog(baseline, discovered)
+    by_endpoint = {op["endpoint"]: op for op in reconciled["operations"]}
+
+    assert by_endpoint["/cgi-bin/department/list"]["id"] == "departments.list"
+    assert by_endpoint["/cgi-bin/department/list"]["domain"] == "departments"
+    assert by_endpoint["/cgi-bin/gettoken"]["id"] == "auth.get_token"
+    assert "/cgi-bin/wxpush" not in by_endpoint
+
+
+def test_build_diff_skips_methodless_discovery_pages():
+    baseline = {"snapshot_date": "2026-04-22", "operations": []}
+    discovered = {
+        "snapshot_date": "2026-04-23",
+        "operations": [
+            {
+                "endpoint": "/cgi-bin/wxpush",
+                "method": None,
+                "title": "加解密方案说明",
+            }
+        ],
+    }
+
+    diff = build_diff(baseline, discovered)
+    assert diff == {"added": [], "removed": [], "modified": []}

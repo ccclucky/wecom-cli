@@ -1,0 +1,626 @@
+{
+  "domain": "batch",
+  "operations": [
+    {
+      "name": "invite",
+      "cli_action": "invite",
+      "summary": "邀请成员",
+      "method": "POST",
+      "endpoint": "/cgi-bin/batch/invite",
+      "args": [
+        {
+          "name": "user",
+          "flag": "--user",
+          "type": "json",
+          "help": "成员ID列表, 最多支持1000个。"
+        },
+        {
+          "name": "party",
+          "flag": "--party",
+          "type": "json",
+          "help": "部门ID列表，最多支持100个。"
+        },
+        {
+          "name": "tag",
+          "flag": "--tag",
+          "type": "json",
+          "help": "标签ID列表，最多支持100个。"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "user": {
+            "from_arg": "user"
+          },
+          "party": {
+            "from_arg": "party"
+          },
+          "tag": {
+            "from_arg": "tag"
+          }
+        }
+      },
+      "examples": [
+        "wecom batch invite --user [\"UserID1\", \"UserID2\", \"UserID3\"] --party [1, 2, 3] --tag [101, 102, 103]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "invaliduser": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "非法成员列表"
+            },
+            "invalidparty": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "非法部门列表"
+            },
+            "invalidtag": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "非法标签列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "invaliduser",
+            "invalidparty",
+            "invalidtag"
+          ]
+        }
+      },
+      "doc": {
+        "title": "邀请成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90975",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/batch/invite?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "user",
+            "required": false,
+            "description": "成员ID列表, 最多支持1000个。",
+            "type": null
+          },
+          {
+            "name": "party",
+            "required": false,
+            "description": "部门ID列表，最多支持100个。",
+            "type": null
+          },
+          {
+            "name": "tag",
+            "required": false,
+            "description": "标签ID列表，最多支持100个。",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "invaliduser",
+            "required": null,
+            "description": "非法成员列表",
+            "type": null
+          },
+          {
+            "name": "invalidparty",
+            "required": null,
+            "description": "非法部门列表",
+            "type": null
+          },
+          {
+            "name": "invalidtag",
+            "required": null,
+            "description": "非法标签列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"user\" : [\"UserID1\", \"UserID2\", \"UserID3\"],\n   \"party\" : [1, 2, 3],\n   \"tag\" : [101, 102, 103]\n}",
+        "request_example_json": {
+          "user": [
+            "UserID1",
+            "UserID2",
+            "UserID3"
+          ],
+          "party": [
+            1,
+            2,
+            3
+          ],
+          "tag": [
+            101,
+            102,
+            103
+          ]
+        },
+        "response_example_text": "{\n  \"errcode\" : 0,\n  \"errmsg\" : \"ok\",\n  \"invaliduser\" : [\"UserID1\", \"UserID2\"],\n  \"invalidparty\" : [1, 2],\n  \"invalidtag\": [101, 102]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "invaliduser": [
+            "UserID1",
+            "UserID2"
+          ],
+          "invalidparty": [
+            1,
+            2
+          ],
+          "invalidtag": [
+            101,
+            102
+          ]
+        }
+      }
+    },
+    {
+      "name": "replaceparty",
+      "cli_action": "replaceparty",
+      "summary": "全量覆盖部门",
+      "method": "POST",
+      "endpoint": "/cgi-bin/batch/replaceparty",
+      "args": [
+        {
+          "name": "media_id",
+          "flag": "--media-id",
+          "type": "str",
+          "help": "上传的csv文件的media_id",
+          "required": true
+        },
+        {
+          "name": "callback",
+          "flag": "--callback",
+          "type": "json",
+          "help": "回调信息。如填写该项则任务完成后，通过callback推送事件给企业。具体请参考应用回调模式中的相应选项"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "media_id": {
+            "from_arg": "media_id"
+          },
+          "callback": {
+            "from_arg": "callback"
+          }
+        }
+      },
+      "examples": [
+        "wecom batch replaceparty --media-id xxxxxx --callback {\"url\": \"xxx\", \"token\": \"xxx\", \"encodingaeskey\": \"xxx\"}"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "异步任务id，最大长度为64字节"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "全量覆盖部门",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90982",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/batch/replaceparty?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "media_id",
+            "required": true,
+            "description": "上传的csv文件的media_id",
+            "type": null
+          },
+          {
+            "name": "callback",
+            "required": false,
+            "description": "回调信息。如填写该项则任务完成后，通过callback推送事件给企业。具体请参考应用回调模式中的相应选项",
+            "type": null
+          },
+          {
+            "name": "url",
+            "required": false,
+            "description": "企业应用接收企业微信推送请求的访问协议和地址，支持http或https协议",
+            "type": null
+          },
+          {
+            "name": "token",
+            "required": false,
+            "description": "用于生成签名",
+            "type": null
+          },
+          {
+            "name": "encodingaeskey",
+            "required": false,
+            "description": "用于消息体的加密，是AES密钥的Base64编码",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "异步任务id，最大长度为64字节",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"media_id\":\"xxxxxx\",\n\t\"callback\":\n\t{\n\t \t\"url\": \"xxx\",\n\t \t\"token\": \"xxx\",\n\t \t\"encodingaeskey\": \"xxx\"\n\t}\n}",
+        "request_example_json": {
+          "media_id": "xxxxxx",
+          "callback": {
+            "url": "xxx",
+            "token": "xxx",
+            "encodingaeskey": "xxx"
+          }
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"jobid\": \"xxxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "xxxxx"
+        }
+      }
+    },
+    {
+      "name": "replaceuser",
+      "cli_action": "replaceuser",
+      "summary": "全量覆盖成员",
+      "method": "POST",
+      "endpoint": "/cgi-bin/batch/replaceuser",
+      "args": [
+        {
+          "name": "media_id",
+          "flag": "--media-id",
+          "type": "str",
+          "help": "上传的csv文件的media_id",
+          "required": true
+        },
+        {
+          "name": "to_invite",
+          "flag": "--to-invite",
+          "type": "json",
+          "help": "是否邀请新建的成员使用企业微信（将通过微信服务通知或短信或邮件下发邀请，每天自动下发一次，最多持续3个工作日），默认值为true。"
+        },
+        {
+          "name": "callback",
+          "flag": "--callback",
+          "type": "json",
+          "help": "回调信息。如填写该项则任务完成后，通过callback推送事件给企业。具体请参考应用回调模式中的相应选项"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "media_id": {
+            "from_arg": "media_id"
+          },
+          "to_invite": {
+            "from_arg": "to_invite"
+          },
+          "callback": {
+            "from_arg": "callback"
+          }
+        }
+      },
+      "examples": [
+        "wecom batch replaceuser --media-id xxxxxx --to-invite true --callback {\"url\": \"xxx\", \"token\": \"xxx\", \"encodingaeskey\": \"xxx\"}"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "异步任务id，最大长度为64字节"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "全量覆盖成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90981",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/batch/replaceuser?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "media_id",
+            "required": true,
+            "description": "上传的csv文件的media_id",
+            "type": null
+          },
+          {
+            "name": "to_invite",
+            "required": false,
+            "description": "是否邀请新建的成员使用企业微信（将通过微信服务通知或短信或邮件下发邀请，每天自动下发一次，最多持续3个工作日），默认值为true。",
+            "type": null
+          },
+          {
+            "name": "callback",
+            "required": false,
+            "description": "回调信息。如填写该项则任务完成后，通过callback推送事件给企业。具体请参考应用回调模式中的相应选项",
+            "type": null
+          },
+          {
+            "name": "url",
+            "required": false,
+            "description": "企业应用接收企业微信推送请求的访问协议和地址，支持http或https协议",
+            "type": null
+          },
+          {
+            "name": "token",
+            "required": false,
+            "description": "用于生成签名",
+            "type": null
+          },
+          {
+            "name": "encodingaeskey",
+            "required": false,
+            "description": "用于消息体的加密，是AES密钥的Base64编码",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "异步任务id，最大长度为64字节",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"media_id\":\"xxxxxx\",\n\t\"to_invite\": true,\n\t\"callback\":\n\t{\n\t \t\"url\": \"xxx\",\n\t \t\"token\": \"xxx\",\n\t \t\"encodingaeskey\": \"xxx\"\n\t}\n}",
+        "request_example_json": {
+          "media_id": "xxxxxx",
+          "to_invite": true,
+          "callback": {
+            "url": "xxx",
+            "token": "xxx",
+            "encodingaeskey": "xxx"
+          }
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"jobid\": \"xxxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "xxxxx"
+        }
+      }
+    },
+    {
+      "name": "syncuser",
+      "cli_action": "syncuser",
+      "summary": "增量更新成员",
+      "method": "POST",
+      "endpoint": "/cgi-bin/batch/syncuser",
+      "args": [
+        {
+          "name": "media_id",
+          "flag": "--media-id",
+          "type": "str",
+          "help": "上传的csv文件的media_id",
+          "required": true
+        },
+        {
+          "name": "to_invite",
+          "flag": "--to-invite",
+          "type": "json",
+          "help": "是否邀请新建的成员使用企业微信（将通过微信服务通知或短信或邮件下发邀请，每天自动下发一次，最多持续3个工作日），默认值为true。"
+        },
+        {
+          "name": "callback",
+          "flag": "--callback",
+          "type": "json",
+          "help": "回调信息。如填写该项则任务完成后，通过callback推送事件给企业。具体请参考应用回调模式中的相应选项"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "media_id": {
+            "from_arg": "media_id"
+          },
+          "to_invite": {
+            "from_arg": "to_invite"
+          },
+          "callback": {
+            "from_arg": "callback"
+          }
+        }
+      },
+      "examples": [
+        "wecom batch syncuser --media-id xxxxxx --to-invite true --callback {\"url\": \"xxx\", \"token\": \"xxx\", \"encodingaeskey\": \"xxx\"}"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "异步任务id，最大长度为64字节"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "增量更新成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90980",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/batch/syncuser?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "media_id",
+            "required": true,
+            "description": "上传的csv文件的media_id",
+            "type": null
+          },
+          {
+            "name": "to_invite",
+            "required": false,
+            "description": "是否邀请新建的成员使用企业微信（将通过微信服务通知或短信或邮件下发邀请，每天自动下发一次，最多持续3个工作日），默认值为true。",
+            "type": null
+          },
+          {
+            "name": "callback",
+            "required": false,
+            "description": "回调信息。如填写该项则任务完成后，通过callback推送事件给企业。具体请参考应用回调模式中的相应选项",
+            "type": null
+          },
+          {
+            "name": "url",
+            "required": false,
+            "description": "企业应用接收企业微信推送请求的访问协议和地址，支持http或https协议",
+            "type": null
+          },
+          {
+            "name": "token",
+            "required": false,
+            "description": "用于生成签名",
+            "type": null
+          },
+          {
+            "name": "encodingaeskey",
+            "required": false,
+            "description": "用于消息体的加密，是AES密钥的Base64编码",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "异步任务id，最大长度为64字节",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"media_id\":\"xxxxxx\",\n\t\"to_invite\": true,\n\t\"callback\":\n\t{\n\t \t\"url\": \"xxx\",\n\t \t\"token\": \"xxx\",\n\t \t\"encodingaeskey\": \"xxx\"\n\t}\n}",
+        "request_example_json": {
+          "media_id": "xxxxxx",
+          "to_invite": true,
+          "callback": {
+            "url": "xxx",
+            "token": "xxx",
+            "encodingaeskey": "xxx"
+          }
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"jobid\": \"xxxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "xxxxx"
+        }
+      }
+    }
+  ]
+}

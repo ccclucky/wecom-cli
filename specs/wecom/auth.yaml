@@ -1,0 +1,118 @@
+{
+  "domain": "auth",
+  "operations": [
+    {
+      "name": "get_token",
+      "cli_action": "get-token",
+      "summary": "获取access_token",
+      "method": "GET",
+      "endpoint": "/cgi-bin/gettoken",
+      "args": [
+        {
+          "name": "corpid",
+          "flag": "--corpid",
+          "type": "str",
+          "help": "企业ID，获取方式参考：术语说明-corpid",
+          "required": true
+        },
+        {
+          "name": "corpsecret",
+          "flag": "--corpsecret",
+          "type": "str",
+          "help": "应用的凭证密钥，注意应用需要是启用状态，获取方式参考：术语说明-secret",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "corpid": {
+            "from_arg": "corpid"
+          },
+          "corpsecret": {
+            "from_arg": "corpsecret"
+          }
+        }
+      },
+      "examples": [
+        "wecom auth get-token --corpid ww1234567890 --corpsecret SECRET"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "出错返回码，为0表示成功，非0表示调用失败"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "返回码提示语"
+            },
+            "access_token": {
+              "type": "string",
+              "description": "获取到的凭证，最长为512字节"
+            },
+            "expires_in": {
+              "type": "integer",
+              "description": "凭证的有效时间（秒）"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "access_token",
+            "expires_in"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取access_token",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91039",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=ID&corpsecret=SECRET",
+        "request_params": [
+          {
+            "name": "corpid",
+            "required": true,
+            "description": "企业ID，获取方式参考：术语说明-corpid",
+            "type": null
+          },
+          {
+            "name": "corpsecret",
+            "required": true,
+            "description": "应用的凭证密钥，注意应用需要是启用状态，获取方式参考：术语说明-secret",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "出错返回码，为0表示成功，非0表示调用失败",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "返回码提示语",
+            "type": null
+          },
+          {
+            "name": "access_token",
+            "required": null,
+            "description": "获取到的凭证，最长为512字节",
+            "type": null
+          },
+          {
+            "name": "expires_in",
+            "required": null,
+            "description": "凭证的有效时间（秒）",
+            "type": null
+          }
+        ]
+      }
+    }
+  ]
+}

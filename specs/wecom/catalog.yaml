@@ -3,11 +3,109 @@
   "source": "https://developer.work.weixin.qq.com/document",
   "operations": [
     {
+      "id": "auth.get_token",
+      "domain": "auth",
+      "name": "get_token",
+      "endpoint": "/cgi-bin/gettoken",
+      "method": "GET"
+    },
+    {
+      "id": "batch.invite",
+      "domain": "batch",
+      "name": "invite",
+      "endpoint": "/cgi-bin/batch/invite",
+      "method": "POST"
+    },
+    {
+      "id": "batch.replaceparty",
+      "domain": "batch",
+      "name": "replaceparty",
+      "endpoint": "/cgi-bin/batch/replaceparty",
+      "method": "POST"
+    },
+    {
+      "id": "batch.replaceuser",
+      "domain": "batch",
+      "name": "replaceuser",
+      "endpoint": "/cgi-bin/batch/replaceuser",
+      "method": "POST"
+    },
+    {
+      "id": "batch.syncuser",
+      "domain": "batch",
+      "name": "syncuser",
+      "endpoint": "/cgi-bin/batch/syncuser",
+      "method": "POST"
+    },
+    {
       "id": "contacts.list_users",
       "domain": "contacts",
       "name": "list_users",
       "endpoint": "/cgi-bin/user/simplelist",
       "method": "GET"
+    },
+    {
+      "id": "corp.get_join_qrcode",
+      "domain": "corp",
+      "name": "get_join_qrcode",
+      "endpoint": "/cgi-bin/corp/get_join_qrcode",
+      "method": "GET"
+    },
+    {
+      "id": "corp.opencorpid_to_corpid",
+      "domain": "corp",
+      "name": "opencorpid_to_corpid",
+      "endpoint": "/cgi-bin/corp/opencorpid_to_corpid",
+      "method": "POST"
+    },
+    {
+      "id": "departments.create",
+      "domain": "departments",
+      "name": "create",
+      "endpoint": "/cgi-bin/department/create",
+      "method": "POST"
+    },
+    {
+      "id": "departments.delete",
+      "domain": "departments",
+      "name": "delete",
+      "endpoint": "/cgi-bin/department/delete",
+      "method": "GET"
+    },
+    {
+      "id": "departments.get",
+      "domain": "departments",
+      "name": "get",
+      "endpoint": "/cgi-bin/department/get",
+      "method": "GET"
+    },
+    {
+      "id": "departments.list",
+      "domain": "departments",
+      "name": "list",
+      "endpoint": "/cgi-bin/department/list",
+      "method": "GET"
+    },
+    {
+      "id": "departments.list_ids",
+      "domain": "departments",
+      "name": "list_ids",
+      "endpoint": "/cgi-bin/department/simplelist",
+      "method": "GET"
+    },
+    {
+      "id": "departments.update",
+      "domain": "departments",
+      "name": "update",
+      "endpoint": "/cgi-bin/department/update",
+      "method": "POST"
+    },
+    {
+      "id": "idconvert.convert_tmp_external_userid",
+      "domain": "idconvert",
+      "name": "convert_tmp_external_userid",
+      "endpoint": "/cgi-bin/idconvert/convert_tmp_external_userid",
+      "method": "POST"
     },
     {
       "id": "messages.send_text",
@@ -17,11 +115,144 @@
       "method": "POST"
     },
     {
-      "id": "customers.list_follow_users",
-      "domain": "customers",
-      "name": "list_follow_users",
-      "endpoint": "/cgi-bin/externalcontact/get_follow_user_list",
+      "id": "network.get_api_domain_ip",
+      "domain": "network",
+      "name": "get_api_domain_ip",
+      "endpoint": "/cgi-bin/get_api_domain_ip",
       "method": "GET"
+    },
+    {
+      "id": "network.get_callback_ip",
+      "domain": "network",
+      "name": "get_callback_ip",
+      "endpoint": "/cgi-bin/getcallbackip",
+      "method": "GET"
+    },
+    {
+      "id": "tags.addtagusers",
+      "domain": "tags",
+      "name": "addtagusers",
+      "endpoint": "/cgi-bin/tag/addtagusers",
+      "method": "POST"
+    },
+    {
+      "id": "tags.create",
+      "domain": "tags",
+      "name": "create",
+      "endpoint": "/cgi-bin/tag/create",
+      "method": "POST"
+    },
+    {
+      "id": "tags.delete",
+      "domain": "tags",
+      "name": "delete",
+      "endpoint": "/cgi-bin/tag/delete",
+      "method": "GET"
+    },
+    {
+      "id": "tags.deltagusers",
+      "domain": "tags",
+      "name": "deltagusers",
+      "endpoint": "/cgi-bin/tag/deltagusers",
+      "method": "POST"
+    },
+    {
+      "id": "tags.get",
+      "domain": "tags",
+      "name": "get",
+      "endpoint": "/cgi-bin/tag/get",
+      "method": "GET"
+    },
+    {
+      "id": "tags.list",
+      "domain": "tags",
+      "name": "list",
+      "endpoint": "/cgi-bin/tag/list",
+      "method": "GET"
+    },
+    {
+      "id": "tags.update",
+      "domain": "tags",
+      "name": "update",
+      "endpoint": "/cgi-bin/tag/update",
+      "method": "POST"
+    },
+    {
+      "id": "users.authsucc",
+      "domain": "users",
+      "name": "authsucc",
+      "endpoint": "/cgi-bin/user/authsucc",
+      "method": "GET"
+    },
+    {
+      "id": "users.batchdelete",
+      "domain": "users",
+      "name": "batchdelete",
+      "endpoint": "/cgi-bin/user/batchdelete",
+      "method": "POST"
+    },
+    {
+      "id": "users.convert_to_openid",
+      "domain": "users",
+      "name": "convert_to_openid",
+      "endpoint": "/cgi-bin/user/convert_to_openid",
+      "method": "POST"
+    },
+    {
+      "id": "users.create",
+      "domain": "users",
+      "name": "create",
+      "endpoint": "/cgi-bin/user/create",
+      "method": "POST"
+    },
+    {
+      "id": "users.delete",
+      "domain": "users",
+      "name": "delete",
+      "endpoint": "/cgi-bin/user/delete",
+      "method": "GET"
+    },
+    {
+      "id": "users.get",
+      "domain": "users",
+      "name": "get",
+      "endpoint": "/cgi-bin/user/get",
+      "method": "GET"
+    },
+    {
+      "id": "users.get_userid_by_email",
+      "domain": "users",
+      "name": "get_userid_by_email",
+      "endpoint": "/cgi-bin/user/get_userid_by_email",
+      "method": "POST"
+    },
+    {
+      "id": "users.getuserid",
+      "domain": "users",
+      "name": "getuserid",
+      "endpoint": "/cgi-bin/user/getuserid",
+      "method": "POST"
+    },
+    {
+      "id": "users.list",
+      "domain": "users",
+      "name": "list",
+      "endpoint": "/cgi-bin/user/list",
+      "method": "GET"
+    },
+    {
+      "id": "users.list_id",
+      "domain": "users",
+      "name": "list_id",
+      "endpoint": "/cgi-bin/user/list_id",
+      "method": "POST"
+    },
+    {
+      "id": "users.update",
+      "domain": "users",
+      "name": "update",
+      "endpoint": "/cgi-bin/user/update",
+      "method": "POST"
     }
   ]
 }

@@ -46,11 +46,21 @@ def _load_specs() -> list[dict[str, Any]]:
     return specs
 
 
+def _signature_type(arg_type: str) -> str:
+    if arg_type in {"int", "float", "str", "bool"}:
+        return arg_type
+    if arg_type == "json":
+        return "Any"
+    return "Any"
+
+
 def _render_client(specs: list[dict[str, Any]]) -> str:
     lines: list[str] = [
         '"""Auto-generated API client from specs/wecom/*.yaml. DO NOT EDIT."""',
         "",
         "from __future__ import annotations",
+        "",
+        "from typing import Any",
         "",
         "from core.requester import UnifiedRequester",
         "",
@@ -69,12 +79,13 @@ def _render_client(specs: list[dict[str, Any]]) -> str:
             signature_parts: list[str] = []
             for arg in args:
                 arg_type = arg.get("type", "str")
+                signature_type = _signature_type(arg_type)
                 if arg.get("required", False):
-                    signature_parts.append(f"{arg['name']}: {arg_type}")
+                    signature_parts.append(f"{arg['name']}: {signature_type}")
                 elif "default" in arg:
-                    signature_parts.append(f"{arg['name']}: {arg_type} = {repr(arg['default'])}")
+                    signature_parts.append(f"{arg['name']}: {signature_type} = {repr(arg['default'])}")
                 else:
-                    signature_parts.append(f"{arg['name']}: {arg_type} | None = None")
+                    signature_parts.append(f"{arg['name']}: {signature_type} | None = None")
             signature = ", ".join(signature_parts)
             if signature:
                 signature = ", *, " + signature
@@ -105,6 +116,8 @@ def _render_add_argument(line_prefix: str, arg: dict[str, Any]) -> list[str]:
         kwargs.append("type=int")
     elif arg.get("type") == "float":
         kwargs.append("type=float")
+    elif arg.get("type") == "json":
+        kwargs.append("type=json.loads")
     elif arg.get("type") == "str":
         kwargs.append("type=str")
 
@@ -130,6 +143,7 @@ def _render_cli(specs: list[dict[str, Any]]) -> str:
         "from __future__ import annotations",
         "",
         "import argparse",
+        "import json",
         "from collections.abc import Callable",
         "",
         "from apis.generated_client import GeneratedWeComClient",

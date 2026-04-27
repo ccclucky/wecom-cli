@@ -1,0 +1,214 @@
+{
+  "domain": "idconvert",
+  "operations": [
+    {
+      "name": "convert_tmp_external_userid",
+      "cli_action": "convert-tmp-external-userid",
+      "summary": "tmp_external_userid的转换",
+      "method": "POST",
+      "endpoint": "/cgi-bin/idconvert/convert_tmp_external_userid",
+      "args": [
+        {
+          "name": "business_type",
+          "flag": "--business-type",
+          "type": "int",
+          "help": "业务类型。1-会议 2-收集表 3-智能表",
+          "required": true
+        },
+        {
+          "name": "user_type",
+          "flag": "--user-type",
+          "type": "int",
+          "help": "转换的目标用户类型。1-客户 2-企业互联 3-上下游 4-互联企业（圈子） 详见上面关于user_type的说明",
+          "required": true
+        },
+        {
+          "name": "tmp_external_userid_list",
+          "flag": "--tmp-external-userid-list",
+          "type": "json",
+          "help": "外部用户临时id，最多不超过100个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "business_type": {
+            "from_arg": "business_type"
+          },
+          "user_type": {
+            "from_arg": "user_type"
+          },
+          "tmp_external_userid_list": {
+            "from_arg": "tmp_external_userid_list"
+          }
+        }
+      },
+      "examples": [
+        "wecom idconvert convert-tmp-external-userid --business-type 1 --user-type 1 --tmp-external-userid-list [\"ouXXX1\", \"ouXXX2\", \"ouXXX3\"]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "results": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tmp_external_userid": {
+                    "type": "string"
+                  },
+                  "external_userid": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tmp_external_userid",
+                  "external_userid"
+                ]
+              },
+              "description": "转换成功的结果列表"
+            },
+            "invalid_tmp_external_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "无法转换的tmp_external_userid。可能非法或没有权限"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "results",
+            "invalid_tmp_external_userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "tmp_external_userid的转换",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98729",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/idconvert/convert_tmp_external_userid?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "business_type",
+            "required": true,
+            "description": "业务类型。1-会议 2-收集表 3-智能表",
+            "type": "uint32"
+          },
+          {
+            "name": "user_type",
+            "required": true,
+            "description": "转换的目标用户类型。1-客户 2-企业互联 3-上下游 4-互联企业（圈子） 详见上面关于user_type的说明",
+            "type": "uint32"
+          },
+          {
+            "name": "tmp_external_userid_list",
+            "required": true,
+            "description": "外部用户临时id，最多不超过100个",
+            "type": "string[]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": "string"
+          },
+          {
+            "name": "results",
+            "required": null,
+            "description": "转换成功的结果列表",
+            "type": "obj[]"
+          },
+          {
+            "name": "results[].tmp_external_userid",
+            "required": null,
+            "description": "输入的tmp_external_userid",
+            "type": "string"
+          },
+          {
+            "name": "results[].external_userid",
+            "required": null,
+            "description": "转换后的userid，user_type为1时返回",
+            "type": "string"
+          },
+          {
+            "name": "results[].corpid",
+            "required": null,
+            "description": "userid对应的corpid，user_type为2、3、4时返回",
+            "type": "string"
+          },
+          {
+            "name": "results[].userid",
+            "required": null,
+            "description": "转换后的userid，user_type为2、3、4时返回",
+            "type": "string"
+          },
+          {
+            "name": "invalid_tmp_external_userid_list",
+            "required": null,
+            "description": "无法转换的tmp_external_userid。可能非法或没有权限",
+            "type": "string[]"
+          }
+        ],
+        "request_example_text": "{\n  \"business_type\": 1,\n  \"user_type\": 1,\n  \"tmp_external_userid_list\": [\n    \"ouXXX1\",\n    \"ouXXX2\",\n    \"ouXXX3\"\n  ]\n}",
+        "request_example_json": {
+          "business_type": 1,
+          "user_type": 1,
+          "tmp_external_userid_list": [
+            "ouXXX1",
+            "ouXXX2",
+            "ouXXX3"
+          ]
+        },
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"results\": [\n    {\n      \"tmp_external_userid\": \"ouXXX1\",\n      \"external_userid\": \"EXTERNAL_USER_ID\"\n    },\n    {\n      \"tmp_external_userid\": \"ouXXX2\",\n      \"corpid\": \"CORPID\",\n      \"userid\": \"USERID\"\n    }\n  ],\n  \"invalid_tmp_external_userid_list\": [\n    \"ouXXX3\"\n  ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "results": [
+            {
+              "tmp_external_userid": "ouXXX1",
+              "external_userid": "EXTERNAL_USER_ID"
+            },
+            {
+              "tmp_external_userid": "ouXXX2",
+              "corpid": "CORPID",
+              "userid": "USERID"
+            }
+          ],
+          "invalid_tmp_external_userid_list": [
+            "ouXXX3"
+          ]
+        },
+        "notes": [
+          "调用此接口的应用，和获取到tmp_external_userid的应用必须是同一个\n支持自建应用、代开发自建应用和第三方应用调用\nuser_type为1（即客户类型），应用还需要具有「客户联系」权限"
+        ]
+      }
+    }
+  ]
+}
