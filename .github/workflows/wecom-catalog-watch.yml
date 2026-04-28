@@ -24,10 +24,11 @@ jobs:
 
       - name: Discover latest API catalog
         run: |
+          python scripts/update_menu_tree.py \
+            --output specs/wecom/menu_tree.json
           python scripts/discover_wecom_apis.py \
             --seed-file specs/wecom/seeds.txt \
-            --doc-id-from 90000 \
-            --doc-id-to 100500 \
+            --menu-tree-file specs/wecom/menu_tree.json \
             --max-pages 5000 \
             --output artifacts/catalog.discovery.yaml
 

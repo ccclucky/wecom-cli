@@ -55,8 +55,7 @@ def _assert_clean(diff_path: str, tasks_path: str) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run WeCom catalog sync pipeline")
     parser.add_argument("--seed-file", default="specs/wecom/seeds.txt")
-    parser.add_argument("--doc-id-from", type=int, default=90000)
-    parser.add_argument("--doc-id-to", type=int, default=100500)
+    parser.add_argument("--menu-tree-file", default="specs/wecom/menu_tree.json")
     parser.add_argument("--max-pages", type=int, default=2000)
     parser.add_argument("--mode", choices=["dry-run", "apply", "auto-apply"], default="dry-run")
     parser.add_argument("--discovered", default="artifacts/catalog.discovery.yaml")
@@ -71,16 +70,15 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    _run(["python", "scripts/update_menu_tree.py", "--output", args.menu_tree_file])
     _run(
         [
             "python",
             "scripts/discover_wecom_apis.py",
             "--seed-file",
             args.seed_file,
-            "--doc-id-from",
-            str(args.doc_id_from),
-            "--doc-id-to",
-            str(args.doc_id_to),
+            "--menu-tree-file",
+            args.menu_tree_file,
             "--max-pages",
             str(args.max_pages),
             "--output",

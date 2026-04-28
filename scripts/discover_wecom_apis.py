@@ -228,8 +228,7 @@ class LinkParser(HTMLParser):
 def build_seed_urls(
     explicit_seeds: list[str],
     seed_file: Path | None,
-    doc_id_from: int | None,
-    doc_id_to: int | None,
+    menu_tree_file: Path | None,
 ) -> list[str]:
     seeds = list(explicit_seeds)
 
@@ -239,9 +238,15 @@ def build_seed_urls(
             if line and not line.startswith("#"):
                 seeds.append(line)
 
-    if doc_id_from is not None and doc_id_to is not None and doc_id_to >= doc_id_from:
-        for doc_id in range(doc_id_from, doc_id_to + 1):
-            seeds.append(f"{DOC_PATH_PREFIX}{doc_id}")
+    if menu_tree_file and menu_tree_file.exists():
+        try:
+            import json
+            tree_data = json.loads(menu_tree_file.read_text(encoding="utf-8"))
+            for item in tree_data:
+                if "id" in item:
+                    seeds.append(f"{DOC_PATH_PREFIX}{item['id']}")
+        except Exception as e:
+            print(f"Failed to parse menu tree: {e}")
 
     if not seeds:
         seeds = [f"{DOC_PATH_PREFIX}90665"]
@@ -530,8 +535,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Discover WeCom APIs from doc pages")
     parser.add_argument("--seed", action="append", default=[], help="Seed doc URLs")
     parser.add_argument("--seed-file", type=Path, help="File containing seed URLs, one per line")
-    parser.add_argument("--doc-id-from", type=int, help="Optional doc id range start")
-    parser.add_argument("--doc-id-to", type=int, help="Optional doc id range end")
+    parser.add_argument("--menu-tree-file", type=Path, default=Path("specs/wecom/menu_tree.json"), help="Menu tree JSON file")
     parser.add_argument("--max-pages", type=int, default=300)
     parser.add_argument("--output", type=Path, default=Path("specs/wecom/catalog.discovery.yaml"))
     args = parser.parse_args()
@@ -539,8 +543,7 @@ def main() -> int:
     seeds = build_seed_urls(
         explicit_seeds=list(args.seed),
         seed_file=args.seed_file,
-        doc_id_from=args.doc_id_from,
-        doc_id_to=args.doc_id_to,
+        menu_tree_file=args.menu_tree_file,
     )
 
     crawl_report = crawl(seeds, args.max_pages)
