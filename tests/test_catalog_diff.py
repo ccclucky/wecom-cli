@@ -168,3 +168,94 @@ def test_build_reconciled_catalog_preserves_baseline_only_ops():
     assert "/cgi-bin/tag/create" in by_endpoint
     assert by_endpoint["/cgi-bin/tag/create"]["id"] == "tags.create"
     assert by_endpoint["/cgi-bin/tag/create"]["doc"]["title"] == "创建标签"
+
+
+def test_reconciled_catalog_preserves_baseline_when_discovery_empty():
+    baseline = {
+        "snapshot_date": "2026-04-22",
+        "operations": [
+            {
+                "id": "messages.send_text",
+                "domain": "messages",
+                "name": "send_text",
+                "endpoint": "/cgi-bin/message/send",
+                "method": "POST",
+            },
+            {
+                "id": "contacts.list_users",
+                "domain": "contacts",
+                "name": "list_users",
+                "endpoint": "/cgi-bin/user/simplelist",
+                "method": "GET",
+            },
+        ],
+    }
+    discovered = {"snapshot_date": "2026-04-23", "operations": []}
+
+    reconciled = build_reconciled_catalog(baseline, discovered)
+    by_endpoint = {op["endpoint"]: op for op in reconciled["operations"]}
+
+    assert len(reconciled["operations"]) == 2
+    assert "/cgi-bin/message/send" in by_endpoint
+    assert by_endpoint["/cgi-bin/message/send"]["id"] == "messages.send_text"
+    assert "/cgi-bin/user/simplelist" in by_endpoint
+    assert by_endpoint["/cgi-bin/user/simplelist"]["id"] == "contacts.list_users"
+
+
+def test_reconciled_catalog_preserves_baseline_when_discovery_partial():
+    baseline = {
+        "snapshot_date": "2026-04-22",
+        "operations": [
+            {
+                "id": "messages.send_text",
+                "domain": "messages",
+                "name": "send_text",
+                "endpoint": "/cgi-bin/message/send",
+                "method": "POST",
+            },
+            {
+                "id": "contacts.list_users",
+                "domain": "contacts",
+                "name": "list_users",
+                "endpoint": "/cgi-bin/user/simplelist",
+                "method": "GET",
+            },
+        ],
+    }
+    # Only one API re-discovered; the other is missing from discovery
+    discovered = {
+        "snapshot_date": "2026-04-23",
+        "operations": [
+            {
+                "endpoint": "/cgi-bin/message/send",
+                "method": "POST",
+                "title": "发送应用消息",
+            },
+        ],
+    }
+
+    reconciled = build_reconciled_catalog(baseline, discovered)
+    by_endpoint = {op["endpoint"]: op for op in reconciled["operations"]}
+
+    assert len(reconciled["operations"]) == 2
+    # Re-discovered op gets updated doc
+    assert by_endpoint["/cgi-bin/message/send"]["doc"]["title"] == "发送应用消息"
+    # Missing op preserved from baseline
+    assert "/cgi-bin/user/simplelist" in by_endpoint
+    assert by_endpoint["/cgi-bin/user/simplelist"]["id"] == "contacts.list_users"
+
+
+def test_build_diff_all_removed_when_discovery_empty():
+    baseline = {
+        "snapshot_date": "2026-04-22",
+        "operations": [
+            {"endpoint": "/cgi-bin/message/send", "method": "POST"},
+            {"endpoint": "/cgi-bin/user/simplelist", "method": "GET"},
+        ],
+    }
+    discovered = {"snapshot_date": "2026-04-23", "operations": []}
+
+    diff = build_diff(baseline, discovered)
+    assert len(diff["added"]) == 0
+    assert len(diff["removed"]) == 2
+    assert len(diff["modified"]) == 0
