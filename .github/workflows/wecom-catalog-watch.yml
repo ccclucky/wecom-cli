@@ -30,17 +30,25 @@ jobs:
           restore-keys: wecom-empty-pages-
 
       - name: Discover latest API catalog
+        env:
+          WECOM_DOC_COOKIE: ${{ secrets.WECOM_DOC_COOKIE }}
         run: |
+          COOKIE_ARG=()
+          if [ -n "$WECOM_DOC_COOKIE" ]; then
+            COOKIE_ARG=(--cookie "$WECOM_DOC_COOKIE")
+          fi
           python scripts/update_menu_tree.py \
-            --output specs/wecom/menu_tree.json
+            --output specs/wecom/menu_tree.json \
+            "${COOKIE_ARG[@]}"
           python scripts/discover_wecom_apis.py \
             --seed-file specs/wecom/seeds.txt \
             --menu-tree-file specs/wecom/menu_tree.json \
             --empty-pages-file specs/wecom/empty_pages.json \
             --max-pages 1500 \
-            --delay-min 0.3 \
-            --delay-max 0.8 \
-            --output artifacts/catalog.discovery.yaml
+            --delay-min 2.0 \
+            --delay-max 4.0 \
+            --output artifacts/catalog.discovery.yaml \
+            "${COOKIE_ARG[@]}"
 
       - name: Build diff report
         id: diff

@@ -3,8 +3,8 @@
 一个面向企业微信（WeCom）开放接口的轻量 CLI 原型，当前版本聚焦：
 
 - **基础设施能力**：配置、鉴权、统一请求器、统一错误处理
-- **高频业务域命令**：通讯录、消息、客户联系
-- **工程化基线**：lint / type / test CI，以及 alpha 发布流程
+- **全量 API 覆盖**：31 个业务域，309 个 endpoint，100% catalog 覆盖率
+- **工程化基线**：lint / type / test CI，alpha 发布流程，每日 catalog 自动巡检
 
 ---
 
@@ -140,15 +140,21 @@ python scripts/build_agent_tasks.py --catalog specs/wecom/catalog.yaml --spec-di
 python scripts/run_catalog_sync.py --mode auto-apply
 # 如需允许 auto-apply 清理 catalog 已移除项，必须显式确认
 python scripts/run_catalog_sync.py --mode auto-apply --allow-prune-unknown
-# 可选：抓取官方文档候选接口目录
+# 如果触发 CAPTCHA 验证，传入浏览器 cookie 绕过
+python scripts/run_catalog_sync.py --mode auto-apply \
+  --cookie "$(cat /path/to/cookie.txt)" --delay-min 2.0 --delay-max 4.0
+# 单独抓取官方文档候选接口目录
 python scripts/discover_wecom_apis.py \
   --seed-file specs/wecom/seeds.txt \
   --menu-tree-file specs/wecom/menu_tree.json \
   --empty-pages-file specs/wecom/empty_pages.json \
-  --max-pages 2000
+  --max-pages 1000 \
+  --cookie "$COOKIE_STRING"
 ```
 
 `check_api_coverage.py` 会同时校验 catalog 覆盖率与接口契约一致性（如 required 参数是否映射到 request）。
+
+> **CAPTCHA 注意**：企微文档站有腾讯验证码反爬。首次访问建议先在浏览器打开 `developer.work.weixin.qq.com` 完成验证，导出 cookie 后通过 `--cookie` 传入。爬虫连续 5 次被拦截会自动终止，避免 IP 被长期封锁。延迟建议 ≥ 2s。
 
 `build_agent_tasks.py` 会生成面向外部 Coding Agent 的产物：
 
