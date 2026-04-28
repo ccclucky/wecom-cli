@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import random
 import re
 import time
@@ -34,6 +35,30 @@ REQUEST_URL_RE = re.compile(
     re.IGNORECASE,
 )
 TITLE_RE = re.compile(r"<title>(.*?)</title>", re.IGNORECASE | re.DOTALL)
+
+logger = logging.getLogger("wecom-discovery")
+
+
+def setup_logging(log_file: Path | None = None) -> None:
+    """Setup logging to console and optionally to a file."""
+    logger.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(
+        "[%(asctime)s] %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+    )
+
+    # Console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+
+    # File handler
+    if log_file:
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        fh = logging.FileHandler(log_file, encoding="utf-8")
+        fh.setLevel(logging.DEBUG)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
 
 
 def _normalize_whitespace(text: str) -> str:
@@ -246,7 +271,7 @@ def build_seed_urls(
                 if "id" in item:
                     seeds.append(f"{DOC_PATH_PREFIX}{item['id']}")
         except Exception as e:
-            print(f"Failed to parse menu tree: {e}")
+            logger.warning(f"Failed to parse menu tree: {e}")
 
     if not seeds:
         seeds = [f"{DOC_PATH_PREFIX}90665"]
@@ -509,21 +534,37 @@ def crawl(
     discovered: dict[tuple[str, str | None], DiscoveredOperation] = {}
     failures: list[CrawlFailure] = []
 
+    total_expected = min(len(seeds), max_pages) if seed_only else max_pages
+    logger.info(f"Starting crawl: {len(seeds)} seeds, max_pages={max_pages}, seed_only={seed_only}")
+
     while q and len(seen) < max_pages:
         url = q.popleft()
         if url in seen:
             continue
         seen.add(url)
+
+        curr_idx = len(seen)
+        percent = (curr_idx / total_expected) * 100 if total_expected > 0 else 0
+        progress_prefix = f"[{curr_idx}/{total_expected}] {percent:5.1f}%"
+
+        logger.debug(f"Fetching: {url}")
         time.sleep(random.uniform(delay_min, delay_max))
         try:
             html = fetch_html(url)
         except Exception as exc:
+            logger.error(f"{progress_prefix} | FAILED | {url} | Error: {exc}")
             failures.append(CrawlFailure(url=url, error=str(exc)))
             continue
 
-        for op in extract_operations(url, html):
-            key = (op.endpoint, op.method)
-            discovered[key] = op
+        ops = extract_operations(url, html)
+        if ops:
+            for op in ops:
+                key = (op.endpoint, op.method)
+                discovered[key] = op
+            op_names = ", ".join(f"{op.method or '??'} {op.endpoint}" for op in ops)
+            logger.info(f"{progress_prefix} | FOUND {len(ops):2d} | {op_names}")
+        else:
+            logger.info(f"{progress_prefix} | EMPTY    | No API found on page")
 
         if not seed_only:
             # Free crawl: follow all discovered links (original behaviour)
@@ -556,7 +597,10 @@ def main() -> int:
     parser.add_argument("--delay-max", type=float, default=3.0,
                         help="Maximum delay between page fetches in seconds")
     parser.add_argument("--output", type=Path, default=Path("artifacts/catalog.discovery.yaml"))
+    parser.add_argument("--log-file", type=Path, default=Path("artifacts/discovery.log"), help="Path to log file")
     args = parser.parse_args()
+
+    setup_logging(args.log_file)
 
     seeds = build_seed_urls(
         explicit_seeds=list(args.seed),
@@ -564,6 +608,7 @@ def main() -> int:
         menu_tree_file=args.menu_tree_file,
     )
 
+    start_time = time.time()
     # When using menu_tree_file, the seeds already cover all known pages.
     # Disable free link-following to avoid unbounded crawl expansion.
     seed_only = args.menu_tree_file is not None and args.menu_tree_file.exists()
@@ -573,6 +618,8 @@ def main() -> int:
         delay_min=args.delay_min,
         delay_max=args.delay_max,
     )
+    duration = time.time() - start_time
+
     payload = {
         "snapshot_date": "2026-04-23",
         "source": ALLOWED_HOST,
@@ -581,17 +628,23 @@ def main() -> int:
             "visited_pages": crawl_report.visited_pages,
             "failed_pages": crawl_report.failed_pages,
             "failures": [asdict(item) for item in crawl_report.failures],
+            "duration_seconds": round(duration, 2),
         },
         "operations": [asdict(op) for op in crawl_report.operations],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(
-        "discovered operations: "
-        f"{len(crawl_report.operations)} "
+    
+    logger.info("-" * 40)
+    logger.info(f"Discovery completed in {duration/60:.1f} minutes")
+    logger.info(
+        "Summary: "
+        f"{len(crawl_report.operations)} operations found "
         f"(visited={crawl_report.visited_pages}, failed={crawl_report.failed_pages}) "
-        f"-> {args.output}"
     )
+    logger.info(f"Output saved to: {args.output}")
+    if args.log_file:
+        logger.info(f"Full logs available at: {args.log_file}")
     return 0
 
 

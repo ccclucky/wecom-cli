@@ -157,12 +157,27 @@ def _build_post_args_and_request(
     if params:
         args: list[dict[str, Any]] = []
         json_body: dict[str, Any] = {}
+        seen_names: dict[str, int] = {}
         for field in params:
             name = field["name"]
+            if name in seen_names:
+                seen_names[name] += 1
+                # Try to make it unique by appending a suffix
+                # If it's a nested field with └, we try to preserve the prefix
+                prefix = ""
+                stripped = name
+                while stripped.startswith("└"):
+                    prefix += "└"
+                    stripped = stripped[1:]
+                name = f"{prefix}{stripped.strip()}_{seen_names[name]}"
+            else:
+                seen_names[name] = 0
+
             arg_type = _infer_arg_type(field)
+            clean_name = name.replace('└', '').strip()
             arg = {
                 "name": name,
-                "flag": f"--{name.replace('_', '-')}",
+                "flag": f"--{clean_name.replace('_', '-').replace(' ', '-')}",
                 "type": arg_type,
                 "help": field.get("description") or f"TODO: {name}",
             }

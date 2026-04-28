@@ -162,7 +162,8 @@ def main() -> int:
                 args.diff_output,
                 "--sync-output",
                 args.synced,
-            ]
+            ],
+            ok_codes={0, 1},
         )
         _run(
             [
