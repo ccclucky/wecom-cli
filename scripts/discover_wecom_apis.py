@@ -27,7 +27,17 @@ from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
 
 ALLOWED_HOST = "developer.work.weixin.qq.com"
+CAPTCHA_SIGNALS = ("TencentCaptcha", "captcha", "verify", "/security/verify")
+CAPTCHA_HTML_MAX = 3000
+CAPTCHA_CONSECUTIVE_LIMIT = 5
+
+
+def _is_captcha_block(html: str) -> bool:
+    if len(html) > CAPTCHA_HTML_MAX:
+        return False
+    return any(sig in html for sig in CAPTCHA_SIGNALS)
 DOC_PATH_PREFIX = "https://developer.work.weixin.qq.com/document/path/"
+_TREE_PREFIX_RE = re.compile(r"^[\s│├└─┬┴┌┐┘└]+")
 ENDPOINT_RE = re.compile(r"/cgi-bin/[a-zA-Z0-9_./-]+")
 METHOD_RE = re.compile(r"(?:请求方式|Request Method)\s*[:：]?\s*(GET|POST)", re.IGNORECASE)
 REQUEST_URL_RE = re.compile(
@@ -59,6 +69,29 @@ def setup_logging(log_file: Path | None = None) -> None:
         fh.setLevel(logging.DEBUG)
         fh.setFormatter(formatter)
         logger.addHandler(fh)
+
+
+_INVALID_IDENT_RE = re.compile(r"[^\w]")
+_PY_KEYWORDS = frozenset({
+    "False", "None", "True", "and", "as", "assert", "async", "await",
+    "break", "class", "continue", "def", "del", "elif", "else", "except",
+    "finally", "for", "from", "global", "if", "import", "in", "is",
+    "lambda", "nonlocal", "not", "or", "pass", "raise", "return",
+    "try", "while", "with", "yield",
+})
+
+
+def _safe_ident(name: str) -> str:
+    if name in _PY_KEYWORDS:
+        return f"{name}_"
+    return name
+
+
+def _strip_tree_prefix(name: str) -> str:
+    cleaned = _TREE_PREFIX_RE.sub("", name).strip()
+    cleaned = _INVALID_IDENT_RE.sub("_", cleaned)
+    cleaned = re.sub(r"_+", "_", cleaned).strip("_")
+    return _safe_ident(cleaned)
 
 
 def _normalize_whitespace(text: str) -> str:
@@ -128,6 +161,7 @@ class CrawlReport:
     operations: list[DiscoveredOperation]
     visited_pages: int
     failed_pages: int
+    blocked_pages: int
     failures: list[CrawlFailure]
 
 
@@ -268,6 +302,8 @@ def build_seed_urls(
             import json
             tree_data = json.loads(menu_tree_file.read_text(encoding="utf-8"))
             for item in tree_data:
+                if item.get("type") != 1:
+                    continue
                 if "id" in item:
                     seeds.append(f"{DOC_PATH_PREFIX}{item['id']}")
         except Exception as e:
@@ -280,14 +316,14 @@ def build_seed_urls(
     return list(dict.fromkeys(seeds))
 
 
-def fetch_html(url: str, timeout: float = 15.0) -> str:
-    req = Request(
-        url,
-        headers={
-            "User-Agent": "wecom-cli-catalog-discovery/1.0",
-            "Accept": "text/html,application/xhtml+xml",
-        },
-    )
+def fetch_html(url: str, timeout: float = 15.0, cookie: str | None = None) -> str:
+    headers: dict[str, str] = {
+        "User-Agent": "wecom-cli-catalog-discovery/1.0",
+        "Accept": "text/html,application/xhtml+xml",
+    }
+    if cookie:
+        headers["Cookie"] = cookie
+    req = Request(url, headers=headers)
     with urlopen(req, timeout=timeout) as resp:  # nosec B310 - fixed allowed host via crawl filter
         return resp.read().decode("utf-8", errors="ignore")
 
@@ -362,7 +398,7 @@ def _table_to_fields(block: DocBlock) -> tuple[DiscoveredField, ...]:
     for row in rows:
         if name_index is None or name_index >= len(row):
             continue
-        name = row[name_index].strip()
+        name = _strip_tree_prefix(row[name_index])
         if not name:
             continue
         required = None
@@ -520,12 +556,33 @@ def extract_operations(source_url: str, html: str) -> list[DiscoveredOperation]:
     ]
 
 
+def _load_empty_pages(path: Path | None) -> set[str]:
+    if not path or not path.exists():
+        return set()
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            return set(data)
+    except Exception as e:
+        logger.warning(f"Failed to load empty pages cache: {e}")
+    return set()
+
+
+def _save_empty_pages(path: Path | None, empty_set: set[str]) -> None:
+    if not path:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(sorted(empty_set), ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def crawl(
     seed_urls: Iterable[str],
     max_pages: int,
     seed_only: bool = False,
     delay_min: float = 1.0,
     delay_max: float = 3.0,
+    empty_pages_file: Path | None = None,
+    cookie: str | None = None,
 ) -> CrawlReport:
     seeds = list(seed_urls)
     seed_set: set[str] = set(seeds)
@@ -533,28 +590,63 @@ def crawl(
     seen: set[str] = set()
     discovered: dict[tuple[str, str | None], DiscoveredOperation] = {}
     failures: list[CrawlFailure] = []
+    new_empty: set[str] = set()
+
+    known_empty = _load_empty_pages(empty_pages_file)
+    skipped_empty = 0
+    blocked_count = 0
+    consecutive_blocks = 0
 
     total_expected = min(len(seeds), max_pages) if seed_only else max_pages
-    logger.info(f"Starting crawl: {len(seeds)} seeds, max_pages={max_pages}, seed_only={seed_only}")
+    logger.info(
+        f"Starting crawl: {len(seeds)} seeds, max_pages={max_pages}, "
+        f"seed_only={seed_only}, cached_empty={len(known_empty)}"
+    )
 
     while q and len(seen) < max_pages:
         url = q.popleft()
         if url in seen:
             continue
+
+        if url in known_empty:
+            logger.debug(f"Skipping cached-empty: {url}")
+            seen.add(url)
+            skipped_empty += 1
+            continue
+
         seen.add(url)
 
-        curr_idx = len(seen)
+        curr_idx = len(seen) + skipped_empty
         percent = (curr_idx / total_expected) * 100 if total_expected > 0 else 0
         progress_prefix = f"[{curr_idx}/{total_expected}] {percent:5.1f}%"
 
         logger.debug(f"Fetching: {url}")
         time.sleep(random.uniform(delay_min, delay_max))
         try:
-            html = fetch_html(url)
+            html = fetch_html(url, cookie=cookie)
         except Exception as exc:
             logger.error(f"{progress_prefix} | FAILED | {url} | Error: {exc}")
             failures.append(CrawlFailure(url=url, error=str(exc)))
+            consecutive_blocks = 0
             continue
+
+        if _is_captcha_block(html):
+            blocked_count += 1
+            consecutive_blocks += 1
+            logger.warning(
+                f"{progress_prefix} | BLOCKED  | Anti-bot page ({len(html)} bytes)"
+                + (f" | {consecutive_blocks} consecutive — will abort at {CAPTCHA_CONSECUTIVE_LIMIT}"
+                   if consecutive_blocks >= CAPTCHA_CONSECUTIVE_LIMIT - 2 else "")
+            )
+            if consecutive_blocks >= CAPTCHA_CONSECUTIVE_LIMIT:
+                logger.error(
+                    f"Aborting: {consecutive_blocks} consecutive CAPTCHA blocks. "
+                    "Server is rate-limiting. Increase --delay-min/--delay-max or wait and retry."
+                )
+                break
+            continue
+
+        consecutive_blocks = 0
 
         ops = extract_operations(url, html)
         if ops:
@@ -565,23 +657,30 @@ def crawl(
             logger.info(f"{progress_prefix} | FOUND {len(ops):2d} | {op_names}")
         else:
             logger.info(f"{progress_prefix} | EMPTY    | No API found on page")
+            new_empty.add(url)
 
         if not seed_only:
-            # Free crawl: follow all discovered links (original behaviour)
             for child in extract_links(url, html):
                 if child not in seen:
                     q.append(child)
         else:
-            # Seed-only mode: only follow links that are already in the seed set
-            # Avoids unbounded expansion when using a pre-fetched menu tree
             for child in extract_links(url, html):
                 if child in seed_set and child not in seen:
                     q.append(child)
+
+    if new_empty and empty_pages_file:
+        merged = known_empty | new_empty
+        _save_empty_pages(empty_pages_file, merged)
+        logger.info(f"Cached {len(new_empty)} new empty pages ({len(merged)} total)")
+
+    if blocked_count:
+        logger.warning(f"Crawl blocked {blocked_count} times by anti-bot protection")
 
     return CrawlReport(
         operations=sorted(discovered.values(), key=lambda x: (x.endpoint, x.method or "")),
         visited_pages=len(seen),
         failed_pages=len(failures),
+        blocked_pages=blocked_count,
         failures=failures,
     )
 
@@ -598,6 +697,10 @@ def main() -> int:
                         help="Maximum delay between page fetches in seconds")
     parser.add_argument("--output", type=Path, default=Path("artifacts/catalog.discovery.yaml"))
     parser.add_argument("--log-file", type=Path, default=Path("artifacts/discovery.log"), help="Path to log file")
+    parser.add_argument("--empty-pages-file", type=Path, default=Path("specs/wecom/empty_pages.json"),
+                        help="Cache file for known-empty pages (skips on re-crawl)")
+    parser.add_argument("--cookie", default=None,
+                        help="Cookie header to send with each request (bypasses CAPTCHA)")
     args = parser.parse_args()
 
     setup_logging(args.log_file)
@@ -617,6 +720,8 @@ def main() -> int:
         seed_only=seed_only,
         delay_min=args.delay_min,
         delay_max=args.delay_max,
+        empty_pages_file=args.empty_pages_file,
+        cookie=args.cookie,
     )
     duration = time.time() - start_time
 
@@ -627,6 +732,7 @@ def main() -> int:
         "crawl": {
             "visited_pages": crawl_report.visited_pages,
             "failed_pages": crawl_report.failed_pages,
+            "blocked_pages": crawl_report.blocked_pages,
             "failures": [asdict(item) for item in crawl_report.failures],
             "duration_seconds": round(duration, 2),
         },
@@ -640,7 +746,8 @@ def main() -> int:
     logger.info(
         "Summary: "
         f"{len(crawl_report.operations)} operations found "
-        f"(visited={crawl_report.visited_pages}, failed={crawl_report.failed_pages}) "
+        f"(visited={crawl_report.visited_pages}, failed={crawl_report.failed_pages}, "
+        f"blocked={crawl_report.blocked_pages}) "
     )
     logger.info(f"Output saved to: {args.output}")
     if args.log_file:

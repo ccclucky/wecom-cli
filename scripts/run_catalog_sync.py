@@ -61,6 +61,8 @@ def main() -> int:
                         help="Minimum delay between page fetches in seconds")
     parser.add_argument("--delay-max", type=float, default=3.0,
                         help="Maximum delay between page fetches in seconds")
+    parser.add_argument("--cookie", default=None,
+                        help="Cookie header for each request (bypasses CAPTCHA)")
     parser.add_argument("--mode", choices=["dry-run", "apply", "auto-apply"], default="dry-run")
     parser.add_argument("--discovered", default="artifacts/catalog.discovery.yaml")
     parser.add_argument("--report", default="artifacts/wecom-catalog-report.md")
@@ -74,7 +76,8 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    _run(["python", "scripts/update_menu_tree.py", "--output", args.menu_tree_file])
+    cookie_args = ["--cookie", args.cookie] if args.cookie else []
+    _run(["python", "scripts/update_menu_tree.py", "--output", args.menu_tree_file] + cookie_args)
     _run(
         [
             "python",
@@ -91,7 +94,7 @@ def main() -> int:
             str(args.delay_max),
             "--output",
             args.discovered,
-        ]
+        ] + cookie_args
     )
 
     diff_cmd = [

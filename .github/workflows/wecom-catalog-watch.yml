@@ -22,6 +22,13 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Restore empty pages cache
+        uses: actions/cache@v4
+        with:
+          path: specs/wecom/empty_pages.json
+          key: wecom-empty-pages-${{ github.run_id }}
+          restore-keys: wecom-empty-pages-
+
       - name: Discover latest API catalog
         run: |
           python scripts/update_menu_tree.py \
@@ -29,6 +36,7 @@ jobs:
           python scripts/discover_wecom_apis.py \
             --seed-file specs/wecom/seeds.txt \
             --menu-tree-file specs/wecom/menu_tree.json \
+            --empty-pages-file specs/wecom/empty_pages.json \
             --max-pages 1500 \
             --delay-min 0.3 \
             --delay-max 0.8 \

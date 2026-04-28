@@ -141,7 +141,11 @@ python scripts/run_catalog_sync.py --mode auto-apply
 # 如需允许 auto-apply 清理 catalog 已移除项，必须显式确认
 python scripts/run_catalog_sync.py --mode auto-apply --allow-prune-unknown
 # 可选：抓取官方文档候选接口目录
-python scripts/discover_wecom_apis.py --seed-file specs/wecom/seeds.txt --doc-id-from 90000 --doc-id-to 100500 --max-pages 2000
+python scripts/discover_wecom_apis.py \
+  --seed-file specs/wecom/seeds.txt \
+  --menu-tree-file specs/wecom/menu_tree.json \
+  --empty-pages-file specs/wecom/empty_pages.json \
+  --max-pages 2000
 ```
 
 `check_api_coverage.py` 会同时校验 catalog 覆盖率与接口契约一致性（如 required 参数是否映射到 request）。

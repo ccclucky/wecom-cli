@@ -42,13 +42,13 @@ python scripts/check_api_coverage.py
 
 ## 4. 接口目录抓取方案（多入口，不是单页面）
 
-抓取不是只看一个页面，而是使用 `specs/wecom/seeds.txt` 多入口 crawl：
+抓取不是只看一个页面，而是使用 `specs/wecom/seeds.txt` + `specs/wecom/menu_tree.json` 多入口 crawl：
 
 ```bash
 python scripts/discover_wecom_apis.py \
   --seed-file specs/wecom/seeds.txt \
-  --doc-id-from 90000 \
-  --doc-id-to 100500 \
+  --menu-tree-file specs/wecom/menu_tree.json \
+  --empty-pages-file specs/wecom/empty_pages.json \
   --max-pages 2000 \
   --output artifacts/catalog.discovery.yaml
 ```
@@ -56,6 +56,8 @@ python scripts/discover_wecom_apis.py \
 说明：
 
 - 脚本会在官方文档站内（`developer.work.weixin.qq.com`）抓取 `/document/path/*` 页面；
+- 菜单树（`menu_tree.json`）作为种子来源，仅使用 `type=1` 的 API 文档节点，过滤目录/分类节点；
+- 空页面缓存（`empty_pages.json`）记录已确认无 API 契约的页面，下次抓取自动跳过，减少冗余请求；
 - 支持维护多个种子页（持续扩展 `seeds.txt`），降低漏抓风险；
 - 通过正则提取 `/cgi-bin/...` endpoint，并尝试识别页面上的 GET/POST。
 

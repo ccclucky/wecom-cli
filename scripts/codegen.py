@@ -111,7 +111,7 @@ def _render_client(specs: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def _render_add_argument(line_prefix: str, arg: dict[str, Any]) -> list[str]:
+def _render_add_argument(line_prefix: str, arg: dict[str, Any], dest: str | None = None) -> list[str]:
     kwargs: list[str] = []
     if arg.get("action"):
         kwargs.append(f"action={repr(arg['action'])}")
@@ -130,6 +130,8 @@ def _render_add_argument(line_prefix: str, arg: dict[str, Any]) -> list[str]:
         kwargs.append(f"default={repr(arg['default'])}")
     if arg.get("help"):
         kwargs.append(f"help={repr(arg['help'])}")
+    if dest is not None:
+        kwargs.append(f"dest={repr(dest)}")
 
     return [
         f"    {line_prefix}.add_argument(",
@@ -137,6 +139,22 @@ def _render_add_argument(line_prefix: str, arg: dict[str, Any]) -> list[str]:
         *[f"        {kw}," for kw in kwargs],
         "    )",
     ]
+
+
+def _dedup_args(args: list[dict[str, Any]]) -> list[tuple[str, dict[str, Any]]]:
+    """Return (unique_name, arg) pairs, deduplicating repeated names."""
+    seen: dict[str, int] = {}
+    result: list[tuple[str, dict[str, Any]]] = []
+    for a in args:
+        base = a["name"]
+        if base in seen:
+            seen[base] += 1
+            uniq = f"{base}_{seen[base]}"
+        else:
+            seen[base] = 0
+            uniq = base
+        result.append((uniq, a))
+    return result
 
 
 def _render_cli(specs: list[dict[str, Any]]) -> str:
@@ -195,12 +213,14 @@ def _render_cli(specs: list[dict[str, Any]]) -> str:
                         "    )",
                     ]
                 )
-            for arg in op.get("args", []):
-                lines.extend(_render_add_argument(parser_name, arg))
+            deduped = _dedup_args(op.get("args", []))
+            for uniq, arg in deduped:
+                dest = uniq if uniq != arg["name"] else None
+                lines.extend(_render_add_argument(parser_name, arg, dest=dest))
 
             lines.append("")
             lines.append(f"    def _handle_{domain}_{op['name']}(a: argparse.Namespace) -> dict:")
-            call_args = [f"{a['name']}=a.{a['name']}" for a in op.get("args", [])]
+            call_args = [f"{uniq}=a.{uniq}" for uniq, _ in deduped]
             if call_args:
                 lines.append(
                     f"        return client.{domain}_{op['name']}("

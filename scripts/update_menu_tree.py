@@ -7,14 +7,14 @@ import urllib.request
 from pathlib import Path
 
 
-def update_menu_tree(output_path: Path) -> int:
+def update_menu_tree(output_path: Path, cookie: str | None = None) -> int:
     url = "https://developer.work.weixin.qq.com/document/path/90665"
-    req = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        },
-    )
+    headers: dict[str, str] = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    if cookie:
+        headers["Cookie"] = cookie
+    req = urllib.request.Request(url, headers=headers)
 
     print(f"Fetching latest menu tree from {url} ...")
     try:
@@ -48,8 +48,9 @@ def update_menu_tree(output_path: Path) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Update WeCom menu tree")
     parser.add_argument("--output", type=Path, default=Path("specs/wecom/menu_tree.json"))
+    parser.add_argument("--cookie", default=None, help="Cookie header for request (bypasses CAPTCHA)")
     args = parser.parse_args()
-    return update_menu_tree(args.output)
+    return update_menu_tree(args.output, cookie=args.cookie)
 
 
 if __name__ == "__main__":
