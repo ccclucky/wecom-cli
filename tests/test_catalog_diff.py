@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from scripts.catalog_diff_report import build_diff, build_diff_payload, build_reconciled_catalog, to_markdown
+from scripts.catalog_diff_report import (
+    build_diff,
+    build_diff_payload,
+    build_reconciled_catalog,
+    to_markdown,
+)
 
 
 def test_build_diff_detects_add_remove_modify():

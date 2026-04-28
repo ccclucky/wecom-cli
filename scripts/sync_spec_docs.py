@@ -14,7 +14,11 @@ try:
         _build_output_from_doc,
     )
 except ModuleNotFoundError:
-    from scaffold_from_catalog import _build_args_and_request, _build_doc_payload, _build_output_from_doc
+    from scaffold_from_catalog import (
+        _build_args_and_request,
+        _build_doc_payload,
+        _build_output_from_doc,
+    )
 
 
 def _load_json_yaml(path: Path) -> dict[str, Any]:

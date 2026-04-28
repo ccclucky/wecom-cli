@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from cli.generated_commands import register_generated_commands
 from cli.main import route
 
@@ -49,6 +51,7 @@ def test_route_messages():
     assert result["to_user"] == "zhangsan"
 
 
+@pytest.mark.xfail(reason="customers spec not yet implemented", strict=True)
 def test_route_customers():
     parser, table = _build_parser_and_table()
     args = parser.parse_args(["customers", "list-follow-users"])

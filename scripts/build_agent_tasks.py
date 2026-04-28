@@ -16,7 +16,11 @@ try:
     )
     from scripts.sync_spec_docs import _review_hints_for_operation
 except ModuleNotFoundError:
-    from scaffold_from_catalog import _build_args_and_request, _build_doc_payload, _build_output_from_doc
+    from scaffold_from_catalog import (
+        _build_args_and_request,
+        _build_doc_payload,
+        _build_output_from_doc,
+    )
     from sync_spec_docs import _review_hints_for_operation
 
 

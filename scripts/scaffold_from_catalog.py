@@ -96,7 +96,6 @@ def _build_output_from_doc(doc: dict[str, Any]) -> dict[str, Any]:
 
 def _infer_arg_type(field: dict[str, Any]) -> str:
     field_type = str(field.get("type") or "").lower()
-    name = str(field.get("name") or "").lower()
     description = str(field.get("description") or "").lower()
     if "bool" in field_type or "是否" in description:
         return "bool"

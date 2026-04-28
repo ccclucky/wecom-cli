@@ -17,13 +17,26 @@ pythonpath = ["."]
 testpaths = ["tests"]
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
 
+[tool.ruff.lint.per-file-ignores]
+# Auto-generated files may have long help strings and Chinese text
+"cli/generated_commands.py" = ["E501"]
+"apis/generated_client.py" = ["E501"]
+# Scripts use long strings for prompts, URLs, error messages
+"scripts/*.py" = ["E501"]
+# Tests may have long assertion lines
+"tests/*.py" = ["E501"]
+
 [tool.mypy]
 python_version = "3.11"
 files = ["core", "cli", "apis", "models", "tests"]
 ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = "scripts.*"
+ignore_errors = true

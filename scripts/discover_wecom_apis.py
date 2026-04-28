@@ -13,12 +13,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import re
+import time
 from collections import deque
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass
-import time
-import random
 from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path

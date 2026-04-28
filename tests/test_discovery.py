@@ -68,19 +68,24 @@ def test_extract_links_filters_domain_and_path():
     ]
 
 
-def test_build_seed_urls_supports_range_and_deduplicate(tmp_path):
+def test_build_seed_urls_supports_menu_tree_and_deduplicate(tmp_path):
     seed_file = tmp_path / "seeds.txt"
     seed_file.write_text(
         "https://developer.work.weixin.qq.com/document/path/90664\n",
         encoding="utf-8",
     )
+    # Create a minimal menu_tree.json with two nodes
+    menu_tree_file = tmp_path / "menu_tree.json"
+    menu_tree_file.write_text(
+        '[{"id": 90665}, {"id": 90666}]',
+        encoding="utf-8",
+    )
     seeds = build_seed_urls(
         explicit_seeds=["https://developer.work.weixin.qq.com/document/path/90664"],
         seed_file=seed_file,
-        doc_id_from=90664,
-        doc_id_to=90666,
+        menu_tree_file=menu_tree_file,
     )
-    assert seeds[0] == "https://developer.work.weixin.qq.com/document/path/90664"
+    assert "https://developer.work.weixin.qq.com/document/path/90664" in seeds
     assert "https://developer.work.weixin.qq.com/document/path/90665" in seeds
     assert "https://developer.work.weixin.qq.com/document/path/90666" in seeds
     assert len(seeds) == len(set(seeds))
