@@ -537,7 +537,7 @@ def main() -> int:
     parser.add_argument("--seed-file", type=Path, help="File containing seed URLs, one per line")
     parser.add_argument("--menu-tree-file", type=Path, default=Path("specs/wecom/menu_tree.json"), help="Menu tree JSON file")
     parser.add_argument("--max-pages", type=int, default=300)
-    parser.add_argument("--output", type=Path, default=Path("specs/wecom/catalog.discovery.yaml"))
+    parser.add_argument("--output", type=Path, default=Path("artifacts/catalog.discovery.yaml"))
     args = parser.parse_args()
 
     seeds = build_seed_urls(

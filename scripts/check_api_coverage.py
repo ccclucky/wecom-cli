@@ -23,7 +23,6 @@ class CoverageReport:
     invalid_contracts: list[str]
 
 
-
 def _load_json_yaml(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -51,6 +50,9 @@ def _collect_spec_operations(spec_dir: Path) -> tuple[set[str], list[str], list[
         if spec_path.name == "catalog.yaml":
             continue
         payload = _load_json_yaml(spec_path)
+        if "domain" not in payload:
+            # Skip non-spec files (e.g. catalog.discovery.yaml)
+            continue
         domain = payload["domain"]
         for op in payload.get("operations", []):
             op_id = f"{domain}.{op['name']}"

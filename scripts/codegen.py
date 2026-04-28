@@ -42,6 +42,9 @@ def _load_specs() -> list[dict[str, Any]]:
             continue
         with file.open("r", encoding="utf-8") as fp:
             data = json.load(fp)
+        if "domain" not in data:
+            # Skip non-spec files (e.g. catalog.discovery.yaml landed here by mistake)
+            continue
         specs.append(data)
     return specs
 
