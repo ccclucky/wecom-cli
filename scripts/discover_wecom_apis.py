@@ -495,8 +495,10 @@ def extract_operations(source_url: str, html: str) -> list[DiscoveredOperation]:
     ]
 
 
-def crawl(seed_urls: Iterable[str], max_pages: int) -> CrawlReport:
-    q: deque[str] = deque(seed_urls)
+def crawl(seed_urls: Iterable[str], max_pages: int, seed_only: bool = False) -> CrawlReport:
+    seeds = list(seed_urls)
+    seed_set: set[str] = set(seeds)
+    q: deque[str] = deque(seeds)
     seen: set[str] = set()
     discovered: dict[tuple[str, str | None], DiscoveredOperation] = {}
     failures: list[CrawlFailure] = []
@@ -513,15 +515,21 @@ def crawl(seed_urls: Iterable[str], max_pages: int) -> CrawlReport:
             failures.append(CrawlFailure(url=url, error=str(exc)))
             continue
 
-
-
         for op in extract_operations(url, html):
             key = (op.endpoint, op.method)
             discovered[key] = op
 
-        for child in extract_links(url, html):
-            if child not in seen:
-                q.append(child)
+        if not seed_only:
+            # Free crawl: follow all discovered links (original behaviour)
+            for child in extract_links(url, html):
+                if child not in seen:
+                    q.append(child)
+        else:
+            # Seed-only mode: only follow links that are already in the seed set
+            # Avoids unbounded expansion when using a pre-fetched menu tree
+            for child in extract_links(url, html):
+                if child in seed_set and child not in seen:
+                    q.append(child)
 
     return CrawlReport(
         operations=sorted(discovered.values(), key=lambda x: (x.endpoint, x.method or "")),
@@ -546,7 +554,10 @@ def main() -> int:
         menu_tree_file=args.menu_tree_file,
     )
 
-    crawl_report = crawl(seeds, args.max_pages)
+    # When using menu_tree_file, the seeds already cover all known pages.
+    # Disable free link-following to avoid unbounded crawl expansion.
+    seed_only = args.menu_tree_file is not None and args.menu_tree_file.exists()
+    crawl_report = crawl(seeds, args.max_pages, seed_only=seed_only)
     payload = {
         "snapshot_date": "2026-04-23",
         "source": ALLOWED_HOST,
