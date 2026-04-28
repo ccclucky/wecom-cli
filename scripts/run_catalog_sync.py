@@ -57,6 +57,10 @@ def main() -> int:
     parser.add_argument("--seed-file", default="specs/wecom/seeds.txt")
     parser.add_argument("--menu-tree-file", default="specs/wecom/menu_tree.json")
     parser.add_argument("--max-pages", type=int, default=2000)
+    parser.add_argument("--delay-min", type=float, default=1.0,
+                        help="Minimum delay between page fetches in seconds")
+    parser.add_argument("--delay-max", type=float, default=3.0,
+                        help="Maximum delay between page fetches in seconds")
     parser.add_argument("--mode", choices=["dry-run", "apply", "auto-apply"], default="dry-run")
     parser.add_argument("--discovered", default="artifacts/catalog.discovery.yaml")
     parser.add_argument("--report", default="artifacts/wecom-catalog-report.md")
@@ -81,6 +85,10 @@ def main() -> int:
             args.menu_tree_file,
             "--max-pages",
             str(args.max_pages),
+            "--delay-min",
+            str(args.delay_min),
+            "--delay-max",
+            str(args.delay_max),
             "--output",
             args.discovered,
         ]

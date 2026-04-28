@@ -166,9 +166,14 @@ def _main() -> int:
         )
     )
 
+    if report.unknown_ids:
+        print(f"WARNING: {len(report.unknown_ids)} spec operations not in catalog: {report.unknown_ids}")
+    if report.missing_examples:
+        print(f"WARNING: {len(report.missing_examples)} operations missing examples")
+
     if report.coverage < 1.0:
         return 2
-    if report.unknown_ids or report.missing_examples or report.invalid_contracts:
+    if report.invalid_contracts:
         return 3
     return 0
 

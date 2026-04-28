@@ -29,7 +29,9 @@ jobs:
           python scripts/discover_wecom_apis.py \
             --seed-file specs/wecom/seeds.txt \
             --menu-tree-file specs/wecom/menu_tree.json \
-            --max-pages 5000 \
+            --max-pages 1500 \
+            --delay-min 0.3 \
+            --delay-max 0.8 \
             --output artifacts/catalog.discovery.yaml
 
       - name: Build diff report

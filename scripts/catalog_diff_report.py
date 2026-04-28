@@ -207,6 +207,24 @@ def build_reconciled_catalog(
             }
         )
 
+    # Preserve baseline operations that the crawler did not re-discover.
+    discovered_endpoints = {
+        op.get("endpoint") for op in discovered.get("operations", []) if op.get("endpoint")
+    }
+    for op in baseline.get("operations", []):
+        endpoint = op.get("endpoint")
+        if not endpoint or endpoint in discovered_endpoints:
+            continue
+        reconciled_ops.append({
+            "id": op.get("id"),
+            "domain": op.get("domain", "unknown"),
+            "name": op.get("name", _slug_from_endpoint(endpoint)),
+            "endpoint": endpoint,
+            "method": op.get("method"),
+            **({"doc": op["doc"]} if isinstance(op.get("doc"), dict) else {}),
+        })
+
+    reconciled_ops.sort(key=lambda x: x.get("endpoint", ""))
     return {
         "snapshot_date": discovered.get("snapshot_date"),
         "source": discovered.get("source"),

@@ -56,6 +56,9 @@ def test_build_diff_detects_add_remove_modify():
     assert by_endpoint["/cgi-bin/department/list"]["id"] == "departments.list"
     assert by_endpoint["/cgi-bin/department/list"]["doc"]["title"] == "获取部门列表"
     assert by_endpoint["/cgi-bin/department/list"]["doc"]["request_params"][0]["name"] == "department_id"
+    # Baseline-only operation must be preserved
+    assert "/cgi-bin/message/send" in by_endpoint
+    assert by_endpoint["/cgi-bin/message/send"]["method"] == "POST"
 
     md = to_markdown(diff, baseline, discovered)
     assert "Added: **1**" in md
@@ -116,3 +119,52 @@ def test_build_diff_skips_methodless_discovery_pages():
 
     diff = build_diff(baseline, discovered)
     assert diff == {"added": [], "removed": [], "modified": []}
+
+
+def test_build_reconciled_catalog_preserves_baseline_only_ops():
+    baseline = {
+        "snapshot_date": "2026-04-22",
+        "operations": [
+            {
+                "id": "messages.send_text",
+                "domain": "messages",
+                "name": "send_text",
+                "endpoint": "/cgi-bin/message/send",
+                "method": "POST",
+            },
+            {
+                "id": "tags.create",
+                "domain": "tags",
+                "name": "create",
+                "endpoint": "/cgi-bin/tag/create",
+                "method": "POST",
+                "doc": {"title": "创建标签"},
+            },
+        ],
+    }
+    discovered = {
+        "snapshot_date": "2026-04-23",
+        "operations": [
+            {
+                "endpoint": "/cgi-bin/department/list",
+                "method": "GET",
+                "title": "获取部门列表",
+            },
+        ],
+    }
+
+    reconciled = build_reconciled_catalog(baseline, discovered)
+    by_endpoint = {op["endpoint"]: op for op in reconciled["operations"]}
+
+    # Discovered operation is present
+    assert "/cgi-bin/department/list" in by_endpoint
+    assert by_endpoint["/cgi-bin/department/list"]["id"] == "departments.list"
+
+    # Baseline-only operations are preserved verbatim
+    assert "/cgi-bin/message/send" in by_endpoint
+    assert by_endpoint["/cgi-bin/message/send"]["id"] == "messages.send_text"
+    assert by_endpoint["/cgi-bin/message/send"]["method"] == "POST"
+
+    assert "/cgi-bin/tag/create" in by_endpoint
+    assert by_endpoint["/cgi-bin/tag/create"]["id"] == "tags.create"
+    assert by_endpoint["/cgi-bin/tag/create"]["doc"]["title"] == "创建标签"

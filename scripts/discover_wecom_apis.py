@@ -495,7 +495,13 @@ def extract_operations(source_url: str, html: str) -> list[DiscoveredOperation]:
     ]
 
 
-def crawl(seed_urls: Iterable[str], max_pages: int, seed_only: bool = False) -> CrawlReport:
+def crawl(
+    seed_urls: Iterable[str],
+    max_pages: int,
+    seed_only: bool = False,
+    delay_min: float = 1.0,
+    delay_max: float = 3.0,
+) -> CrawlReport:
     seeds = list(seed_urls)
     seed_set: set[str] = set(seeds)
     q: deque[str] = deque(seeds)
@@ -508,7 +514,7 @@ def crawl(seed_urls: Iterable[str], max_pages: int, seed_only: bool = False) -> 
         if url in seen:
             continue
         seen.add(url)
-        time.sleep(random.uniform(1.0, 3.0))  # 加入防风控延时，调大避免 HTTP 429
+        time.sleep(random.uniform(delay_min, delay_max))
         try:
             html = fetch_html(url)
         except Exception as exc:
@@ -545,6 +551,10 @@ def main() -> int:
     parser.add_argument("--seed-file", type=Path, help="File containing seed URLs, one per line")
     parser.add_argument("--menu-tree-file", type=Path, default=Path("specs/wecom/menu_tree.json"), help="Menu tree JSON file")
     parser.add_argument("--max-pages", type=int, default=300)
+    parser.add_argument("--delay-min", type=float, default=1.0,
+                        help="Minimum delay between page fetches in seconds")
+    parser.add_argument("--delay-max", type=float, default=3.0,
+                        help="Maximum delay between page fetches in seconds")
     parser.add_argument("--output", type=Path, default=Path("artifacts/catalog.discovery.yaml"))
     args = parser.parse_args()
 
@@ -557,7 +567,12 @@ def main() -> int:
     # When using menu_tree_file, the seeds already cover all known pages.
     # Disable free link-following to avoid unbounded crawl expansion.
     seed_only = args.menu_tree_file is not None and args.menu_tree_file.exists()
-    crawl_report = crawl(seeds, args.max_pages, seed_only=seed_only)
+    crawl_report = crawl(
+        seeds, args.max_pages,
+        seed_only=seed_only,
+        delay_min=args.delay_min,
+        delay_max=args.delay_max,
+    )
     payload = {
         "snapshot_date": "2026-04-23",
         "source": ALLOWED_HOST,
