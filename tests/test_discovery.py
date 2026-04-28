@@ -5,8 +5,6 @@ from unittest.mock import patch
 from scripts.discover_wecom_apis import (
     CAPTCHA_CONSECUTIVE_LIMIT,
     CrawlFailure,
-    CrawlReport,
-    DiscoveredOperation,
     _is_captcha_block,
     _load_empty_pages,
     _save_empty_pages,
@@ -196,7 +194,7 @@ def test_crawl_deduplicates_urls():
 def test_crawl_seed_only_mode_ignores_non_seed_links():
     html_with_link = SAMPLE_HTML_EMPTY.replace(
         "</body>",
-        f'<a href="https://developer.work.weixin.qq.com/document/path/99999">link</a></body>',
+        '<a href="https://developer.work.weixin.qq.com/document/path/99999">link</a></body>',
     )
     with patch("scripts.discover_wecom_apis.fetch_html", return_value=html_with_link):
         report = crawl([SEED_A], max_pages=100, seed_only=True, delay_min=0, delay_max=0)
@@ -377,11 +375,10 @@ def test_fetch_html_success():
 
 
 def test_fetch_html_timeout_raises():
-    import socket
-    with patch("scripts.discover_wecom_apis.urlopen", side_effect=socket.timeout("timed out")):
+    with patch("scripts.discover_wecom_apis.urlopen", side_effect=TimeoutError("timed out")):
         try:
             fetch_html("https://example.com", timeout=1)
-        except socket.timeout:
+        except TimeoutError:
             pass
         else:
             raise AssertionError("Expected timeout to raise")
