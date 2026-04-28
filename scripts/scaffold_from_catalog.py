@@ -107,10 +107,18 @@ def _infer_arg_type(field: dict[str, Any]) -> str:
 def _build_args_and_request(
     method: str | None,
     request_params: list[dict[str, Any]],
+    request_example_json: Any = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    if method != "GET":
-        return [], {}
+    if method == "GET":
+        return _build_get_args_and_request(request_params)
+    if method == "POST":
+        return _build_post_args_and_request(request_params, request_example_json)
+    return [], {}
 
+
+def _build_get_args_and_request(
+    request_params: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     args: list[dict[str, Any]] = []
     query: dict[str, Any] = {}
     for field in request_params:
@@ -134,6 +142,72 @@ def _build_args_and_request(
             query[name] = {"from_arg": name}
 
     return args, {"query": query} if query else {}
+
+
+def _build_post_args_and_request(
+    request_params: list[dict[str, Any]],
+    request_example_json: Any = None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    params = [
+        p for p in request_params
+        if p.get("name") and p["name"] != "access_token"
+    ]
+
+    # When params are available, build args from them
+    if params:
+        args: list[dict[str, Any]] = []
+        json_body: dict[str, Any] = {}
+        for field in params:
+            name = field["name"]
+            arg_type = _infer_arg_type(field)
+            arg = {
+                "name": name,
+                "flag": f"--{name.replace('_', '-')}",
+                "type": arg_type,
+                "help": field.get("description") or f"TODO: {name}",
+            }
+            if field.get("required") is True:
+                arg["required"] = True
+            args.append(arg)
+            json_body[name] = {"from_arg": name}
+        return args, {"json_body": json_body} if json_body else {}
+
+    # Fallback: derive from request_example_json top-level keys
+    if isinstance(request_example_json, dict):
+        args = []
+        json_body = {}
+        for key, value in request_example_json.items():
+            if isinstance(value, dict):
+                arg_type = "json"
+            elif isinstance(value, list):
+                arg_type = "json"
+            elif isinstance(value, bool):
+                arg_type = "bool"
+            elif isinstance(value, int):
+                arg_type = "int"
+            else:
+                arg_type = "str"
+            arg = {
+                "name": key,
+                "flag": f"--{key.replace('_', '-')}",
+                "type": arg_type,
+                "help": f"TODO: {key}",
+            }
+            args.append(arg)
+            json_body[key] = {"from_arg": key}
+        return args, {"json_body": json_body} if json_body else {}
+
+    return [], {}
+
+
+def _build_example(domain: str, cli_action: str, args: list[dict[str, Any]]) -> str:
+    parts = [f"wecom {domain} {cli_action}"]
+    for arg in args:
+        if arg.get("required"):
+            parts.append(f"{arg['flag']} <{arg['name']}>")
+        else:
+            parts.append(f"[{arg['flag']} <{arg['name']}>]")
+    return " ".join(parts)
 
 
 def _build_doc_payload(op: dict[str, Any]) -> dict[str, Any]:
@@ -191,7 +265,9 @@ def build_missing_plan(catalog: dict[str, Any], spec_dir: Path) -> dict[str, lis
         request_params = doc_payload.get("request_params", [])
         if not isinstance(request_params, list):
             request_params = []
-        args, request = _build_args_and_request(op.get("method"), request_params)
+        args, request = _build_args_and_request(
+            op.get("method"), request_params, doc_payload.get("request_example_json"),
+        )
         output = _build_output_from_doc(doc_payload)
         summary = (
             str(doc_payload.get("title")).strip()
@@ -206,7 +282,7 @@ def build_missing_plan(catalog: dict[str, Any], spec_dir: Path) -> dict[str, lis
             "endpoint": op.get("endpoint"),
             "args": args,
             "request": request,
-            "examples": [f"TODO: wecom {domain} {_slug_to_cli_action(name)}"],
+            "examples": [_build_example(domain, _slug_to_cli_action(name), args)],
         }
         if output:
             scaffold["output"] = output

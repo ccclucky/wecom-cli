@@ -44,9 +44,11 @@ def _merge_doc(existing: dict[str, Any], incoming: dict[str, Any]) -> dict[str, 
     return merged
 
 
-def _merge_get_contract(op: dict[str, Any], request_params: list[dict[str, Any]]) -> bool:
+def _merge_contract(op: dict[str, Any], request_params: list[dict[str, Any]], request_example_json: Any = None) -> bool:
     changed = False
-    generated_args, generated_request = _build_args_and_request(op.get("method"), request_params)
+    generated_args, generated_request = _build_args_and_request(
+        op.get("method"), request_params, request_example_json,
+    )
     if not generated_args and not generated_request:
         return False
 
@@ -68,11 +70,15 @@ def _merge_get_contract(op: dict[str, Any], request_params: list[dict[str, Any]]
 
     if generated_request:
         request = op.setdefault("request", {})
-        query = request.setdefault("query", {})
-        for key, value in generated_request.get("query", {}).items():
-            if key not in query:
-                query[key] = value
-                changed = True
+        for section in ("query", "json_body"):
+            section_data = generated_request.get(section)
+            if not isinstance(section_data, dict):
+                continue
+            target = request.setdefault(section, {})
+            for key, value in section_data.items():
+                if key not in target:
+                    target[key] = value
+                    changed = True
 
     return changed
 
@@ -80,10 +86,10 @@ def _merge_get_contract(op: dict[str, Any], request_params: list[dict[str, Any]]
 def _review_hints_for_operation(op: dict[str, Any], doc: dict[str, Any]) -> list[str]:
     hints: list[str] = []
     if op.get("method") == "POST":
-        if doc.get("request_example_json") and not op.get("request", {}).get("json_body"):
-            hints.append("POST interface has request_example_json; json_body mapping still needs manual review.")
+        # Only hint when params are sparse — auto-generated body may need review
         if doc.get("request_params") and len(doc["request_params"]) <= 1:
-            hints.append("POST parameter table is incomplete on the doc page; inspect request_example_json and follow-up sections manually.")
+            if doc.get("request_example_json"):
+                hints.append("POST parameter table is incomplete; json_body auto-generated from example, verify mapping.")
     if doc.get("notes"):
         hints.append("Review doc.notes for conditional fields, limits, and permission caveats.")
     return hints
@@ -156,7 +162,8 @@ def sync_specs_with_catalog(
                     spec_changed = True
 
                 request_params = incoming_doc.get("request_params", [])
-                if isinstance(request_params, list) and _merge_get_contract(op, request_params):
+                request_example_json = incoming_doc.get("request_example_json")
+                if isinstance(request_params, list) and _merge_contract(op, request_params, request_example_json):
                     stats["get_contracts_enriched"] += 1
                     spec_changed = True
 

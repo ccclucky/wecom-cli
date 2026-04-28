@@ -164,6 +164,62 @@ def test_sync_specs_with_catalog_adds_review_hints_for_post(tmp_path):
 
     payload = json.loads(spec_path.read_text(encoding="utf-8"))
     op = payload["operations"][0]
-    assert op["request"] == {}
+    # json_body is auto-generated from request_example_json
+    assert "json_body" in op["request"]
+    assert "touser" in op["request"]["json_body"]
     assert op["output"]["json_schema"]["properties"]["errcode"]["type"] == "integer"
-    assert len(op["doc"]["review_hints"]) == 2
+    # Only 1 hint now: sparse params warning (json_body is auto-generated)
+    assert len(op["doc"]["review_hints"]) == 1
+    assert "auto-generated" in op["doc"]["review_hints"][0]
+
+
+def test_sync_specs_with_catalog_auto_fills_post_contract(tmp_path):
+    spec_dir = tmp_path / "specs"
+    spec_dir.mkdir()
+    spec_path = spec_dir / "tags.yaml"
+    spec_path.write_text(
+        json.dumps(
+            {
+                "domain": "tags",
+                "operations": [
+                    {
+                        "name": "create",
+                        "summary": "TODO: create",
+                        "method": "POST",
+                        "endpoint": "/cgi-bin/tag/create",
+                        "args": [],
+                        "request": {},
+                        "examples": ["ok"],
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    catalog = {
+        "operations": [
+            {
+                "id": "tags.create",
+                "doc": {
+                    "title": "创建标签",
+                    "request_params": [
+                        {"name": "access_token", "required": True, "description": "调用凭证"},
+                        {"name": "tagname", "required": True, "description": "标签名称"},
+                        {"name": "tagid", "required": False, "description": "标签id"},
+                    ],
+                    "response_example_json": {"errcode": 0, "errmsg": "ok", "tagid": 12},
+                },
+            }
+        ]
+    }
+
+    changed, stats = sync_specs_with_catalog(catalog, spec_dir, apply=True)
+    assert changed == [spec_path]
+    assert stats["get_contracts_enriched"] == 1
+
+    payload = json.loads(spec_path.read_text(encoding="utf-8"))
+    op = payload["operations"][0]
+    assert [arg["name"] for arg in op["args"]] == ["tagname", "tagid"]
+    assert op["request"]["json_body"]["tagname"] == {"from_arg": "tagname"}
+    assert op["request"]["json_body"]["tagid"] == {"from_arg": "tagid"}

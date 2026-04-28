@@ -146,3 +146,78 @@ def test_prune_unknown_operations_removes_ops_not_in_catalog(tmp_path):
 
     payload = json.loads((spec_dir / "contacts.yaml").read_text(encoding="utf-8"))
     assert [op["name"] for op in payload["operations"]] == ["list_users"]
+
+
+def test_build_missing_plan_auto_generates_post_contract(tmp_path):
+    spec_dir = tmp_path / "specs"
+    spec_dir.mkdir()
+
+    catalog = {
+        "operations": [
+            {
+                "id": "tags.create",
+                "domain": "tags",
+                "name": "create",
+                "endpoint": "/cgi-bin/tag/create",
+                "method": "POST",
+                "doc": {
+                    "title": "创建标签",
+                    "request_params": [
+                        {"name": "access_token", "required": True, "description": "调用凭证"},
+                        {"name": "tagname", "required": True, "description": "标签名称"},
+                        {"name": "tagid", "required": False, "description": "标签id"},
+                    ],
+                    "response_example_json": {"errcode": 0, "errmsg": "ok", "tagid": 12},
+                },
+            }
+        ]
+    }
+
+    plan = build_missing_plan(catalog, spec_dir)
+    op = plan["tags"][0]
+    assert op["summary"] == "创建标签"
+    assert [arg["name"] for arg in op["args"]] == ["tagname", "tagid"]
+    assert op["request"]["json_body"]["tagname"] == {"from_arg": "tagname"}
+    assert op["request"]["json_body"]["tagid"] == {"from_arg": "tagid"}
+    assert "wecom tags create" in op["examples"][0]
+    assert "--tagname" in op["examples"][0]
+
+
+def test_build_missing_plan_post_fallback_to_example_json(tmp_path):
+    spec_dir = tmp_path / "specs"
+    spec_dir.mkdir()
+
+    catalog = {
+        "operations": [
+            {
+                "id": "messages.send_text",
+                "domain": "messages",
+                "name": "send_text",
+                "endpoint": "/cgi-bin/message/send",
+                "method": "POST",
+                "doc": {
+                    "title": "发送应用消息",
+                    "request_params": [
+                        {"name": "access_token", "required": True, "description": "调用凭证"},
+                    ],
+                    "request_example_json": {
+                        "touser": "UserID",
+                        "msgtype": "text",
+                        "text": {"content": "hello"},
+                    },
+                },
+            }
+        ]
+    }
+
+    plan = build_missing_plan(catalog, spec_dir)
+    op = plan["messages"][0]
+    assert op["summary"] == "发送应用消息"
+    # Fallback: args derived from example_json keys
+    arg_names = [arg["name"] for arg in op["args"]]
+    assert "touser" in arg_names
+    assert "msgtype" in arg_names
+    assert op["request"]["json_body"]["touser"] == {"from_arg": "touser"}
+    # Nested dict values become json type args
+    text_arg = next(a for a in op["args"] if a["name"] == "text")
+    assert text_arg["type"] == "json"
