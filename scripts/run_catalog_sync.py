@@ -141,18 +141,7 @@ def main() -> int:
         )
 
     if args.mode == "auto-apply":
-        _run(
-            [
-                "python",
-                "scripts/build_agent_tasks.py",
-                "--catalog",
-                task_catalog,
-                "--spec-dir",
-                "specs/wecom",
-                "--diff",
-                args.diff_output,
-            ]
-        )
+
         _run(
             [
                 "python",

@@ -26,7 +26,9 @@ jobs:
         run: |
           python scripts/discover_wecom_apis.py \
             --seed-file specs/wecom/seeds.txt \
-            --max-pages 2000 \
+            --doc-id-from 90000 \
+            --doc-id-to 100500 \
+            --max-pages 5000 \
             --output artifacts/catalog.discovery.yaml
 
       - name: Build diff report
@@ -110,9 +112,7 @@ jobs:
               raise SystemExit(f"workflow did not converge to clean state: {counts}")
           print(counts)
           PY
-      - name: Build Coding Agent artifacts
-        run: |
-          python scripts/build_agent_tasks.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --diff artifacts/catalog.diff.yaml
+
       - name: Create sync PR draft when changes detected
         if: steps.diff.outputs.exit_code == '1'
         continue-on-error: true
