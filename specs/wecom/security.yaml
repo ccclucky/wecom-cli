@@ -1,0 +1,1799 @@
+{
+  "domain": "security",
+  "operations": [
+    {
+      "name": "admin_oper_log_list",
+      "cli_action": "admin-oper-log-list",
+      "summary": "获取管理端操作日志",
+      "method": "POST",
+      "endpoint": "/cgi-bin/security/admin_oper_log/list",
+      "args": [
+        {
+          "name": "start_time",
+          "flag": "--start-time",
+          "type": "str",
+          "help": "开始时间 取值范围：不早于180天前",
+          "required": true
+        },
+        {
+          "name": "end_time",
+          "flag": "--end-time",
+          "type": "str",
+          "help": "结束时间 取值范围：大于start_time，小于当前时间。开始时间和结束时间之间的跨度不能超过7天。",
+          "required": true
+        },
+        {
+          "name": "oper_type",
+          "flag": "--oper-type",
+          "type": "str",
+          "help": "操作类型。不填表示全部 取值范围目前支持如下： 2 - 权限管理变更 3 - 成员与部门变更 7 - 其它 8 - 应用变更 11 - 通讯录与聊天管理 12 - 企业信息管理 13 - 外部联系人管理"
+        },
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "操作者userid"
+        },
+        {
+          "name": "cusor",
+          "flag": "--cusor",
+          "type": "str",
+          "help": "分页游标。不填表示首页"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "bool",
+          "help": "最大记录数。不填默认最多获取400个记录 取值范围：1 ~ 400 注意：不保证每次返回的数据刚好为指定limit ，必须用返回的 has_more 判断是否继续请求"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "start_time": {
+            "from_arg": "start_time"
+          },
+          "end_time": {
+            "from_arg": "end_time"
+          },
+          "oper_type": {
+            "from_arg": "oper_type"
+          },
+          "userid": {
+            "from_arg": "userid"
+          },
+          "cusor": {
+            "from_arg": "cusor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom security admin-oper-log-list --start-time <start_time> --end-time <end_time> [--oper-type <oper_type>] [--userid <userid>] [--cusor <cusor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "has_more": {
+              "type": "boolean",
+              "description": "是否还有下一页"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "下一页的分页游标。不同过滤条件的的cursor不能混用"
+            },
+            "record_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "integer"
+                  },
+                  "userid": {
+                    "type": "string"
+                  },
+                  "oper_type": {
+                    "type": "integer"
+                  },
+                  "detail_type": {
+                    "type": "integer"
+                  },
+                  "detail_info": {
+                    "type": "string"
+                  },
+                  "ip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "time",
+                  "userid",
+                  "oper_type",
+                  "detail_type",
+                  "detail_info",
+                  "ip"
+                ]
+              },
+              "description": "记录列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "has_more",
+            "next_cursor",
+            "record_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取管理端操作日志",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100179",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/security/admin_oper_log/list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "required": true,
+            "description": "开始时间 取值范围：不早于180天前",
+            "type": "uint64"
+          },
+          {
+            "name": "end_time",
+            "required": true,
+            "description": "结束时间 取值范围：大于start_time，小于当前时间。开始时间和结束时间之间的跨度不能超过7天。",
+            "type": "uint64"
+          },
+          {
+            "name": "oper_type",
+            "required": false,
+            "description": "操作类型。不填表示全部 取值范围目前支持如下： 2 - 权限管理变更 3 - 成员与部门变更 7 - 其它 8 - 应用变更 11 - 通讯录与聊天管理 12 - 企业信息管理 13 - 外部联系人管理",
+            "type": "uint32"
+          },
+          {
+            "name": "userid",
+            "required": false,
+            "description": "操作者userid",
+            "type": "string"
+          },
+          {
+            "name": "cusor",
+            "required": false,
+            "description": "分页游标。不填表示首页",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "最大记录数。不填默认最多获取400个记录 取值范围：1 ~ 400 注意：不保证每次返回的数据刚好为指定limit ，必须用返回的 has_more 判断是否继续请求",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有下一页",
+            "type": "bool"
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "下一页的分页游标。不同过滤条件的的cursor不能混用",
+            "type": "string"
+          },
+          {
+            "name": "record_list",
+            "required": null,
+            "description": "记录列表",
+            "type": "obj[]"
+          },
+          {
+            "name": "record_list_time",
+            "required": null,
+            "description": "操作时间",
+            "type": "int64"
+          },
+          {
+            "name": "record_list_userid",
+            "required": null,
+            "description": "操作者userid",
+            "type": "uint64"
+          },
+          {
+            "name": "record_list_oper_type",
+            "required": null,
+            "description": "操作类型",
+            "type": "uint32"
+          },
+          {
+            "name": "record_list_detail_type",
+            "required": null,
+            "description": "操作行为。详见后面说明",
+            "type": "uint32"
+          },
+          {
+            "name": "record_list_detail_info",
+            "required": null,
+            "description": "相关数据",
+            "type": "string"
+          },
+          {
+            "name": "record_list_ip",
+            "required": null,
+            "description": "操作者ip",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"start_time\": 1724256000,\n    \"end_time\": 1724860799,\n    \"oper_type\": 1,\n    \"userid\": \"sam\",\n    \"cursor\": \"xxxxx\",\n    \"limit\": 2\n}",
+        "request_example_json": {
+          "start_time": 1724256000,
+          "end_time": 1724860799,
+          "oper_type": 1,
+          "userid": "sam",
+          "cursor": "xxxxx",
+          "limit": 2
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"has_more\": true,\n\t\"next_cursor\":\"xxxx\",\n\t\"record_list\": [\n\t    {\n\t\t\t\"time\": 1724256000,\n\t\t\t\"userid\": \"sam\",\n\t\t\t\"oper_type\": 1,\n\t\t\t\"detail_type\": 2,\n\t\t\t\"detail_info\": \"姓名：shel；手机号：15622244106\",\n\t\t\t\"ip\": \"183.40.88.11\"\n\t\t},\n\t\t{\n\t\t\t\"time\": 1724256400,\n\t\t\t\"userid\": \"sam\",\n\t\t\t\"oper_type\": 1,\n\t\t\t\"detail_type\": 2,\n\t\t\t\"detail_info\": \"姓名：abel；手机号：15622244108\",\n\t\t\t\"ip\": \"61.40.122.129\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "has_more": true,
+          "next_cursor": "xxxx",
+          "record_list": [
+            {
+              "time": 1724256000,
+              "userid": "sam",
+              "oper_type": 1,
+              "detail_type": 2,
+              "detail_info": "姓名：shel；手机号：15622244106",
+              "ip": "183.40.88.11"
+            },
+            {
+              "time": 1724256400,
+              "userid": "sam",
+              "oper_type": 1,
+              "detail_type": 2,
+              "detail_info": "姓名：abel；手机号：15622244108",
+              "ip": "61.40.122.129"
+            }
+          ]
+        },
+        "notes": [
+          "1. 接口调用产生的操作日志（如通讯录同步助手）不会返回。\n2. 默认返回所有管理端操作日志，不会进行应用可见范围的筛选。\n3. 接口调用频率限制为600次/分钟。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "get_screen_oper_record",
+      "cli_action": "get-screen-oper-record",
+      "summary": "截屏/录屏管理",
+      "method": "POST",
+      "endpoint": "/cgi-bin/security/get_screen_oper_record",
+      "args": [
+        {
+          "name": "start_time",
+          "flag": "--start-time",
+          "type": "int",
+          "help": "开始时间",
+          "required": true
+        },
+        {
+          "name": "end_time",
+          "flag": "--end-time",
+          "type": "int",
+          "help": "结束时间，开始时间到结束时间的范围不能超过14天",
+          "required": true
+        },
+        {
+          "name": "userid_list",
+          "flag": "--userid-list",
+          "type": "str",
+          "help": "需要查询的截屏操作者的userid，单次最多可以传100个用户。设置的userid需要在应用的可见范围内"
+        },
+        {
+          "name": "department_id_list",
+          "flag": "--department-id-list",
+          "type": "str",
+          "help": "需要查询的截屏操作者部门的department_id，单次最多可以传100个部门id。设置的department_id需要在应用的可见范围内"
+        },
+        {
+          "name": "screen_shot_type",
+          "flag": "--screen-shot-type",
+          "type": "int",
+          "help": "截屏内容的类型，不设置默认为全部 1: 聊天 2: 通讯录 3: 邮件 4: 文件 5: 日程 6: 其他"
+        },
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "由企业微信后台返回，第一次调用可不填"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "int",
+          "help": "限制返回的条数，最多设置为1000"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "start_time": {
+            "from_arg": "start_time"
+          },
+          "end_time": {
+            "from_arg": "end_time"
+          },
+          "userid_list": {
+            "from_arg": "userid_list"
+          },
+          "department_id_list": {
+            "from_arg": "department_id_list"
+          },
+          "screen_shot_type": {
+            "from_arg": "screen_shot_type"
+          },
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom security get-screen-oper-record --start-time <start_time> --end-time <end_time> [--userid-list <userid_list>] [--department-id-list <department_id_list>] [--screen-shot-type <screen_shot_type>] [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "has_more": {
+              "type": "boolean",
+              "description": "是否还有更多数据"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "仅has_more值为true时返回该字段，下一次调用将该值填到cursor字段，以实现分页查询"
+            },
+            "record_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "integer"
+                  },
+                  "userid": {
+                    "type": "string"
+                  },
+                  "department_id": {
+                    "type": "integer"
+                  },
+                  "screen_shot_type": {
+                    "type": "integer"
+                  },
+                  "screen_shot_content": {
+                    "type": "string"
+                  },
+                  "system": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "time",
+                  "userid",
+                  "department_id",
+                  "screen_shot_type",
+                  "screen_shot_content",
+                  "system"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "has_more",
+            "next_cursor",
+            "record_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "截屏/录屏管理",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100128",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/security/get_screen_oper_record?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "应用调用凭证",
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "required": true,
+            "description": "开始时间",
+            "type": "int"
+          },
+          {
+            "name": "end_time",
+            "required": true,
+            "description": "结束时间，开始时间到结束时间的范围不能超过14天",
+            "type": "int"
+          },
+          {
+            "name": "userid_list",
+            "required": false,
+            "description": "需要查询的截屏操作者的userid，单次最多可以传100个用户。设置的userid需要在应用的可见范围内",
+            "type": "array"
+          },
+          {
+            "name": "department_id_list",
+            "required": false,
+            "description": "需要查询的截屏操作者部门的department_id，单次最多可以传100个部门id。设置的department_id需要在应用的可见范围内",
+            "type": "array"
+          },
+          {
+            "name": "screen_shot_type",
+            "required": false,
+            "description": "截屏内容的类型，不设置默认为全部 1: 聊天 2: 通讯录 3: 邮件 4: 文件 5: 日程 6: 其他",
+            "type": "int"
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "由企业微信后台返回，第一次调用可不填",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "限制返回的条数，最多设置为1000",
+            "type": "int"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有更多数据",
+            "type": "bool"
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "仅has_more值为true时返回该字段，下一次调用将该值填到cursor字段，以实现分页查询",
+            "type": "string"
+          },
+          {
+            "name": "record_list_time",
+            "required": null,
+            "description": "操作时间",
+            "type": "int"
+          },
+          {
+            "name": "record_list_userid",
+            "required": null,
+            "description": "企业用户账号id",
+            "type": "string"
+          },
+          {
+            "name": "record_list_department_id",
+            "required": null,
+            "description": "企业用户部门id。仅当department_id在应用可见范围内才返回",
+            "type": "int"
+          },
+          {
+            "name": "record_list_screen_shot_type",
+            "required": null,
+            "description": "截屏内容的类型 1: 聊天 2: 通讯录 3: 邮件 4: 文件 5: 日程 6: 其他",
+            "type": "int"
+          },
+          {
+            "name": "record_list_screen_shot_content",
+            "required": null,
+            "description": "截屏内容",
+            "type": "string"
+          },
+          {
+            "name": "record_list_system",
+            "required": null,
+            "description": "企业用户的操作系统，目前支持返回的类型：iOS、iPad",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n\t\"start_time\": 166666666,\n\t\"end_time\": 166666667,\n\t\"userid_list\": [\"zhangsan\", \"lisi\"],\n\t\"department_id_list\" : [2, 3],\n\t\"screen_shot_type\": 1,\n\t\"cursor\":\"ngLgjieajgieo\",\n\t\"limit\":100\n}",
+        "request_example_json": {
+          "start_time": 166666666,
+          "end_time": 166666667,
+          "userid_list": [
+            "zhangsan",
+            "lisi"
+          ],
+          "department_id_list": [
+            2,
+            3
+          ],
+          "screen_shot_type": 1,
+          "cursor": "ngLgjieajgieo",
+          "limit": 100
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"has_more\": true,\n\t\"next_cursor\": \"gejMjgLjgeigoejg\",\n\t\"record_list\": [{\n\t\t\"time\": 16666666666,\n\t\t\"userid\": \"zhangsan\",\n\t\t\"department_id\" : 2,\n\t\t\"screen_shot_type\" : 1,\n\t\t\"screen_shot_content\" : \"聊天\",\n\t\t\"system\" : \"iPad\"\n\t}, {\n\t\t\"time\": 16666666666,\n\t\t\"userid\": \"lisi\",\n\t\t\"department_id\" : 3,\n\t\t\"screen_shot_type\" : 4,\n\t\t\"screen_shot_content\" : \"文件（防泄露文件：test.pdf）\",\n\t\t\"system\" : \"iOS\"\n\t}]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "has_more": true,
+          "next_cursor": "gejMjgLjgeigoejg",
+          "record_list": [
+            {
+              "time": 16666666666,
+              "userid": "zhangsan",
+              "department_id": 2,
+              "screen_shot_type": 1,
+              "screen_shot_content": "聊天",
+              "system": "iPad"
+            },
+            {
+              "time": 16666666666,
+              "userid": "lisi",
+              "department_id": 3,
+              "screen_shot_type": 4,
+              "screen_shot_content": "文件（防泄露文件：test.pdf）",
+              "system": "iOS"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_server_domain_ip",
+      "cli_action": "get-server-domain-ip",
+      "summary": "获取企业微信域名IP信息",
+      "method": "GET",
+      "endpoint": "/cgi-bin/security/get_server_domain_ip",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom security get-server-domain-ip"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "domain_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "type": "string"
+                  },
+                  "universal_domian": {
+                    "type": "string"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  },
+                  "port": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "is_necessary": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "domain",
+                  "universal_domian",
+                  "protocol",
+                  "port",
+                  "is_necessary",
+                  "description"
+                ]
+              }
+            },
+            "ip_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ip": {
+                    "type": "string"
+                  },
+                  "protocol": {
+                    "type": "string"
+                  },
+                  "port": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "is_necessary": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ip",
+                  "protocol",
+                  "port",
+                  "is_necessary",
+                  "description"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "domain_list",
+            "ip_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取企业微信域名IP信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100079",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/security/get_server_domain_ip?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "应用调用凭证",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "domain_list_domain",
+            "required": null,
+            "description": "域名",
+            "type": "string"
+          },
+          {
+            "name": "domain_list_universal_domian",
+            "required": null,
+            "description": "泛域名",
+            "type": "string"
+          },
+          {
+            "name": "domain_list_protocol",
+            "required": null,
+            "description": "协议 如TCP UDP",
+            "type": "string"
+          },
+          {
+            "name": "domain_list_port",
+            "required": null,
+            "description": "端口号列表",
+            "type": "int32"
+          },
+          {
+            "name": "domain_list_is_necessary",
+            "required": null,
+            "description": "是否必要，0-否 1-是， 如果必要的域名或IP被拦截，将导致企业微信的功能出现异常",
+            "type": "int32"
+          },
+          {
+            "name": "domain_list_description",
+            "required": null,
+            "description": "域名涉及到的功能的描述信息",
+            "type": "string"
+          },
+          {
+            "name": "ip_list_ip",
+            "required": null,
+            "description": "ip地址",
+            "type": "string"
+          },
+          {
+            "name": "ip_list_protocol",
+            "required": null,
+            "description": "协议 如TCP UDP",
+            "type": "string"
+          },
+          {
+            "name": "ip_list_port",
+            "required": null,
+            "description": "端口号列表",
+            "type": "int32"
+          },
+          {
+            "name": "ip_list_is_necessary",
+            "required": null,
+            "description": "是否必要，0-否 1-是， 如果必要的域名或IP被拦截，将导致企业微信的功能出现异常",
+            "type": "int32"
+          },
+          {
+            "name": "ip_list_description",
+            "required": null,
+            "description": "IP涉及到的功能的描述信息",
+            "type": "string"
+          }
+        ],
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"domain_list\":\n\t[\n\t\t{\n\t\t\t\"domain\":\"i.work.weixin.qq.com\",\n\t\t\t\"universal_domian\":\"work.weixin.qq.com\",\n\t\t\t\"protocol\":\"TCP\",\n\t\t\t\"port\":[443,80],\n\t\t\t\"is_necessary\":1,\n\t\t\t\"description\":\"企业微信客户端长连接，消息收发等功能;企业微信客户端短连接，登录、拉组织架构等功能\"\n\t\t},\n\t\t{\n\t\t\t\"domain\":\"live.work.weixin.qq.com\",\n\t\t\t\"universal_domian\":\"work.weixin.qq.com\",\n\t\t\t\"protocol\":\"TCP\",\n\t\t\t\"port\":[443,80],\n\t\t\t\"is_necessary\":0,\n\t\t\t\"description\":\"企业微信客户端长连接，消息收发等功能;企业微信客户端短连接，登录、拉组织架构等功能\"\n\t\t}\n\t],\n\t\"ip_list\":\n\t[\n\t\t{\n\t\t\t\"ip\":\"115.238.203.109\",\n\t\t\t\"protocol\":\"TCP\",\n\t\t\t\"port\":[443,80],\n\t\t\t\"is_necessary\":0,\n\t\t\t\"description\":\"企业微信客户端HTTPDNS解析\"\n\t\t},\n\t\t{\n\t\t\t\"ip\":\"115.238.203.110\",\n\t\t\t\"protocol\":\"TCP\",\n\t\t\t\"port\":[443,80],\n\t\t\t\"is_necessary\":1,\n\t\t\t\"description\":\"企业微信客户端HTTPDNS解析\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "domain_list": [
+            {
+              "domain": "i.work.weixin.qq.com",
+              "universal_domian": "work.weixin.qq.com",
+              "protocol": "TCP",
+              "port": [
+                443,
+                80
+              ],
+              "is_necessary": 1,
+              "description": "企业微信客户端长连接，消息收发等功能;企业微信客户端短连接，登录、拉组织架构等功能"
+            },
+            {
+              "domain": "live.work.weixin.qq.com",
+              "universal_domian": "work.weixin.qq.com",
+              "protocol": "TCP",
+              "port": [
+                443,
+                80
+              ],
+              "is_necessary": 0,
+              "description": "企业微信客户端长连接，消息收发等功能;企业微信客户端短连接，登录、拉组织架构等功能"
+            }
+          ],
+          "ip_list": [
+            {
+              "ip": "115.238.203.109",
+              "protocol": "TCP",
+              "port": [
+                443,
+                80
+              ],
+              "is_necessary": 0,
+              "description": "企业微信客户端HTTPDNS解析"
+            },
+            {
+              "ip": "115.238.203.110",
+              "protocol": "TCP",
+              "port": [
+                443,
+                80
+              ],
+              "is_necessary": 1,
+              "description": "企业微信客户端HTTPDNS解析"
+            }
+          ]
+        },
+        "permissions": [
+          "调用此接口的应用需要满足如下的权限：",
+          "获取企业微信域名IP信息",
+          "请求方式：GET（HTTPS）\n请求地址:  https://qyapi.weixin.qq.com/cgi-bin/security/get_server_domain_ip?access_token=ACCESS_TOKEN"
+        ]
+      }
+    },
+    {
+      "name": "member_oper_log_list",
+      "cli_action": "member-oper-log-list",
+      "summary": "获取成员操作记录",
+      "method": "POST",
+      "endpoint": "/cgi-bin/security/member_oper_log/list",
+      "args": [
+        {
+          "name": "start_time",
+          "flag": "--start-time",
+          "type": "str",
+          "help": "开始时间 取值范围：不早于180天前",
+          "required": true
+        },
+        {
+          "name": "end_time",
+          "flag": "--end-time",
+          "type": "str",
+          "help": "结束时间 取值范围：大于start_time，小于当前时间。开始时间和结束时间之间的跨度不能超过7天。",
+          "required": true
+        },
+        {
+          "name": "oper_type",
+          "flag": "--oper-type",
+          "type": "str",
+          "help": "操作类型。不填表示全部 取值范围目前支持如下： 1 - 添加外部联系人 2 - 删除外部联系人 3 - 标记企业客户 4 - 新设备登录 5 - 更换手机号 6 - 绑定微信号 7 - 换绑微信号 8 - 邀请成员 9 - 封禁登录 11 - 修改昵称 12 - 修改姓名 13 - 副设备登录 15 - 确认高级功能订单 16 - 应用变更 17 - 确认会话内容存档订单 20 - 封禁互通 21 - 锁定设备"
+        },
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "操作者userid过滤，需要在应用可见范围内。可不填"
+        },
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "分页游标。不填表示首页"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "bool",
+          "help": "最大记录数。不填默认最多获取400个记录 取值范围：1 ~ 400 注意：不保证每次返回的数据刚好为指定limit，必须用返回的 has_more 判断是否继续请求"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "start_time": {
+            "from_arg": "start_time"
+          },
+          "end_time": {
+            "from_arg": "end_time"
+          },
+          "oper_type": {
+            "from_arg": "oper_type"
+          },
+          "userid": {
+            "from_arg": "userid"
+          },
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom security member-oper-log-list --start-time <start_time> --end-time <end_time> [--oper-type <oper_type>] [--userid <userid>] [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "has_more": {
+              "type": "boolean",
+              "description": "是否还有下一页"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "下一页的分页游标。注意，不同过滤条件的游标不能混用"
+            },
+            "record_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "integer"
+                  },
+                  "userid": {
+                    "type": "string"
+                  },
+                  "oper_type": {
+                    "type": "integer"
+                  },
+                  "detail_info": {
+                    "type": "string"
+                  },
+                  "ip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "time",
+                  "userid",
+                  "oper_type",
+                  "detail_info",
+                  "ip"
+                ]
+              },
+              "description": "记录列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "has_more",
+            "next_cursor",
+            "record_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取成员操作记录",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100178",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/security/member_oper_log/list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "required": true,
+            "description": "开始时间 取值范围：不早于180天前",
+            "type": "uint64"
+          },
+          {
+            "name": "end_time",
+            "required": true,
+            "description": "结束时间 取值范围：大于start_time，小于当前时间。开始时间和结束时间之间的跨度不能超过7天。",
+            "type": "uint64"
+          },
+          {
+            "name": "oper_type",
+            "required": false,
+            "description": "操作类型。不填表示全部 取值范围目前支持如下： 1 - 添加外部联系人 2 - 删除外部联系人 3 - 标记企业客户 4 - 新设备登录 5 - 更换手机号 6 - 绑定微信号 7 - 换绑微信号 8 - 邀请成员 9 - 封禁登录 11 - 修改昵称 12 - 修改姓名 13 - 副设备登录 15 - 确认高级功能订单 16 - 应用变更 17 - 确认会话内容存档订单 20 - 封禁互通 21 - 锁定设备",
+            "type": "uint32"
+          },
+          {
+            "name": "userid",
+            "required": false,
+            "description": "操作者userid过滤，需要在应用可见范围内。可不填",
+            "type": "string"
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "分页游标。不填表示首页",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "最大记录数。不填默认最多获取400个记录 取值范围：1 ~ 400 注意：不保证每次返回的数据刚好为指定limit，必须用返回的 has_more 判断是否继续请求",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有下一页",
+            "type": "bool"
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "下一页的分页游标。注意，不同过滤条件的游标不能混用",
+            "type": "string"
+          },
+          {
+            "name": "record_list",
+            "required": null,
+            "description": "记录列表",
+            "type": "obj[]"
+          },
+          {
+            "name": "record_list_time",
+            "required": null,
+            "description": "操作时间",
+            "type": "int64"
+          },
+          {
+            "name": "record_list_userid",
+            "required": null,
+            "description": "操作者userid",
+            "type": "uint64"
+          },
+          {
+            "name": "record_list_oper_type",
+            "required": null,
+            "description": "操作类型",
+            "type": "uint32"
+          },
+          {
+            "name": "record_list_detail_info",
+            "required": null,
+            "description": "相关数据",
+            "type": "string"
+          },
+          {
+            "name": "record_list_ip",
+            "required": null,
+            "description": "操作者ip",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"start_time\": 1724256000,\n    \"end_time\": 1724860799,\n    \"oper_type\": 1,\n    \"userid\": \"sam\",\n    \"cursor\": \"xxxxx\",\n    \"limit\": 2\n}",
+        "request_example_json": {
+          "start_time": 1724256000,
+          "end_time": 1724860799,
+          "oper_type": 1,
+          "userid": "sam",
+          "cursor": "xxxxx",
+          "limit": 2
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"has_more\": true,\n\t\"next_cursor\": \"xxxxxx\",\n\t\"record_list\": [\n\t    {\n\t\t\t\"time\": 1724256000,\n\t\t\t\"userid\": \"sam\",\n\t\t\t\"oper_type\": 1,\n\t\t\t\"detail_info\": \"姓名：shel；手机号：15622244106\",\n\t\t\t\"ip\": \"183.40.88.*\"\n\t\t},\n\t\t{\n\t\t\t\"time\": 1724256400,\n\t\t\t\"userid\": \"sam\",\n\t\t\t\"oper_type\": 1,\n\t\t\t\"detail_info\": \"姓名：abel；手机号：15622244108\",\n\t\t\t\"ip\": \"61.40.122.*\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "has_more": true,
+          "next_cursor": "xxxxxx",
+          "record_list": [
+            {
+              "time": 1724256000,
+              "userid": "sam",
+              "oper_type": 1,
+              "detail_info": "姓名：shel；手机号：15622244106",
+              "ip": "183.40.88.*"
+            },
+            {
+              "time": 1724256400,
+              "userid": "sam",
+              "oper_type": 1,
+              "detail_info": "姓名：abel；手机号：15622244108",
+              "ip": "61.40.122.*"
+            }
+          ]
+        },
+        "notes": [
+          "接口调用频率限制为600次/分钟。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "trustdevice_import",
+      "cli_action": "trustdevice-import",
+      "summary": "设备管理",
+      "method": "POST",
+      "endpoint": "/cgi-bin/security/trustdevice/import",
+      "args": [
+        {
+          "name": "device_list_system",
+          "flag": "--device-list-system",
+          "type": "str",
+          "help": "设备的类型，Windows或Mac",
+          "required": true
+        },
+        {
+          "name": "device_list_mac_addr",
+          "flag": "--device-list-mac-addr",
+          "type": "str",
+          "help": "设备MAC地址，当system为Windows时必填，Mac选填，每个设备最多100个",
+          "required": true
+        },
+        {
+          "name": "device_list_motherboard_uuid",
+          "flag": "--device-list-motherboard-uuid",
+          "type": "str",
+          "help": "主板UUID，当system为Windows可选填此参数"
+        },
+        {
+          "name": "device_list_harddisk_uuid",
+          "flag": "--device-list-harddisk-uuid",
+          "type": "str",
+          "help": "硬盘序列号，当system为Windows时可选填此参数，每个设备最多100个"
+        },
+        {
+          "name": "device_list_domain",
+          "flag": "--device-list-domain",
+          "type": "str",
+          "help": "Windows域名，当system为Windows时可选填此参数"
+        },
+        {
+          "name": "device_list_pc_name",
+          "flag": "--device-list-pc-name",
+          "type": "str",
+          "help": "Windows计算机名，当system为Windows时可选填此参数"
+        },
+        {
+          "name": "device_list_seq_no",
+          "flag": "--device-list-seq-no",
+          "type": "str",
+          "help": "Mac序列号，当system为Mac时必填",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "device_list_system": {
+            "from_arg": "device_list_system"
+          },
+          "device_list_mac_addr": {
+            "from_arg": "device_list_mac_addr"
+          },
+          "device_list_motherboard_uuid": {
+            "from_arg": "device_list_motherboard_uuid"
+          },
+          "device_list_harddisk_uuid": {
+            "from_arg": "device_list_harddisk_uuid"
+          },
+          "device_list_domain": {
+            "from_arg": "device_list_domain"
+          },
+          "device_list_pc_name": {
+            "from_arg": "device_list_pc_name"
+          },
+          "device_list_seq_no": {
+            "from_arg": "device_list_seq_no"
+          }
+        }
+      },
+      "examples": [
+        "wecom security trustdevice-import --device-list-system <device_list_system> --device-list-mac-addr <device_list_mac_addr> [--device-list-motherboard-uuid <device_list_motherboard_uuid>] [--device-list-harddisk-uuid <device_list_harddisk_uuid>] [--device-list-domain <device_list_domain>] [--device-list-pc-name <device_list_pc_name>] --device-list-seq-no <device_list_seq_no>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "result": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "device_index": {
+                    "type": "integer"
+                  },
+                  "device_code": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "device_index",
+                  "device_code",
+                  "status"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "result"
+          ]
+        }
+      },
+      "doc": {
+        "title": "设备管理",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98920",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/security/trustdevice/import?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "应用调用凭证",
+            "type": "string"
+          },
+          {
+            "name": "device_list_system",
+            "required": true,
+            "description": "设备的类型，Windows或Mac",
+            "type": "string"
+          },
+          {
+            "name": "device_list_mac_addr",
+            "required": true,
+            "description": "设备MAC地址，当system为Windows时必填，Mac选填，每个设备最多100个",
+            "type": "string"
+          },
+          {
+            "name": "device_list_motherboard_uuid",
+            "required": false,
+            "description": "主板UUID，当system为Windows可选填此参数",
+            "type": "string"
+          },
+          {
+            "name": "device_list_harddisk_uuid",
+            "required": false,
+            "description": "硬盘序列号，当system为Windows时可选填此参数，每个设备最多100个",
+            "type": "string"
+          },
+          {
+            "name": "device_list_domain",
+            "required": false,
+            "description": "Windows域名，当system为Windows时可选填此参数",
+            "type": "string"
+          },
+          {
+            "name": "device_list_pc_name",
+            "required": false,
+            "description": "Windows计算机名，当system为Windows时可选填此参数",
+            "type": "string"
+          },
+          {
+            "name": "device_list_seq_no",
+            "required": true,
+            "description": "Mac序列号，当system为Mac时必填",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "result_device_index",
+            "required": null,
+            "description": "导入设备记录的标识，对应请求中设备的顺序，从1开始",
+            "type": "int32"
+          },
+          {
+            "name": "result_device_code",
+            "required": null,
+            "description": "设备的唯一标识，仅导入成功的记录返回",
+            "type": "string"
+          },
+          {
+            "name": "result_duplicated_device_code",
+            "required": null,
+            "description": "当重复导入(status=2)时，与当前导入记录冲突的设备的device_code",
+            "type": "string"
+          },
+          {
+            "name": "result_status",
+            "required": null,
+            "description": "导入结果，1-成功 2-重复导入 3-不支持的设备 4-数据格式错误",
+            "type": "int32"
+          }
+        ],
+        "request_example_text": "{\n\t\"device_list\":\n\t[\n\t\t{\n\t\t\t\"system\":\"Windows\",\n\t\t\t\"mac_addr\":\n\t\t\t[\n\t\t\t\t\"50:81:40:29:33:CA\",\n\t\t\t\t\"36:27:51:DF:6E:80\"\n\t\t\t],\n\t\t\t\"motherboard_uuid\":\"MB_UUID\",\n\t\t\t\"harddisk_uuid\":\n\t\t\t[\n\t\t\t\t\"HD_UUID1\",\n\t\t\t\t\"HD_UUID2\"\n\t\t\t],\n\t\t\t\"domain\":\"WINDOWS_DOMAIN\",\n\t\t\t\"pc_name\":\"PC_001\",\n\t\t},\n\t\t{\n\t\t\t\"system\":\"Mac\",\n\t\t\t\"seq_no\":\"SEQ_NO\",\n\t\t\t\"mac_addr\":\n\t\t\t[\n\t\t\t\t\"81:40:50:29:33:DB\"\n\t\t\t]\n\t\t}\n\t]\n}",
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"result\":\n\t[\n\t\t{\n\t\t   \"device_index\":1,\n\t\t   \"device_code\":\"49nNtYq\",\n\t\t\t\"status\":1\n\t\t},\n\t\t{\n\t\t\t\"device_index\":2,\n\t\t\t\"duplicated_device_code\":\"49nNtYq\",\n\t\t\t\"status\":2\n\t\t},\n\t\t{\n\t\t\t\"device_index\":3,\n\t\t\t\"status\":3\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "result": [
+            {
+              "device_index": 1,
+              "device_code": "49nNtYq",
+              "status": 1
+            },
+            {
+              "device_index": 2,
+              "duplicated_device_code": "49nNtYq",
+              "status": 2
+            },
+            {
+              "device_index": 3,
+              "status": 3
+            }
+          ]
+        },
+        "permissions": [
+          "调用设备管理相关接口的应用需要满足如下的权限：",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情",
+          "导入可信企业设备",
+          "请求方式：POST（HTTPS）\n请求地址:  https://qyapi.weixin.qq.com/cgi-bin/security/trustdevice/import?access_token=ACCESS_TOKEN",
+          "请求包体"
+        ],
+        "notes": [
+          "注意，当获取未确认为可信企业设备的记录时，即获取status为2、4、6时，mac地址，序列号，主板UUID等将会返回脱敏数据。",
+          "注意，当获取未确认为可信企业设备的记录时，即获取status为2、4、6时，mac地址，序列号，主板UUID等将会返回脱敏数据。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "vip_list",
+      "cli_action": "vip-list",
+      "summary": "获取高级功能账号列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/security/vip/list",
+      "args": [
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "bool",
+          "help": "用于分页查询，每次请求返回的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，必须用返回的has_more判断是否继续请求"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom security vip-list [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "has_more": {
+              "type": "boolean",
+              "description": "是否还有更多数据未获取"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "下一次请求的cursor值"
+            },
+            "userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "符合条件的企业成员userid列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "has_more",
+            "next_cursor",
+            "userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取高级功能账号列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99506",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/security/vip/list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "用于分页查询，每次请求返回的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，必须用返回的has_more判断是否继续请求",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有更多数据未获取",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "下一次请求的cursor值",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": null,
+            "description": "符合条件的企业成员userid列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"cursor\":\"CURSOR\",\n\t\"limit\":2\n}",
+        "request_example_json": {
+          "cursor": "CURSOR",
+          "limit": 2
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"has_more\":true,\n   \"next_cursor\":\"GNIJIGEO\",\n   \"userid_list\":[\"zhangsan\",\"lisi\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "has_more": true,
+          "next_cursor": "GNIJIGEO",
+          "userid_list": [
+            "zhangsan",
+            "lisi"
+          ]
+        }
+      }
+    },
+    {
+      "name": "vip_submit_batch_add_job",
+      "cli_action": "vip-submit-batch-add-job",
+      "summary": "分配高级功能账号",
+      "method": "POST",
+      "endpoint": "/cgi-bin/security/vip/submit_batch_add_job",
+      "args": [
+        {
+          "name": "userid_list",
+          "flag": "--userid-list",
+          "type": "str",
+          "help": "要分配高级功能的企业成员userid列表，单次操作最大限制100个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "userid_list": {
+            "from_arg": "userid_list"
+          }
+        }
+      },
+      "examples": [
+        "wecom security vip-submit-batch-add-job --userid-list <userid_list>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "批量分配高级功能的任务id"
+            },
+            "invalid_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "非法的userid 列表，不在应用可见范围的useri以及无法识别的userid"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid",
+            "invalid_userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "分配高级功能账号",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99503",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/security/vip/submit_batch_add_job?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": true,
+            "description": "要分配高级功能的企业成员userid列表，单次操作最大限制100个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "批量分配高级功能的任务id",
+            "type": null
+          },
+          {
+            "name": "invalid_userid_list",
+            "required": null,
+            "description": "非法的userid 列表，不在应用可见范围的useri以及无法识别的userid",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"userid_list\": [\"zhangsan\",\"lisi\",\"wangwu\",\"zhaoliu\"]\n}",
+        "request_example_json": {
+          "userid_list": [
+            "zhangsan",
+            "lisi",
+            "wangwu",
+            "zhaoliu"
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"jobid\": \"xxx\",\n   \"invalid_userid_list\":[\"zhaoliu\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "xxx",
+          "invalid_userid_list": [
+            "zhaoliu"
+          ]
+        }
+      }
+    },
+    {
+      "name": "vip_submit_batch_del_job",
+      "cli_action": "vip-submit-batch-del-job",
+      "summary": "取消高级功能账号",
+      "method": "POST",
+      "endpoint": "/cgi-bin/security/vip/submit_batch_del_job",
+      "args": [
+        {
+          "name": "userid_list",
+          "flag": "--userid-list",
+          "type": "str",
+          "help": "要撤销分配高级功能的企业成员userid列表，单次操作最多限制100个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "userid_list": {
+            "from_arg": "userid_list"
+          }
+        }
+      },
+      "examples": [
+        "wecom security vip-submit-batch-del-job --userid-list <userid_list>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "批量取消高级功能的任务id"
+            },
+            "invalid_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "非法的userid 列表，不在应用可见范围的useri以及无法识别的userid"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid",
+            "invalid_userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "取消高级功能账号",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99505",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/security/vip/submit_batch_del_job?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": true,
+            "description": "要撤销分配高级功能的企业成员userid列表，单次操作最多限制100个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "批量取消高级功能的任务id",
+            "type": null
+          },
+          {
+            "name": "invalid_userid_list",
+            "required": null,
+            "description": "非法的userid 列表，不在应用可见范围的useri以及无法识别的userid",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"userid_list\": [\"zhangsan\",\"lisi\",\"wangwu\",\"zhaoliu\"]\n}",
+        "request_example_json": {
+          "userid_list": [
+            "zhangsan",
+            "lisi",
+            "wangwu",
+            "zhaoliu"
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"jobid\": \"xxx\",\n   \"invalid_userid_list\":[\"zhaoliu\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "xxx",
+          "invalid_userid_list": [
+            "zhaoliu"
+          ]
+        }
+      }
+    }
+  ]
+}

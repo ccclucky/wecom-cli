@@ -146,25 +146,25 @@
             "type": "obj[]"
           },
           {
-            "name": "results[].tmp_external_userid",
+            "name": "results_tmp_external_userid",
             "required": null,
             "description": "输入的tmp_external_userid",
             "type": "string"
           },
           {
-            "name": "results[].external_userid",
+            "name": "results_external_userid",
             "required": null,
             "description": "转换后的userid，user_type为1时返回",
             "type": "string"
           },
           {
-            "name": "results[].corpid",
+            "name": "results_corpid",
             "required": null,
             "description": "userid对应的corpid，user_type为2、3、4时返回",
             "type": "string"
           },
           {
-            "name": "results[].userid",
+            "name": "results_userid",
             "required": null,
             "description": "转换后的userid，user_type为2、3、4时返回",
             "type": "string"
@@ -207,6 +207,9 @@
         },
         "notes": [
           "调用此接口的应用，和获取到tmp_external_userid的应用必须是同一个\n支持自建应用、代开发自建应用和第三方应用调用\nuser_type为1（即客户类型），应用还需要具有「客户联系」权限"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
         ]
       }
     }

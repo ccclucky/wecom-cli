@@ -1,0 +1,623 @@
+{
+  "domain": "export",
+  "operations": [
+    {
+      "name": "department",
+      "cli_action": "department",
+      "summary": "导出部门",
+      "method": "POST",
+      "endpoint": "/cgi-bin/export/department",
+      "args": [
+        {
+          "name": "encoding_aeskey",
+          "flag": "--encoding-aeskey",
+          "type": "str",
+          "help": "Base64编码后的加密密钥。长度固定为43，从a-z, A-Z, 0-9共62个字符中选取，是AESKey的Base64编码。解码后即为32字节长的AESKey。加密方式采用AES-256-CBC方式，数据采用PKCS#7填充至32字节的倍数；IV初始向量大小为16字节，取AESKey前16字节，详见：https://datatracker.ietf.org/doc/html/rfc2315",
+          "required": true
+        },
+        {
+          "name": "block_size",
+          "flag": "--block-size",
+          "type": "str",
+          "help": "每块数据的部门数，支持范围[104,106]，默认值为106"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "encoding_aeskey": {
+            "from_arg": "encoding_aeskey"
+          },
+          "block_size": {
+            "from_arg": "block_size"
+          }
+        }
+      },
+      "examples": [
+        "wecom export department --encoding-aeskey <encoding_aeskey> [--block-size <block_size>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "任务ID，可通过获取导出结果接口查询任务结果"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "导出部门",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94852",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/export/department?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "encoding_aeskey",
+            "required": true,
+            "description": "Base64编码后的加密密钥。长度固定为43，从a-z, A-Z, 0-9共62个字符中选取，是AESKey的Base64编码。解码后即为32字节长的AESKey。加密方式采用AES-256-CBC方式，数据采用PKCS#7填充至32字节的倍数；IV初始向量大小为16字节，取AESKey前16字节，详见：https://datatracker.ietf.org/doc/html/rfc2315",
+            "type": null
+          },
+          {
+            "name": "block_size",
+            "required": false,
+            "description": "每块数据的部门数，支持范围[104,106]，默认值为106",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "任务ID，可通过获取导出结果接口查询任务结果",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"encoding_aeskey\": \"IJUiXNpvGbODwKEBSEsAeOAPAhkqHqNCF6g19t9wfg2\",\n\t\"block_size\": 1000000 \n}",
+        "request_example_json": {
+          "encoding_aeskey": "IJUiXNpvGbODwKEBSEsAeOAPAhkqHqNCF6g19t9wfg2",
+          "block_size": 1000000
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"jobid\": \"jobid_xxxxxxxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "jobid_xxxxxxxxx"
+        },
+        "permissions": [
+          "仅返回有权限的部门列表"
+        ],
+        "notes": [
+          "AESKey=Base64_Decode(encoding_aeskey + “=”)"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "get_result",
+      "cli_action": "get-result",
+      "summary": "获取导出结果",
+      "method": "GET",
+      "endpoint": "/cgi-bin/export/get_result",
+      "args": [
+        {
+          "name": "jobid",
+          "flag": "--jobid",
+          "type": "str",
+          "help": "导出任务接口成功后返回",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "jobid": {
+            "from_arg": "jobid"
+          }
+        }
+      },
+      "examples": [
+        "wecom export get-result --jobid <jobid>"
+      ],
+      "doc": {
+        "title": "获取导出结果",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94854",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/export/get_result?access_token=ACCESS_TOKEN&jobid=jobid_xxxxxxxxxxxxxxx",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": true,
+            "description": "导出任务接口成功后返回",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "status",
+            "required": null,
+            "description": "任务状态:0-未处理，1-处理中，2-完成，3-异常失败",
+            "type": null
+          },
+          {
+            "name": "data_list",
+            "required": null,
+            "description": "数据文件列表",
+            "type": null
+          },
+          {
+            "name": "data_list_url",
+            "required": null,
+            "description": "数据下载链接,支持指定Range头部分段下载。有效期2个小时",
+            "type": null
+          },
+          {
+            "name": "data_list_size",
+            "required": null,
+            "description": "密文数据大小",
+            "type": null
+          },
+          {
+            "name": "data_list_md5",
+            "required": null,
+            "description": "密文数据md5",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"status\": 2,\n   \"data_list\": [\n   \t{\n\t\t\t\"url\": \"https://xxxxx\",\n\t\t\t\"size\": xxx,\n\t\t\t\"md5\": \"xxxxxxxxx\"\n\t\t},\n\t\t{\n\t\t\t\"url\": \"https://xxxxx\",\n\t\t\t\"size\": xxx,\n\t\t\t\"md5\": \"xxxxxxxx\"\n\t\t}\n   ]\n}",
+        "permissions": [
+          "获取任务结果的调用身份需要与提交任务的一致"
+        ]
+      }
+    },
+    {
+      "name": "simple_user",
+      "cli_action": "simple-user",
+      "summary": "导出成员",
+      "method": "POST",
+      "endpoint": "/cgi-bin/export/simple_user",
+      "args": [
+        {
+          "name": "encoding_aeskey",
+          "flag": "--encoding-aeskey",
+          "type": "str",
+          "help": "Base64编码后的加密密钥。长度固定为43，从a-z, A-Z, 0-9共62个字符中选取，是AESKey的Base64编码。解码后即为32字节长的AESKey。加密方式采用AES-256-CBC方式，数据采用PKCS#7填充至32字节的倍数；IV初始向量大小为16字节，取AESKey前16字节，详见：https://datatracker.ietf.org/doc/html/rfc2315",
+          "required": true
+        },
+        {
+          "name": "block_size",
+          "flag": "--block-size",
+          "type": "str",
+          "help": "每块数据的人员数，支持范围[104,106]，默认值为106"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "encoding_aeskey": {
+            "from_arg": "encoding_aeskey"
+          },
+          "block_size": {
+            "from_arg": "block_size"
+          }
+        }
+      },
+      "examples": [
+        "wecom export simple-user --encoding-aeskey <encoding_aeskey> [--block-size <block_size>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "任务ID，可通过获取导出结果接口查询任务结果"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "导出成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94849",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/export/simple_user?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "encoding_aeskey",
+            "required": true,
+            "description": "Base64编码后的加密密钥。长度固定为43，从a-z, A-Z, 0-9共62个字符中选取，是AESKey的Base64编码。解码后即为32字节长的AESKey。加密方式采用AES-256-CBC方式，数据采用PKCS#7填充至32字节的倍数；IV初始向量大小为16字节，取AESKey前16字节，详见：https://datatracker.ietf.org/doc/html/rfc2315",
+            "type": null
+          },
+          {
+            "name": "block_size",
+            "required": false,
+            "description": "每块数据的人员数，支持范围[104,106]，默认值为106",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "任务ID，可通过获取导出结果接口查询任务结果",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"encoding_aeskey\": \"IJUiXNpvGbODwKEBSEsAeOAPAhkqHqNCF6g19t9wfg2\",\n\t\"block_size\": 1000000 \n}",
+        "request_example_json": {
+          "encoding_aeskey": "IJUiXNpvGbODwKEBSEsAeOAPAhkqHqNCF6g19t9wfg2",
+          "block_size": 1000000
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"jobid\": \"jobid_xxxxxxxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "jobid_xxxxxxxxx"
+        },
+        "permissions": [
+          "仅会返回有权限的人员列表"
+        ],
+        "notes": [
+          "AESKey=Base64_Decode(encoding_aeskey + “=”)"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "taguser",
+      "cli_action": "taguser",
+      "summary": "导出标签成员",
+      "method": "POST",
+      "endpoint": "/cgi-bin/export/taguser",
+      "args": [
+        {
+          "name": "tagid",
+          "flag": "--tagid",
+          "type": "str",
+          "help": "需要导出的标签",
+          "required": true
+        },
+        {
+          "name": "encoding_aeskey",
+          "flag": "--encoding-aeskey",
+          "type": "str",
+          "help": "Base64编码后的加密密钥。长度固定为43，从a-z, A-Z, 0-9共62个字符中选取，是AESKey的Base64编码。解码后即为32字节长的AESKey。加密方式采用AES-256-CBC方式，数据采用PKCS#7填充至32字节的倍数；IV初始向量大小为16字节，取AESKey前16字节，详见：https://datatracker.ietf.org/doc/html/rfc2315",
+          "required": true
+        },
+        {
+          "name": "block_size",
+          "flag": "--block-size",
+          "type": "str",
+          "help": "每块数据的人员数和部门数之和，支持范围[104,106]，默认值为106"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "tagid": {
+            "from_arg": "tagid"
+          },
+          "encoding_aeskey": {
+            "from_arg": "encoding_aeskey"
+          },
+          "block_size": {
+            "from_arg": "block_size"
+          }
+        }
+      },
+      "examples": [
+        "wecom export taguser --tagid <tagid> --encoding-aeskey <encoding_aeskey> [--block-size <block_size>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "任务ID，可通过获取导出结果接口查询任务结果"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "导出标签成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94853",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/export/taguser?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "tagid",
+            "required": true,
+            "description": "需要导出的标签",
+            "type": null
+          },
+          {
+            "name": "encoding_aeskey",
+            "required": true,
+            "description": "Base64编码后的加密密钥。长度固定为43，从a-z, A-Z, 0-9共62个字符中选取，是AESKey的Base64编码。解码后即为32字节长的AESKey。加密方式采用AES-256-CBC方式，数据采用PKCS#7填充至32字节的倍数；IV初始向量大小为16字节，取AESKey前16字节，详见：https://datatracker.ietf.org/doc/html/rfc2315",
+            "type": null
+          },
+          {
+            "name": "block_size",
+            "required": false,
+            "description": "每块数据的人员数和部门数之和，支持范围[104,106]，默认值为106",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "任务ID，可通过获取导出结果接口查询任务结果",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"tagid\": 1,\n\t\"encoding_aeskey\": \"IJUiXNpvGbODwKEBSEsAeOAPAhkqHqNCF6g19t9wfg2\",\n\t\"block_size\": 1000000\n}",
+        "request_example_json": {
+          "tagid": 1,
+          "encoding_aeskey": "IJUiXNpvGbODwKEBSEsAeOAPAhkqHqNCF6g19t9wfg2",
+          "block_size": 1000000
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"jobid\": \"jobid_xxxxxxxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "jobid_xxxxxxxxx"
+        },
+        "permissions": [
+          "要求对标签有读取权限"
+        ],
+        "notes": [
+          "AESKey=Base64_Decode(encoding_aeskey + “=”)"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user",
+      "cli_action": "user",
+      "summary": "导出成员详情",
+      "method": "POST",
+      "endpoint": "/cgi-bin/export/user",
+      "args": [
+        {
+          "name": "encoding_aeskey",
+          "flag": "--encoding-aeskey",
+          "type": "str",
+          "help": "Base64编码后的加密密钥。长度固定为43，从a-z, A-Z, 0-9共62个字符中选取，是AESKey的Base64编码。解码后即为32字节长的AESKey。加密方式采用AES-256-CBC方式，数据采用PKCS#7填充至32字节的倍数；IV初始向量大小为16字节，取AESKey前16字节，详见：https://datatracker.ietf.org/doc/html/rfc2315",
+          "required": true
+        },
+        {
+          "name": "block_size",
+          "flag": "--block-size",
+          "type": "str",
+          "help": "每块数据的人员数，支持范围[104,106]，默认值为106"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "encoding_aeskey": {
+            "from_arg": "encoding_aeskey"
+          },
+          "block_size": {
+            "from_arg": "block_size"
+          }
+        }
+      },
+      "examples": [
+        "wecom export user --encoding-aeskey <encoding_aeskey> [--block-size <block_size>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "任务ID，可通过获取导出结果接口查询任务结果"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "导出成员详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94851",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/export/user?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "encoding_aeskey",
+            "required": true,
+            "description": "Base64编码后的加密密钥。长度固定为43，从a-z, A-Z, 0-9共62个字符中选取，是AESKey的Base64编码。解码后即为32字节长的AESKey。加密方式采用AES-256-CBC方式，数据采用PKCS#7填充至32字节的倍数；IV初始向量大小为16字节，取AESKey前16字节，详见：https://datatracker.ietf.org/doc/html/rfc2315",
+            "type": null
+          },
+          {
+            "name": "block_size",
+            "required": false,
+            "description": "每块数据的人员数，支持范围[104,106]，默认值为106",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "任务ID，可通过获取导出结果接口查询任务结果",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"encoding_aeskey\": \"IJUiXNpvGbODwKEBSEsAeOAPAhkqHqNCF6g19t9wfg2\",\n\t\"block_size\": 1000000 \n}",
+        "request_example_json": {
+          "encoding_aeskey": "IJUiXNpvGbODwKEBSEsAeOAPAhkqHqNCF6g19t9wfg2",
+          "block_size": 1000000
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"jobid\": \"jobid_xxxxxxxxxxxxxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "jobid_xxxxxxxxxxxxxxx"
+        },
+        "permissions": [
+          "仅会返回有权限的人员列表"
+        ],
+        "notes": [
+          "AESKey=Base64_Decode(encoding_aeskey + “=”)"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

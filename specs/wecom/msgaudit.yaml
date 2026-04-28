@@ -1,0 +1,635 @@
+{
+  "domain": "msgaudit",
+  "operations": [
+    {
+      "name": "check_single_agree",
+      "cli_action": "check-single-agree",
+      "summary": "获取会话同意情况",
+      "method": "POST",
+      "endpoint": "/cgi-bin/msgaudit/check_single_agree",
+      "args": [
+        {
+          "name": "info",
+          "flag": "--info",
+          "type": "str",
+          "help": "待查询的会话信息，数组",
+          "required": true
+        },
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "内部成员的userid",
+          "required": true
+        },
+        {
+          "name": "exteranalopenid",
+          "flag": "--exteranalopenid",
+          "type": "str",
+          "help": "外部成员的exteranalopenid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "info": {
+            "from_arg": "info"
+          },
+          "userid": {
+            "from_arg": "userid"
+          },
+          "exteranalopenid": {
+            "from_arg": "exteranalopenid"
+          }
+        }
+      },
+      "examples": [
+        "wecom msgaudit check-single-agree --info <info> --userid <userid> --exteranalopenid <exteranalopenid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "agreeinfo": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "status_change_time": {
+                    "type": "integer"
+                  },
+                  "userid": {
+                    "type": "string"
+                  },
+                  "exteranalopenid": {
+                    "type": "string"
+                  },
+                  "agree_status": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "status_change_time",
+                  "userid",
+                  "exteranalopenid",
+                  "agree_status"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "agreeinfo"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取会话同意情况",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91782",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/msgaudit/check_single_agree?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "待查询的会话信息，数组",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "内部成员的userid",
+            "type": null
+          },
+          {
+            "name": "exteranalopenid",
+            "required": true,
+            "description": "外部成员的exteranalopenid",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "roomid",
+            "required": true,
+            "description": "待查询的roomid",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\"info\":[\n{\"userid\":\"XuJinSheng\",\"exteranalopenid\":\"wmeDKaCQAAGd9oGiQWxVsAKwV2HxNAAA\"},{\"userid\":\"XuJinSheng\",\"exteranalopenid\":\"wmeDKaCQAAIQ_p7ACn_jpLVBJSGocAAA\"},\n{\"userid\":\"XuJinSheng\",\"exteranalopenid\":\"wmeDKaCQAAPE_p7ABnxkpLBBJSGocAAA\"}\n]\n}",
+        "request_example_json": {
+          "info": [
+            {
+              "userid": "XuJinSheng",
+              "exteranalopenid": "wmeDKaCQAAGd9oGiQWxVsAKwV2HxNAAA"
+            },
+            {
+              "userid": "XuJinSheng",
+              "exteranalopenid": "wmeDKaCQAAIQ_p7ACn_jpLVBJSGocAAA"
+            },
+            {
+              "userid": "XuJinSheng",
+              "exteranalopenid": "wmeDKaCQAAPE_p7ABnxkpLBBJSGocAAA"
+            }
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"agreeinfo\" : [\n    {\n     \"status_change_time\" : 1562766651,\n     \"userid\" : \"XuJinSheng\",\n     \"exteranalopenid\" : \"wmeDKaCPAAGdvxciQWxVsAKwV2HxNAAA\",\n\t \"agree_status\":\"Agree\"\n    },\n\t{\n     \"status_change_time\" : 1562766651,\n     \"userid\" : \"XuJinSheng\",\n     \"exteranalopenid\" : \"wmeDKaCQAAIQ_p7ACnxksfeBJSGocAAA\",\n\t \"agree_status\":\"Disagree\"\n    },\n\t{\n     \"status_change_time\" : 1562766651,\n     \"userid\" : \"XuJinSheng\",\n     \"exteranalopenid\" : \"wmeDKaCwAAIQ_p7ACnxckLBBJSGocAAA\",\n\t \"agree_status\":\"Agree\"\n    }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "agreeinfo": [
+            {
+              "status_change_time": 1562766651,
+              "userid": "XuJinSheng",
+              "exteranalopenid": "wmeDKaCPAAGdvxciQWxVsAKwV2HxNAAA",
+              "agree_status": "Agree"
+            },
+            {
+              "status_change_time": 1562766651,
+              "userid": "XuJinSheng",
+              "exteranalopenid": "wmeDKaCQAAIQ_p7ACnxksfeBJSGocAAA",
+              "agree_status": "Disagree"
+            },
+            {
+              "status_change_time": 1562766651,
+              "userid": "XuJinSheng",
+              "exteranalopenid": "wmeDKaCwAAIQ_p7ACnxckLBBJSGocAAA",
+              "agree_status": "Agree"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_permit_user_list",
+      "cli_action": "get-permit-user-list",
+      "summary": "获取会话内容存档开启成员列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/msgaudit/get_permit_user_list",
+      "args": [
+        {
+          "name": "type",
+          "flag": "--type",
+          "type": "str",
+          "help": "拉取对应版本的开启成员列表。1表示办公版；2表示服务版；3表示企业版。非必填，不填写的时候返回全量成员列表。"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "type": {
+            "from_arg": "type"
+          }
+        }
+      },
+      "examples": [
+        "wecom msgaudit get-permit-user-list [--type <type>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "ids"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取会话内容存档开启成员列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91614",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/msgaudit/get_permit_user_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "type",
+            "required": false,
+            "description": "拉取对应版本的开启成员列表。1表示办公版；2表示服务版；3表示企业版。非必填，不填写的时候返回全量成员列表。",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"type\":1\n}",
+        "request_example_json": {
+          "type": 1
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"ids\":[\n\t\t\"userid_111\",\n\t\t\"userid_222\",\n\t\t\"userid_333\"\n   ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "ids": [
+            "userid_111",
+            "userid_222",
+            "userid_333"
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_robot_info",
+      "cli_action": "get-robot-info",
+      "summary": "获取会话内容",
+      "method": "GET",
+      "endpoint": "/cgi-bin/msgaudit/get_robot_info",
+      "args": [
+        {
+          "name": "msgid",
+          "flag": "--msgid",
+          "type": "str",
+          "help": "消息id，消息的唯一标识，企业可以使用此字段进行消息去重。String类型"
+        },
+        {
+          "name": "action",
+          "flag": "--action",
+          "type": "str",
+          "help": "消息动作，目前有send(发送消息)/recall(撤回消息)/switch(切换企业日志)三种类型。String类型"
+        },
+        {
+          "name": "from_",
+          "flag": "--from-",
+          "type": "str",
+          "help": "消息发送方id。同一企业内容为userid，非相同企业为external_userid。消息如果是机器人发出，也为external_userid。String类型"
+        },
+        {
+          "name": "tolist",
+          "flag": "--tolist",
+          "type": "str",
+          "help": "消息接收方列表，可能是多个，同一个企业内容为userid，非相同企业为external_userid。数组，内容为string类型"
+        },
+        {
+          "name": "roomid",
+          "flag": "--roomid",
+          "type": "str",
+          "help": "群聊消息的群id。如果是单聊则为空。String类型"
+        },
+        {
+          "name": "msgtime",
+          "flag": "--msgtime",
+          "type": "str",
+          "help": "消息发送时间戳，utc时间，ms单位。"
+        },
+        {
+          "name": "msgtype",
+          "flag": "--msgtype",
+          "type": "str",
+          "help": "文本消息为：text。String类型"
+        },
+        {
+          "name": "content",
+          "flag": "--content",
+          "type": "str",
+          "help": "消息内容。String类型"
+        }
+      ],
+      "request": {
+        "query": {
+          "msgid": {
+            "from_arg": "msgid"
+          },
+          "action": {
+            "from_arg": "action"
+          },
+          "from_": {
+            "from_arg": "from_"
+          },
+          "tolist": {
+            "from_arg": "tolist"
+          },
+          "roomid": {
+            "from_arg": "roomid"
+          },
+          "msgtime": {
+            "from_arg": "msgtime"
+          },
+          "msgtype": {
+            "from_arg": "msgtype"
+          },
+          "content": {
+            "from_arg": "content"
+          }
+        }
+      },
+      "examples": [
+        "wecom msgaudit get-robot-info [--msgid <msgid>] [--action <action>] [--from- <from_>] [--tolist <tolist>] [--roomid <roomid>] [--msgtime <msgtime>] [--msgtype <msgtype>] [--content <content>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "robot_id": {
+                  "type": "string",
+                  "description": "机器人ID"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "机器人名称"
+                },
+                "creator_userid": {
+                  "type": "string",
+                  "description": "机器人创建者的UserID"
+                }
+              },
+              "required": [
+                "robot_id",
+                "name",
+                "creator_userid"
+              ]
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "data"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取会话内容",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91774",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/msgaudit/get_robot_info?access_token=ACCESS_TOKEN&robot_id=ROBOT_ID",
+        "request_params": [
+          {
+            "name": "msgid",
+            "required": null,
+            "description": "消息id，消息的唯一标识，企业可以使用此字段进行消息去重。String类型",
+            "type": null
+          },
+          {
+            "name": "action",
+            "required": null,
+            "description": "消息动作，目前有send(发送消息)/recall(撤回消息)/switch(切换企业日志)三种类型。String类型",
+            "type": null
+          },
+          {
+            "name": "from_",
+            "required": null,
+            "description": "消息发送方id。同一企业内容为userid，非相同企业为external_userid。消息如果是机器人发出，也为external_userid。String类型",
+            "type": null
+          },
+          {
+            "name": "tolist",
+            "required": null,
+            "description": "消息接收方列表，可能是多个，同一个企业内容为userid，非相同企业为external_userid。数组，内容为string类型",
+            "type": null
+          },
+          {
+            "name": "roomid",
+            "required": null,
+            "description": "群聊消息的群id。如果是单聊则为空。String类型",
+            "type": null
+          },
+          {
+            "name": "msgtime",
+            "required": null,
+            "description": "消息发送时间戳，utc时间，ms单位。",
+            "type": null
+          },
+          {
+            "name": "msgtype",
+            "required": null,
+            "description": "文本消息为：text。String类型",
+            "type": null
+          },
+          {
+            "name": "content",
+            "required": null,
+            "description": "消息内容。String类型",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "robot_id",
+            "required": null,
+            "description": "机器人ID",
+            "type": null
+          },
+          {
+            "name": "name",
+            "required": null,
+            "description": "机器人名称",
+            "type": null
+          },
+          {
+            "name": "creator_userid",
+            "required": null,
+            "description": "机器人创建者的UserID",
+            "type": null
+          }
+        ],
+        "request_example_text": "/*获取sdk对象，首次使用初始化*/\nWeWorkFinanceSdk_t* NewSdk();",
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"data\": {\n\t\t\"robot_id\": \"wbxxxxxxxxxxxxxxxxxxxxxxxx\",\n\t\t\"name\": \"机器人A\",\n\t\t\"creator_userid\": \"zhangsan\"\n\t}\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "data": {
+            "robot_id": "wbxxxxxxxxxxxxxxxxxxxxxxxx",
+            "name": "机器人A",
+            "creator_userid": "zhangsan"
+          }
+        },
+        "permissions": [
+          "只能通过会话存档的access_token获取。"
+        ],
+        "notes": [
+          "linux环境 SDK：",
+          "x86服务器 下载 SDK v2.0 [更新时间：2024-6-6    更新特性：修复一些已知问题]\nx86服务器 下载 SDK v3.0 [更新时间：2025-2-13    更新特性：openssl 3.0版本]\narm服务器  下载 SDK v3.0 [更新时间：2025-2-13    更新特性：openssl 3.0版本]",
+          "windows环境 SDK：\n下载 SDK v2.0[更新时间：2024-6-6    更新特性：修复一些已知问题]\n下载 SDK v3.0[更新时间：2025-2-13    更新特性：openssl3.0版本]"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "groupchat_get",
+      "cli_action": "groupchat-get",
+      "summary": "获取会话内容存档内部群信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/msgaudit/groupchat/get",
+      "args": [
+        {
+          "name": "roomid",
+          "flag": "--roomid",
+          "type": "str",
+          "help": "待查询的群id",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "roomid": {
+            "from_arg": "roomid"
+          }
+        }
+      },
+      "examples": [
+        "wecom msgaudit groupchat-get --roomid <roomid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "roomname": {
+              "type": "string"
+            },
+            "creator": {
+              "type": "string"
+            },
+            "room_create_time": {
+              "type": "integer"
+            },
+            "notice": {
+              "type": "string"
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "memberid": {
+                    "type": "string"
+                  },
+                  "jointime": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "memberid",
+                  "jointime"
+                ]
+              }
+            },
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "roomname",
+            "creator",
+            "room_create_time",
+            "notice",
+            "members",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取会话内容存档内部群信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92951",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/msgaudit/groupchat/get?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "roomid",
+            "required": true,
+            "description": "待查询的群id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"roomid\":\"wrNplhCgAAIVZohLe57zKnvIV7xBKrig\"\n}",
+        "request_example_json": {
+          "roomid": "wrNplhCgAAIVZohLe57zKnvIV7xBKrig"
+        },
+        "response_example_text": "{\n    \"roomname\": \"蓦然回首\",\n    \"creator\": \"ZhangWenChao\",\n    \"room_create_time\": 1592361604,\n    \"notice\": \"\",\n    \"members\": [\n        {\n            \"memberid\": \"ZhangWenChao\",\n            \"jointime\": 1592361605\n        },\n        {\n            \"memberid\": \"xujinsheng\",\n            \"jointime\": 1592377076\n        }\n    ],\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "roomname": "蓦然回首",
+          "creator": "ZhangWenChao",
+          "room_create_time": 1592361604,
+          "notice": "",
+          "members": [
+            {
+              "memberid": "ZhangWenChao",
+              "jointime": 1592361605
+            },
+            {
+              "memberid": "xujinsheng",
+              "jointime": 1592377076
+            }
+          ],
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    }
+  ]
+}

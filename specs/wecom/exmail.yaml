@@ -1,0 +1,2215 @@
+{
+  "domain": "exmail",
+  "operations": [
+    {
+      "name": "app_compose_send",
+      "cli_action": "app-compose-send",
+      "summary": "发送会议邮件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/exmail/app/compose_send",
+      "args": [
+        {
+          "name": "to",
+          "flag": "--to",
+          "type": "str",
+          "help": "收件人，to.emails 和 to.userids 至少传一个",
+          "required": true
+        },
+        {
+          "name": "to_emails",
+          "flag": "--to-emails",
+          "type": "str",
+          "help": "收件人，邮箱地址"
+        },
+        {
+          "name": "to_userids",
+          "flag": "--to-userids",
+          "type": "str",
+          "help": "收件人，企业内成员的userid"
+        },
+        {
+          "name": "cc",
+          "flag": "--cc",
+          "type": "str",
+          "help": "抄送"
+        },
+        {
+          "name": "cc_emails",
+          "flag": "--cc-emails",
+          "type": "str",
+          "help": "抄送人，邮箱地址"
+        },
+        {
+          "name": "cc_userids",
+          "flag": "--cc-userids",
+          "type": "str",
+          "help": "抄送人，企业内成员的userid"
+        },
+        {
+          "name": "bcc",
+          "flag": "--bcc",
+          "type": "str",
+          "help": "密送"
+        },
+        {
+          "name": "bcc_emails",
+          "flag": "--bcc-emails",
+          "type": "str",
+          "help": "密送人，邮箱地址"
+        },
+        {
+          "name": "bcc_userids",
+          "flag": "--bcc-userids",
+          "type": "str",
+          "help": "密送人，企业内成员的userid"
+        },
+        {
+          "name": "subject",
+          "flag": "--subject",
+          "type": "str",
+          "help": "邮件标题，同时也是会议标题",
+          "required": true
+        },
+        {
+          "name": "content",
+          "flag": "--content",
+          "type": "str",
+          "help": "邮件正文，同时是会议描述",
+          "required": true
+        },
+        {
+          "name": "attachment_list",
+          "flag": "--attachment-list",
+          "type": "str",
+          "help": "附件相关"
+        },
+        {
+          "name": "attachment_list_file_name",
+          "flag": "--attachment-list-file-name",
+          "type": "str",
+          "help": "文件名",
+          "required": true
+        },
+        {
+          "name": "attachment_list_content",
+          "flag": "--attachment-list-content",
+          "type": "str",
+          "help": "文件内容（base64编码），所有附件加正文的大小不允许超过50M, 且附件个数不能超过200个",
+          "required": true
+        },
+        {
+          "name": "content_type",
+          "flag": "--content-type",
+          "type": "str",
+          "help": "内容类型 html，text（默认是html）"
+        },
+        {
+          "name": "schedule",
+          "flag": "--schedule",
+          "type": "str",
+          "help": "会议相关数据，发会议邮件都必须带上这个字段",
+          "required": true
+        },
+        {
+          "name": "schedule_schedule_id",
+          "flag": "--schedule-schedule-id",
+          "type": "str",
+          "help": "会议ID (修改/取消会议必须带上schedule_id)"
+        },
+        {
+          "name": "schedule_method",
+          "flag": "--schedule-method",
+          "type": "str",
+          "help": "会议方法： request-请求（不传schedule_id时是创建会议，传了是修改会议） cancel-取消会议（必须带上schedule_id） 默认为request"
+        },
+        {
+          "name": "schedule_location",
+          "flag": "--schedule-location",
+          "type": "str",
+          "help": "地点"
+        },
+        {
+          "name": "schedule_start_time",
+          "flag": "--schedule-start-time",
+          "type": "int",
+          "help": "会议开始时间，Unix时间戳",
+          "required": true
+        },
+        {
+          "name": "schedule_end_time",
+          "flag": "--schedule-end-time",
+          "type": "int",
+          "help": "会议结束时间，Unix时间戳",
+          "required": true
+        },
+        {
+          "name": "schedule_reminders",
+          "flag": "--schedule-reminders",
+          "type": "str",
+          "help": "重复和提醒相关字段"
+        },
+        {
+          "name": "schedule_reminders_is_remind",
+          "flag": "--schedule-reminders-is-remind",
+          "type": "bool",
+          "help": "是否有提醒 0-不提醒 1-提醒"
+        },
+        {
+          "name": "schedule_reminders_remind_before_event_mins",
+          "flag": "--schedule-reminders-remind-before-event-mins",
+          "type": "int",
+          "help": "会议开始（start_time）前多少分钟提醒，当is_remind=1时有效。例如： 15表示会议开始前15分钟提醒 -15表示会议开始后15分钟提醒"
+        },
+        {
+          "name": "schedule_reminders_timezone",
+          "flag": "--schedule-reminders-timezone",
+          "type": "int",
+          "help": "时区。UTC偏移量表示(即偏离零时区的小时数)，东区为正数，西区为负数。 例如：+8 表示北京时间东八区 默认为北京时间东八区 取值范围：-12 ~ +12"
+        },
+        {
+          "name": "schedule_reminders_is_repeat",
+          "flag": "--schedule-reminders-is-repeat",
+          "type": "bool",
+          "help": "是否重复 0-否 1-是"
+        },
+        {
+          "name": "schedule_reminders_is_custom_repeat",
+          "flag": "--schedule-reminders-is-custom-repeat",
+          "type": "bool",
+          "help": "是否自定义重复 0-否 1-是。当is_repeat为1时有效。"
+        },
+        {
+          "name": "schedule_reminders_repeat_type",
+          "flag": "--schedule-reminders-repeat-type",
+          "type": "int",
+          "help": "重复类型，当is_repeat=1时有效。目前支持如下类型： 0 - 每日 1 - 每周 2 - 每月 5 - 每年"
+        },
+        {
+          "name": "schedule_reminders_repeat_interval",
+          "flag": "--schedule-reminders-repeat-interval",
+          "type": "int",
+          "help": "重复间隔 仅当指定为自定义重复时有效，该字段随repeat_type不同而含义不同 例如： repeat_interval指定为2，repeat_type指定为每周重复，那么每2周重复一次； repeat_interval指定为2，repeat_type指定为每月重复，那么每2月重复一次"
+        },
+        {
+          "name": "schedule_reminders_repeat_day_of_week",
+          "flag": "--schedule-reminders-repeat-day-of-week",
+          "type": "str",
+          "help": "每周周几重复 仅当指定为自定义重复且重复类型为每周时有效 取值范围：1 ~ 7，分别表示周一至周日"
+        },
+        {
+          "name": "schedule_reminders_repeat_day_of_month",
+          "flag": "--schedule-reminders-repeat-day-of-month",
+          "type": "str",
+          "help": "每月哪几天重复 仅当指定为自定义重复, 且重复类型为每月或每年时有效 取值范围：1 ~ 31，分别表示1~31号"
+        },
+        {
+          "name": "schedule_reminders_repeat_month_of_year",
+          "flag": "--schedule-reminders-repeat-month-of-year",
+          "type": "str",
+          "help": "每年哪几个月重复 仅当指定为自定义重复且重复类型为每年时有效 取值范围：1 ~ 12，分别表示 1月 - 12月（每年重复需要repeat_month_of_year和repeat_day_of_month来指定某一天）"
+        },
+        {
+          "name": "schedule_reminders_repeat_until",
+          "flag": "--schedule-reminders-repeat-until",
+          "type": "int",
+          "help": "重复结束时刻，Unix时间戳，当is_repeat=1时有效。不填或填0表示一直重复"
+        },
+        {
+          "name": "meeting",
+          "flag": "--meeting",
+          "type": "str",
+          "help": "会议相关，会议邮件必填，且必须同时带上schedule，会议的基本设置放在schedule里"
+        },
+        {
+          "name": "meeting_hosts",
+          "flag": "--meeting-hosts",
+          "type": "str",
+          "help": "会议主持人列表，最多10个。定义见收件人字段，只支持填userid"
+        },
+        {
+          "name": "meeting_meeting_admins",
+          "flag": "--meeting-meeting-admins",
+          "type": "str",
+          "help": "会议管理员字段, , 仅可指定1人，只支持传userid，必须是同企业的用户，且在参与人中",
+          "required": true
+        },
+        {
+          "name": "meeting_option",
+          "flag": "--meeting-option",
+          "type": "str",
+          "help": "会议相关设置"
+        },
+        {
+          "name": "meeting_option_password",
+          "flag": "--meeting-option-password",
+          "type": "str",
+          "help": "入会密码，仅可输入4-6位纯数字"
+        },
+        {
+          "name": "meeting_option_auto_record",
+          "flag": "--meeting-option-auto-record",
+          "type": "bool",
+          "help": "是否自动录制 0：未开启自动录制，1：开启自动本地录制，2：开启自动云录制；默认不开启"
+        },
+        {
+          "name": "meeting_option_enable_waiting_room",
+          "flag": "--meeting-option-enable-waiting-room",
+          "type": "bool",
+          "help": "是否开启等候室 false:不开启等候室；true:开启等候室；默认不开"
+        },
+        {
+          "name": "meeting_option_allow_enter_before_host",
+          "flag": "--meeting-option-allow-enter-before-host",
+          "type": "bool",
+          "help": "是否允许成员在主持人进会前加入。 true:允许；false:不允许。默认允许"
+        },
+        {
+          "name": "meeting_option_enter_restraint",
+          "flag": "--meeting-option-enter-restraint",
+          "type": "bool",
+          "help": "是否限制成员入会 0:所有人可入会 2:仅企业内部用户可入会；默认所有人可入会"
+        },
+        {
+          "name": "meeting_option_enable_screen_watermark",
+          "flag": "--meeting-option-enable-screen-watermark",
+          "type": "bool",
+          "help": "是否开启屏幕水印 true:开启；false:不开启。默认不开启"
+        },
+        {
+          "name": "meeting_option_enable_enter_mute",
+          "flag": "--meeting-option-enable-enter-mute",
+          "type": "bool",
+          "help": "成员入会时是否静音 1:开启；0:关闭；2:超过6人后自动开启静音。默认超过6人自动开启静音"
+        },
+        {
+          "name": "meeting_option_remind_scope",
+          "flag": "--meeting-option-remind-scope",
+          "type": "bool",
+          "help": "会议开始时是否提醒 1:不提醒 2:仅提醒主持人 3:提醒所有成员入会; 默认仅提醒主持人"
+        },
+        {
+          "name": "meeting_option_water_mark_type",
+          "flag": "--meeting-option-water-mark-type",
+          "type": "int",
+          "help": "水印类型 0:单排水印 1:多排水印；默认单排水印"
+        },
+        {
+          "name": "enable_id_trans",
+          "flag": "--enable-id-trans",
+          "type": "bool",
+          "help": "表示是否开启id转译，0表示否，1表示是，默认0。仅第三方应用需要用到，企业自建应用可以忽略。 目前仅subject、content、attachment_list[].file_name字段支持转译。"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "to": {
+            "from_arg": "to"
+          },
+          "to_emails": {
+            "from_arg": "to_emails"
+          },
+          "to_userids": {
+            "from_arg": "to_userids"
+          },
+          "cc": {
+            "from_arg": "cc"
+          },
+          "cc_emails": {
+            "from_arg": "cc_emails"
+          },
+          "cc_userids": {
+            "from_arg": "cc_userids"
+          },
+          "bcc": {
+            "from_arg": "bcc"
+          },
+          "bcc_emails": {
+            "from_arg": "bcc_emails"
+          },
+          "bcc_userids": {
+            "from_arg": "bcc_userids"
+          },
+          "subject": {
+            "from_arg": "subject"
+          },
+          "content": {
+            "from_arg": "content"
+          },
+          "attachment_list": {
+            "from_arg": "attachment_list"
+          },
+          "attachment_list_file_name": {
+            "from_arg": "attachment_list_file_name"
+          },
+          "attachment_list_content": {
+            "from_arg": "attachment_list_content"
+          },
+          "content_type": {
+            "from_arg": "content_type"
+          },
+          "schedule": {
+            "from_arg": "schedule"
+          },
+          "schedule_schedule_id": {
+            "from_arg": "schedule_schedule_id"
+          },
+          "schedule_method": {
+            "from_arg": "schedule_method"
+          },
+          "schedule_location": {
+            "from_arg": "schedule_location"
+          },
+          "schedule_start_time": {
+            "from_arg": "schedule_start_time"
+          },
+          "schedule_end_time": {
+            "from_arg": "schedule_end_time"
+          },
+          "schedule_reminders": {
+            "from_arg": "schedule_reminders"
+          },
+          "schedule_reminders_is_remind": {
+            "from_arg": "schedule_reminders_is_remind"
+          },
+          "schedule_reminders_remind_before_event_mins": {
+            "from_arg": "schedule_reminders_remind_before_event_mins"
+          },
+          "schedule_reminders_timezone": {
+            "from_arg": "schedule_reminders_timezone"
+          },
+          "schedule_reminders_is_repeat": {
+            "from_arg": "schedule_reminders_is_repeat"
+          },
+          "schedule_reminders_is_custom_repeat": {
+            "from_arg": "schedule_reminders_is_custom_repeat"
+          },
+          "schedule_reminders_repeat_type": {
+            "from_arg": "schedule_reminders_repeat_type"
+          },
+          "schedule_reminders_repeat_interval": {
+            "from_arg": "schedule_reminders_repeat_interval"
+          },
+          "schedule_reminders_repeat_day_of_week": {
+            "from_arg": "schedule_reminders_repeat_day_of_week"
+          },
+          "schedule_reminders_repeat_day_of_month": {
+            "from_arg": "schedule_reminders_repeat_day_of_month"
+          },
+          "schedule_reminders_repeat_month_of_year": {
+            "from_arg": "schedule_reminders_repeat_month_of_year"
+          },
+          "schedule_reminders_repeat_until": {
+            "from_arg": "schedule_reminders_repeat_until"
+          },
+          "meeting": {
+            "from_arg": "meeting"
+          },
+          "meeting_hosts": {
+            "from_arg": "meeting_hosts"
+          },
+          "meeting_meeting_admins": {
+            "from_arg": "meeting_meeting_admins"
+          },
+          "meeting_option": {
+            "from_arg": "meeting_option"
+          },
+          "meeting_option_password": {
+            "from_arg": "meeting_option_password"
+          },
+          "meeting_option_auto_record": {
+            "from_arg": "meeting_option_auto_record"
+          },
+          "meeting_option_enable_waiting_room": {
+            "from_arg": "meeting_option_enable_waiting_room"
+          },
+          "meeting_option_allow_enter_before_host": {
+            "from_arg": "meeting_option_allow_enter_before_host"
+          },
+          "meeting_option_enter_restraint": {
+            "from_arg": "meeting_option_enter_restraint"
+          },
+          "meeting_option_enable_screen_watermark": {
+            "from_arg": "meeting_option_enable_screen_watermark"
+          },
+          "meeting_option_enable_enter_mute": {
+            "from_arg": "meeting_option_enable_enter_mute"
+          },
+          "meeting_option_remind_scope": {
+            "from_arg": "meeting_option_remind_scope"
+          },
+          "meeting_option_water_mark_type": {
+            "from_arg": "meeting_option_water_mark_type"
+          },
+          "enable_id_trans": {
+            "from_arg": "enable_id_trans"
+          }
+        }
+      },
+      "examples": [
+        "wecom exmail app-compose-send --to <to> [--to-emails <to_emails>] [--to-userids <to_userids>] [--cc <cc>] [--cc-emails <cc_emails>] [--cc-userids <cc_userids>] [--bcc <bcc>] [--bcc-emails <bcc_emails>] [--bcc-userids <bcc_userids>] --subject <subject> --content <content> [--attachment-list <attachment_list>] --attachment-list-file-name <attachment_list_file_name> --attachment-list-content <attachment_list_content> [--content-type <content_type>] --schedule <schedule> [--schedule-schedule-id <schedule_schedule_id>] [--schedule-method <schedule_method>] [--schedule-location <schedule_location>] --schedule-start-time <schedule_start_time> --schedule-end-time <schedule_end_time> [--schedule-reminders <schedule_reminders>] [--schedule-reminders-is-remind <schedule_reminders_is_remind>] [--schedule-reminders-remind-before-event-mins <schedule_reminders_remind_before_event_mins>] [--schedule-reminders-timezone <schedule_reminders_timezone>] [--schedule-reminders-is-repeat <schedule_reminders_is_repeat>] [--schedule-reminders-is-custom-repeat <schedule_reminders_is_custom_repeat>] [--schedule-reminders-repeat-type <schedule_reminders_repeat_type>] [--schedule-reminders-repeat-interval <schedule_reminders_repeat_interval>] [--schedule-reminders-repeat-day-of-week <schedule_reminders_repeat_day_of_week>] [--schedule-reminders-repeat-day-of-month <schedule_reminders_repeat_day_of_month>] [--schedule-reminders-repeat-month-of-year <schedule_reminders_repeat_month_of_year>] [--schedule-reminders-repeat-until <schedule_reminders_repeat_until>] [--meeting <meeting>] [--meeting-hosts <meeting_hosts>] --meeting-meeting-admins <meeting_meeting_admins> [--meeting-option <meeting_option>] [--meeting-option-password <meeting_option_password>] [--meeting-option-auto-record <meeting_option_auto_record>] [--meeting-option-enable-waiting-room <meeting_option_enable_waiting_room>] [--meeting-option-allow-enter-before-host <meeting_option_allow_enter_before_host>] [--meeting-option-enter-restraint <meeting_option_enter_restraint>] [--meeting-option-enable-screen-watermark <meeting_option_enable_screen_watermark>] [--meeting-option-enable-enter-mute <meeting_option_enable_enter_mute>] [--meeting-option-remind-scope <meeting_option_remind_scope>] [--meeting-option-water-mark-type <meeting_option_water_mark_type>] [--enable-id-trans <enable_id_trans>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "发送会议邮件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97855",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/app/compose_send?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "to",
+            "required": true,
+            "description": "收件人，to.emails 和 to.userids 至少传一个",
+            "type": "obj"
+          },
+          {
+            "name": "to_emails",
+            "required": false,
+            "description": "收件人，邮箱地址",
+            "type": "string[]"
+          },
+          {
+            "name": "to_userids",
+            "required": false,
+            "description": "收件人，企业内成员的userid",
+            "type": "string[]"
+          },
+          {
+            "name": "cc",
+            "required": false,
+            "description": "抄送",
+            "type": "obj"
+          },
+          {
+            "name": "cc_emails",
+            "required": false,
+            "description": "抄送人，邮箱地址",
+            "type": "string[]"
+          },
+          {
+            "name": "cc_userids",
+            "required": false,
+            "description": "抄送人，企业内成员的userid",
+            "type": "string[]"
+          },
+          {
+            "name": "bcc",
+            "required": false,
+            "description": "密送",
+            "type": "obj"
+          },
+          {
+            "name": "bcc_emails",
+            "required": false,
+            "description": "密送人，邮箱地址",
+            "type": "string[]"
+          },
+          {
+            "name": "bcc_userids",
+            "required": false,
+            "description": "密送人，企业内成员的userid",
+            "type": "string[]"
+          },
+          {
+            "name": "subject",
+            "required": true,
+            "description": "邮件标题，同时也是会议标题",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "required": true,
+            "description": "邮件正文，同时是会议描述",
+            "type": "string"
+          },
+          {
+            "name": "attachment_list",
+            "required": false,
+            "description": "附件相关",
+            "type": "obj[]"
+          },
+          {
+            "name": "attachment_list_file_name",
+            "required": true,
+            "description": "文件名",
+            "type": "string"
+          },
+          {
+            "name": "attachment_list_content",
+            "required": true,
+            "description": "文件内容（base64编码），所有附件加正文的大小不允许超过50M, 且附件个数不能超过200个",
+            "type": "string"
+          },
+          {
+            "name": "content_type",
+            "required": false,
+            "description": "内容类型 html，text（默认是html）",
+            "type": "string"
+          },
+          {
+            "name": "schedule",
+            "required": true,
+            "description": "会议相关数据，发会议邮件都必须带上这个字段",
+            "type": "obj"
+          },
+          {
+            "name": "schedule_schedule_id",
+            "required": false,
+            "description": "会议ID (修改/取消会议必须带上schedule_id)",
+            "type": "string"
+          },
+          {
+            "name": "schedule_method",
+            "required": false,
+            "description": "会议方法： request-请求（不传schedule_id时是创建会议，传了是修改会议） cancel-取消会议（必须带上schedule_id） 默认为request",
+            "type": "string"
+          },
+          {
+            "name": "schedule_location",
+            "required": false,
+            "description": "地点",
+            "type": "string"
+          },
+          {
+            "name": "schedule_start_time",
+            "required": true,
+            "description": "会议开始时间，Unix时间戳",
+            "type": "int"
+          },
+          {
+            "name": "schedule_end_time",
+            "required": true,
+            "description": "会议结束时间，Unix时间戳",
+            "type": "int"
+          },
+          {
+            "name": "schedule_reminders",
+            "required": false,
+            "description": "重复和提醒相关字段",
+            "type": "obj"
+          },
+          {
+            "name": "schedule_reminders_is_remind",
+            "required": false,
+            "description": "是否有提醒 0-不提醒 1-提醒",
+            "type": "int"
+          },
+          {
+            "name": "schedule_reminders_remind_before_event_mins",
+            "required": false,
+            "description": "会议开始（start_time）前多少分钟提醒，当is_remind=1时有效。例如： 15表示会议开始前15分钟提醒 -15表示会议开始后15分钟提醒",
+            "type": "int"
+          },
+          {
+            "name": "schedule_reminders_timezone",
+            "required": false,
+            "description": "时区。UTC偏移量表示(即偏离零时区的小时数)，东区为正数，西区为负数。 例如：+8 表示北京时间东八区 默认为北京时间东八区 取值范围：-12 ~ +12",
+            "type": "int"
+          },
+          {
+            "name": "schedule_reminders_is_repeat",
+            "required": false,
+            "description": "是否重复 0-否 1-是",
+            "type": "int"
+          },
+          {
+            "name": "schedule_reminders_is_custom_repeat",
+            "required": false,
+            "description": "是否自定义重复 0-否 1-是。当is_repeat为1时有效。",
+            "type": "int"
+          },
+          {
+            "name": "schedule_reminders_repeat_type",
+            "required": false,
+            "description": "重复类型，当is_repeat=1时有效。目前支持如下类型： 0 - 每日 1 - 每周 2 - 每月 5 - 每年",
+            "type": "int"
+          },
+          {
+            "name": "schedule_reminders_repeat_interval",
+            "required": false,
+            "description": "重复间隔 仅当指定为自定义重复时有效，该字段随repeat_type不同而含义不同 例如： repeat_interval指定为2，repeat_type指定为每周重复，那么每2周重复一次； repeat_interval指定为2，repeat_type指定为每月重复，那么每2月重复一次",
+            "type": "int"
+          },
+          {
+            "name": "schedule_reminders_repeat_day_of_week",
+            "required": false,
+            "description": "每周周几重复 仅当指定为自定义重复且重复类型为每周时有效 取值范围：1 ~ 7，分别表示周一至周日",
+            "type": "int[]"
+          },
+          {
+            "name": "schedule_reminders_repeat_day_of_month",
+            "required": false,
+            "description": "每月哪几天重复 仅当指定为自定义重复, 且重复类型为每月或每年时有效 取值范围：1 ~ 31，分别表示1~31号",
+            "type": "int[]"
+          },
+          {
+            "name": "schedule_reminders_repeat_month_of_year",
+            "required": false,
+            "description": "每年哪几个月重复 仅当指定为自定义重复且重复类型为每年时有效 取值范围：1 ~ 12，分别表示 1月 - 12月（每年重复需要repeat_month_of_year和repeat_day_of_month来指定某一天）",
+            "type": "int[]"
+          },
+          {
+            "name": "schedule_reminders_repeat_until",
+            "required": false,
+            "description": "重复结束时刻，Unix时间戳，当is_repeat=1时有效。不填或填0表示一直重复",
+            "type": "int"
+          },
+          {
+            "name": "meeting",
+            "required": false,
+            "description": "会议相关，会议邮件必填，且必须同时带上schedule，会议的基本设置放在schedule里",
+            "type": "obj"
+          },
+          {
+            "name": "meeting_hosts",
+            "required": false,
+            "description": "会议主持人列表，最多10个。定义见收件人字段，只支持填userid",
+            "type": "obj"
+          },
+          {
+            "name": "meeting_meeting_admins",
+            "required": true,
+            "description": "会议管理员字段, , 仅可指定1人，只支持传userid，必须是同企业的用户，且在参与人中",
+            "type": "obj"
+          },
+          {
+            "name": "meeting_option",
+            "required": false,
+            "description": "会议相关设置",
+            "type": "obj"
+          },
+          {
+            "name": "meeting_option_password",
+            "required": false,
+            "description": "入会密码，仅可输入4-6位纯数字",
+            "type": "string"
+          },
+          {
+            "name": "meeting_option_auto_record",
+            "required": false,
+            "description": "是否自动录制 0：未开启自动录制，1：开启自动本地录制，2：开启自动云录制；默认不开启",
+            "type": "int"
+          },
+          {
+            "name": "meeting_option_enable_waiting_room",
+            "required": false,
+            "description": "是否开启等候室 false:不开启等候室；true:开启等候室；默认不开",
+            "type": "bool"
+          },
+          {
+            "name": "meeting_option_allow_enter_before_host",
+            "required": false,
+            "description": "是否允许成员在主持人进会前加入。 true:允许；false:不允许。默认允许",
+            "type": "bool"
+          },
+          {
+            "name": "meeting_option_enter_restraint",
+            "required": false,
+            "description": "是否限制成员入会 0:所有人可入会 2:仅企业内部用户可入会；默认所有人可入会",
+            "type": "int"
+          },
+          {
+            "name": "meeting_option_enable_screen_watermark",
+            "required": false,
+            "description": "是否开启屏幕水印 true:开启；false:不开启。默认不开启",
+            "type": "bool"
+          },
+          {
+            "name": "meeting_option_enable_enter_mute",
+            "required": false,
+            "description": "成员入会时是否静音 1:开启；0:关闭；2:超过6人后自动开启静音。默认超过6人自动开启静音",
+            "type": "int"
+          },
+          {
+            "name": "meeting_option_remind_scope",
+            "required": false,
+            "description": "会议开始时是否提醒 1:不提醒 2:仅提醒主持人 3:提醒所有成员入会; 默认仅提醒主持人",
+            "type": "int"
+          },
+          {
+            "name": "meeting_option_water_mark_type",
+            "required": false,
+            "description": "水印类型 0:单排水印 1:多排水印；默认单排水印",
+            "type": "int"
+          },
+          {
+            "name": "enable_id_trans",
+            "required": false,
+            "description": "表示是否开启id转译，0表示否，1表示是，默认0。仅第三方应用需要用到，企业自建应用可以忽略。 目前仅subject、content、attachment_list[].file_name字段支持转译。",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"to\": {\n        \"emails\": [\n            \"word@bgjkcsqy.wecom.work\",\n            \"jyan1@tiyantest.wang\",\n            \"zorocheng@tencnet.com\",\n            \"zoro@bgjkcsqy.wecom.work\"\n        ],\n        \"userids\": [\n            \"william\"\n        ]\n    },\n    \"subject\": \"邮件标题, 同时也是会议标题\",\n    \"content\": \"邮件正文，同时是会议描述\",\n    \"schedule\": {\n        \"method\": \"request\",\n        \"location\": \"这是会议地点\",\n        \"start_time\": 1669278600,\n        \"end_time\": 1669282200,\n        \"reminders\": {\n            \"is_remind\": 1,\n            \"remind_before_event_mins\": 15,\n            \"is_repeat\": 1,\n            \"is_custom_repeat\": 1,\n            \"timezone\": 8,\n            \"repeat_interval\": 1,\n            \"repeat_type\": 1,\n            \"repeat_day_of_week\": [\n                4,\n                5\n            ],\n            \"repeat_day_of_month\": [\n\n            ],\n            \"repeat_week_of_month\": [\n\n            ],\n            \"repeat_month_of_year\": [\n\n            ],\n            \"repeat_until\": 1670745600\n        }\n    },\n    \"meeting\": {\n        \"option\": {\n            \"password\": \"123456\",\n            \"auto_record\": 2,\n            \"enable_waiting_room\": true,\n            \"allow_enter_before_host\": true,\n            \"enter_restraint\": 0,\n            \"enable_screen_watermark\": true,\n            \"enable_enter_mute\":0,\n            \"remind_scope\": 2,\n            \"water_mark_type\": 0\n        },\n        \"hosts\": {\n            \"userids\": [\n                \"zoro\"\n            ]\n        },\n        \"meeting_admins\": {\n            \"userids\": [\n                \"zoro\"\n            ]\n        }\n    },\n    \"enable_id_trans\":1\n}",
+        "request_example_json": {
+          "to": {
+            "emails": [
+              "word@bgjkcsqy.wecom.work",
+              "jyan1@tiyantest.wang",
+              "zorocheng@tencnet.com",
+              "zoro@bgjkcsqy.wecom.work"
+            ],
+            "userids": [
+              "william"
+            ]
+          },
+          "subject": "邮件标题, 同时也是会议标题",
+          "content": "邮件正文，同时是会议描述",
+          "schedule": {
+            "method": "request",
+            "location": "这是会议地点",
+            "start_time": 1669278600,
+            "end_time": 1669282200,
+            "reminders": {
+              "is_remind": 1,
+              "remind_before_event_mins": 15,
+              "is_repeat": 1,
+              "is_custom_repeat": 1,
+              "timezone": 8,
+              "repeat_interval": 1,
+              "repeat_type": 1,
+              "repeat_day_of_week": [
+                4,
+                5
+              ],
+              "repeat_day_of_month": [],
+              "repeat_week_of_month": [],
+              "repeat_month_of_year": [],
+              "repeat_until": 1670745600
+            }
+          },
+          "meeting": {
+            "option": {
+              "password": "123456",
+              "auto_record": 2,
+              "enable_waiting_room": true,
+              "allow_enter_before_host": true,
+              "enter_restraint": 0,
+              "enable_screen_watermark": true,
+              "enable_enter_mute": 0,
+              "remind_scope": 2,
+              "water_mark_type": 0
+            },
+            "hosts": {
+              "userids": [
+                "zoro"
+              ]
+            },
+            "meeting_admins": {
+              "userids": [
+                "zoro"
+              ]
+            }
+          },
+          "enable_id_trans": 1
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "notes": [
+          "start_time 为本周周三8点整，repeat_type 为每周重复，那么每周三8点整重复；\nstart_time 为本月3号10点整，repeat_type 为每月重复，那么每月3号10点整重复；",
+          "若输入的模板不符合语法或无效的userid或者部门ID，则不替换该项内容，保留原样\n转译userAlias时，如果用户没有别名，则不替换该项内容，保留原样\n转译userAliasOrName时，如果用户有别名，则替换为别名；否则，将替换为姓名"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "app_get_email_alias",
+      "cli_action": "app-get-email-alias",
+      "summary": "查询应用邮箱账号",
+      "method": "POST",
+      "endpoint": "/cgi-bin/exmail/app/get_email_alias",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom exmail app-get-email-alias"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "email": {
+              "type": "string",
+              "description": "当前发信账号的主邮箱地址，发邮件将会以此邮箱地址为发件人"
+            },
+            "alias_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "别名邮箱地址列表，能作为收件人收邮件"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "email",
+            "alias_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "查询应用邮箱账号",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97991",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/app/get_email_alias?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "required": null,
+            "description": "当前发信账号的主邮箱地址，发邮件将会以此邮箱地址为发件人",
+            "type": "string"
+          },
+          {
+            "name": "alias_list",
+            "required": null,
+            "description": "别名邮箱地址列表，能作为收件人收邮件",
+            "type": "string[]"
+          }
+        ],
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"email\": \"youxiangceshi@ceshi.wecom.work\",\n    \"alias_list\": [\n        \"youxiang1@ceshi.wecom.work\",\n        \"youxiang2@ceshi.wecom.work\"\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "email": "youxiangceshi@ceshi.wecom.work",
+          "alias_list": [
+            "youxiang1@ceshi.wecom.work",
+            "youxiang2@ceshi.wecom.work"
+          ]
+        }
+      }
+    },
+    {
+      "name": "app_read_mail",
+      "cli_action": "app-read-mail",
+      "summary": "获取邮件内容",
+      "method": "POST",
+      "endpoint": "/cgi-bin/exmail/app/read_mail",
+      "args": [
+        {
+          "name": "mail_id",
+          "flag": "--mail-id",
+          "type": "str",
+          "help": "邮件id",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "mail_id": {
+            "from_arg": "mail_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom exmail app-read-mail --mail-id <mail_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "mail_data": {
+              "type": "string",
+              "description": "邮件eml内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "mail_data"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取邮件内容",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97979",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/app/read_mail?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "mail_id",
+            "required": true,
+            "description": "邮件id",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": "string"
+          },
+          {
+            "name": "mail_data",
+            "required": null,
+            "description": "邮件eml内容",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n  \"mail_id\": \"MAIL_ID\"\n}",
+        "request_example_json": {
+          "mail_id": "MAIL_ID"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"mail_data\": \"MAIL_DATA\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "mail_data": "MAIL_DATA"
+        }
+      }
+    },
+    {
+      "name": "group_create",
+      "cli_action": "group-create",
+      "summary": "创建邮件群组",
+      "method": "POST",
+      "endpoint": "/cgi-bin/exmail/group/create",
+      "args": [
+        {
+          "name": "groupid",
+          "flag": "--groupid",
+          "type": "str",
+          "help": "邮件群组ID，邮箱格式",
+          "required": true
+        },
+        {
+          "name": "groupname",
+          "flag": "--groupname",
+          "type": "str",
+          "help": "邮件群组名称，不能与其他群组重名，长度限定200字节",
+          "required": true
+        },
+        {
+          "name": "email_list",
+          "flag": "--email-list",
+          "type": "str",
+          "help": "群组内成员邮箱地址，读取成员的biz_mail字段，email_list，group_list，department_list，tag_list至少填写一个，不可同时为空。成员由email_list，group_list，department_list，tag_list共同组成"
+        },
+        {
+          "name": "tag_list",
+          "flag": "--tag-list",
+          "type": "str",
+          "help": "群组内包含的标签ID"
+        },
+        {
+          "name": "department_list",
+          "flag": "--department-list",
+          "type": "str",
+          "help": "群组内包含的部门ID"
+        },
+        {
+          "name": "group_list",
+          "flag": "--group-list",
+          "type": "str",
+          "help": "群组内包含的群组邮箱"
+        },
+        {
+          "name": "allow_type",
+          "flag": "--allow-type",
+          "type": "str",
+          "help": "群组使用权限。0: 企业成员, 1任何人， 2:组内成员，3:自定义成员。当值为0、1、2时，不得传入allow_emaillist，allow_departmentlist，allow_taglist。当值为3时，必须传入allow_emaillist，allow_departmentlist，allow_taglist至少一项"
+        },
+        {
+          "name": "allow_emaillist",
+          "flag": "--allow-emaillist",
+          "type": "str",
+          "help": "允许使用群组群发的成员邮箱地址，读取成员的biz_mail字段"
+        },
+        {
+          "name": "allow_departmentlist",
+          "flag": "--allow-departmentlist",
+          "type": "str",
+          "help": "允许使用群组群发的部门ID"
+        },
+        {
+          "name": "allow_taglist",
+          "flag": "--allow-taglist",
+          "type": "str",
+          "help": "允许使用群组群发的标签ID"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "groupid": {
+            "from_arg": "groupid"
+          },
+          "groupname": {
+            "from_arg": "groupname"
+          },
+          "email_list": {
+            "from_arg": "email_list"
+          },
+          "tag_list": {
+            "from_arg": "tag_list"
+          },
+          "department_list": {
+            "from_arg": "department_list"
+          },
+          "group_list": {
+            "from_arg": "group_list"
+          },
+          "allow_type": {
+            "from_arg": "allow_type"
+          },
+          "allow_emaillist": {
+            "from_arg": "allow_emaillist"
+          },
+          "allow_departmentlist": {
+            "from_arg": "allow_departmentlist"
+          },
+          "allow_taglist": {
+            "from_arg": "allow_taglist"
+          }
+        }
+      },
+      "examples": [
+        "wecom exmail group-create --groupid <groupid> --groupname <groupname> [--email-list <email_list>] [--tag-list <tag_list>] [--department-list <department_list>] [--group-list <group_list>] [--allow-type <allow_type>] [--allow-emaillist <allow_emaillist>] [--allow-departmentlist <allow_departmentlist>] [--allow-taglist <allow_taglist>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "创建邮件群组",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95510",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/group/create?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "groupid",
+            "required": true,
+            "description": "邮件群组ID，邮箱格式",
+            "type": "string"
+          },
+          {
+            "name": "groupname",
+            "required": true,
+            "description": "邮件群组名称，不能与其他群组重名，长度限定200字节",
+            "type": "string"
+          },
+          {
+            "name": "email_list",
+            "required": false,
+            "description": "群组内成员邮箱地址，读取成员的biz_mail字段，email_list，group_list，department_list，tag_list至少填写一个，不可同时为空。成员由email_list，group_list，department_list，tag_list共同组成",
+            "type": "string"
+          },
+          {
+            "name": "tag_list",
+            "required": false,
+            "description": "群组内包含的标签ID",
+            "type": "uint32"
+          },
+          {
+            "name": "department_list",
+            "required": false,
+            "description": "群组内包含的部门ID",
+            "type": "uint32"
+          },
+          {
+            "name": "group_list",
+            "required": false,
+            "description": "群组内包含的群组邮箱",
+            "type": "string"
+          },
+          {
+            "name": "allow_type",
+            "required": false,
+            "description": "群组使用权限。0: 企业成员, 1任何人， 2:组内成员，3:自定义成员。当值为0、1、2时，不得传入allow_emaillist，allow_departmentlist，allow_taglist。当值为3时，必须传入allow_emaillist，allow_departmentlist，allow_taglist至少一项",
+            "type": "uint32"
+          },
+          {
+            "name": "allow_emaillist",
+            "required": false,
+            "description": "允许使用群组群发的成员邮箱地址，读取成员的biz_mail字段",
+            "type": "string"
+          },
+          {
+            "name": "allow_departmentlist",
+            "required": false,
+            "description": "允许使用群组群发的部门ID",
+            "type": "uint32"
+          },
+          {
+            "name": "allow_taglist",
+            "required": false,
+            "description": "允许使用群组群发的标签ID",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n  \"groupid\": \"zhangsangroup@gzdev.com\",\n  \"groupname\": \"zhangsangroup\",\n  \"email_list\": {\n    \"list\": [\"lisi@gzdev.com\", \"wangwu@gzdev.com\"]\n  },\n  \"tag_list\": {\n    \"list\": [2, 5]\n  },\n  \"department_list\": {\n    \"list\": [1, 2]\n  },\n  \"group_list\": {\n    \"list\": [\"aaa@gzdev.com\"]\n  },\n  \"allow_type\": 3,\n  \"allow_emaillist\": {\n    \"list\": [\"zhangsanp@gzdev.com\"]\n  },\n  \"allow_departmentlist\": {\n    \"list\": [1, 2]\n  },\n  \"allow_taglist\": {\n    \"list\": [1, 3]\n  }\n}",
+        "request_example_json": {
+          "groupid": "zhangsangroup@gzdev.com",
+          "groupname": "zhangsangroup",
+          "email_list": {
+            "list": [
+              "lisi@gzdev.com",
+              "wangwu@gzdev.com"
+            ]
+          },
+          "tag_list": {
+            "list": [
+              2,
+              5
+            ]
+          },
+          "department_list": {
+            "list": [
+              1,
+              2
+            ]
+          },
+          "group_list": {
+            "list": [
+              "aaa@gzdev.com"
+            ]
+          },
+          "allow_type": 3,
+          "allow_emaillist": {
+            "list": [
+              "zhangsanp@gzdev.com"
+            ]
+          },
+          "allow_departmentlist": {
+            "list": [
+              1,
+              2
+            ]
+          },
+          "allow_taglist": {
+            "list": [
+              1,
+              3
+            ]
+          }
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "group_delete",
+      "cli_action": "group-delete",
+      "summary": "删除邮件群组",
+      "method": "POST",
+      "endpoint": "/cgi-bin/exmail/group/delete",
+      "args": [
+        {
+          "name": "groupid",
+          "flag": "--groupid",
+          "type": "str",
+          "help": "邮件群组ID，邮箱格式",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "groupid": {
+            "from_arg": "groupid"
+          }
+        }
+      },
+      "examples": [
+        "wecom exmail group-delete --groupid <groupid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除邮件群组",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97996",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/group/delete?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "groupid",
+            "required": true,
+            "description": "邮件群组ID，邮箱格式",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n  \"groupid\": \"zhangsangroup@gzdev.com\"\n}",
+        "request_example_json": {
+          "groupid": "zhangsangroup@gzdev.com"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "group_get",
+      "cli_action": "group-get",
+      "summary": "获取邮件群组详情",
+      "method": "GET",
+      "endpoint": "/cgi-bin/exmail/group/get",
+      "args": [
+        {
+          "name": "groupid",
+          "flag": "--groupid",
+          "type": "str",
+          "help": "邮件群组ID，邮箱格式",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "groupid": {
+            "from_arg": "groupid"
+          }
+        }
+      },
+      "examples": [
+        "wecom exmail group-get --groupid <groupid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "groupid": {
+              "type": "string",
+              "description": "邮件群组ID，邮箱格式"
+            },
+            "groupname": {
+              "type": "string",
+              "description": "邮件群组名称"
+            },
+            "email_list": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "description": "群组内成员邮箱地址"
+            },
+            "tag_list": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "description": "群组内包含的标签ID"
+            },
+            "department_list": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "description": "群组内包含的部门ID"
+            },
+            "group_list": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "description": "群组内包含的群组邮箱ID"
+            },
+            "allow_type": {
+              "type": "integer",
+              "description": "群组使用权限。0: 企业成员, 1任何人， 2:组内成员，3:自定义成员。"
+            },
+            "allow_emaillist": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "description": "允许使用群组群发的成员邮箱地址"
+            },
+            "allow_departmentlist": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "description": "允许使用群组群发的部门ID"
+            },
+            "allow_taglist": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "description": "允许使用群组群发的标签ID"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "groupid",
+            "groupname",
+            "email_list",
+            "tag_list",
+            "department_list",
+            "group_list",
+            "allow_type",
+            "allow_emaillist",
+            "allow_departmentlist",
+            "allow_taglist"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取邮件群组详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97997",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/group/get?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "groupid",
+            "required": true,
+            "description": "邮件群组ID，邮箱格式",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "groupid",
+            "required": null,
+            "description": "邮件群组ID，邮箱格式",
+            "type": "string"
+          },
+          {
+            "name": "groupname",
+            "required": null,
+            "description": "邮件群组名称",
+            "type": "string"
+          },
+          {
+            "name": "email_list",
+            "required": null,
+            "description": "群组内成员邮箱地址",
+            "type": "string"
+          },
+          {
+            "name": "tag_list",
+            "required": null,
+            "description": "群组内包含的标签ID",
+            "type": "uint32"
+          },
+          {
+            "name": "department_list",
+            "required": null,
+            "description": "群组内包含的部门ID",
+            "type": "uint32"
+          },
+          {
+            "name": "group_list",
+            "required": null,
+            "description": "群组内包含的群组邮箱ID",
+            "type": "string"
+          },
+          {
+            "name": "allow_type",
+            "required": null,
+            "description": "群组使用权限。0: 企业成员, 1任何人， 2:组内成员，3:自定义成员。",
+            "type": "uint32"
+          },
+          {
+            "name": "allow_emaillist",
+            "required": null,
+            "description": "允许使用群组群发的成员邮箱地址",
+            "type": "string"
+          },
+          {
+            "name": "allow_departmentlist",
+            "required": null,
+            "description": "允许使用群组群发的部门ID",
+            "type": "uint32"
+          },
+          {
+            "name": "allow_taglist",
+            "required": null,
+            "description": "允许使用群组群发的标签ID",
+            "type": "uint32"
+          }
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n    \"groupid\": \"zhangsangroup@gzdev.com\",\n    \"groupname\": \"zhangsangroup\",\n    \"email_list\": {\n    \"list\": [\"lisi@gzdev.com\", \"wangwu@gzdev.com\"]\n    },\n    \"tag_list\": {\n    \"list\": [2, 5]\n    },\n    \"department_list\": {\n    \"list\": [1, 2]\n    },\n    \"group_list\": {\n    \"list\": [\"aaa@gzdev.com\"]\n    },\n    \"allow_type\": 3,\n    \"allow_emaillist\": {\n    \"list\": [\"zhangsanp@gzdev.com\"]\n    },\n    \"allow_departmentlist\": {\n    \"list\": [1, 2]\n    },\n    \"allow_taglist\": {\n    \"list\": [1, 3]\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "groupid": "zhangsangroup@gzdev.com",
+          "groupname": "zhangsangroup",
+          "email_list": {
+            "list": [
+              "lisi@gzdev.com",
+              "wangwu@gzdev.com"
+            ]
+          },
+          "tag_list": {
+            "list": [
+              2,
+              5
+            ]
+          },
+          "department_list": {
+            "list": [
+              1,
+              2
+            ]
+          },
+          "group_list": {
+            "list": [
+              "aaa@gzdev.com"
+            ]
+          },
+          "allow_type": 3,
+          "allow_emaillist": {
+            "list": [
+              "zhangsanp@gzdev.com"
+            ]
+          },
+          "allow_departmentlist": {
+            "list": [
+              1,
+              2
+            ]
+          },
+          "allow_taglist": {
+            "list": [
+              1,
+              3
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "group_search",
+      "cli_action": "group-search",
+      "summary": "模糊搜索邮件群组",
+      "method": "GET",
+      "endpoint": "/cgi-bin/exmail/group/search",
+      "args": [
+        {
+          "name": "fuzzy",
+          "flag": "--fuzzy",
+          "type": "str",
+          "help": "1开启模糊搜索，0获取全部邮件群组",
+          "required": true
+        },
+        {
+          "name": "groupid",
+          "flag": "--groupid",
+          "type": "str",
+          "help": "邮件群组ID，邮箱格式"
+        }
+      ],
+      "request": {
+        "query": {
+          "fuzzy": {
+            "from_arg": "fuzzy"
+          },
+          "groupid": {
+            "from_arg": "groupid"
+          }
+        }
+      },
+      "examples": [
+        "wecom exmail group-search --fuzzy <fuzzy> [--groupid <groupid>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "count": {
+              "type": "integer",
+              "description": "返回条数"
+            },
+            "groups": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "groupid": {
+                    "type": "string",
+                    "description": "邮件群组ID"
+                  },
+                  "groupname": {
+                    "type": "string",
+                    "description": "邮件群组名称"
+                  }
+                },
+                "required": [
+                  "groupid",
+                  "groupname"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "count",
+            "groups"
+          ]
+        }
+      },
+      "doc": {
+        "title": "模糊搜索邮件群组",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97998",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/group/search?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fuzzy",
+            "required": true,
+            "description": "1开启模糊搜索，0获取全部邮件群组",
+            "type": "uint32"
+          },
+          {
+            "name": "groupid",
+            "required": false,
+            "description": "邮件群组ID，邮箱格式",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "count",
+            "required": null,
+            "description": "返回条数",
+            "type": "string"
+          },
+          {
+            "name": "groupid",
+            "required": null,
+            "description": "邮件群组ID",
+            "type": "string"
+          },
+          {
+            "name": "groupname",
+            "required": null,
+            "description": "邮件群组名称",
+            "type": "string"
+          }
+        ],
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"count\": 2,\n  \"groups\": [\n    {\n      \"groupid\": \"g_all@gzdev.com\",\n      \"groupname\": \"任何人\"\n    },\n    {\n      \"groupid\": \"g_inner@gzdev.com\",\n      \"groupname\": \"组内成员\"\n    }\n  ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "count": 2,
+          "groups": [
+            {
+              "groupid": "g_all@gzdev.com",
+              "groupname": "任何人"
+            },
+            {
+              "groupid": "g_inner@gzdev.com",
+              "groupname": "组内成员"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "group_update",
+      "cli_action": "group-update",
+      "summary": "更新邮件群组",
+      "method": "POST",
+      "endpoint": "/cgi-bin/exmail/group/update",
+      "args": [
+        {
+          "name": "groupid",
+          "flag": "--groupid",
+          "type": "str",
+          "help": "邮件群组ID，邮箱格式",
+          "required": true
+        },
+        {
+          "name": "groupname",
+          "flag": "--groupname",
+          "type": "str",
+          "help": "邮件群组名称，不能与其他群组重名，长度限定200字节"
+        },
+        {
+          "name": "email_list",
+          "flag": "--email-list",
+          "type": "str",
+          "help": "群组内成员邮箱地址，读取成员的biz_mail字段，不传则不变，传空则清空。成员由email_list，group_list，department_list，tag_list共同组成，不允许全部清空"
+        },
+        {
+          "name": "tag_list",
+          "flag": "--tag-list",
+          "type": "str",
+          "help": "群组内包含的标签ID，不传则不变，传空为清空"
+        },
+        {
+          "name": "department_list",
+          "flag": "--department-list",
+          "type": "str",
+          "help": "群组内包含的部门ID，不传则不变，传空为清空"
+        },
+        {
+          "name": "group_list",
+          "flag": "--group-list",
+          "type": "str",
+          "help": "群组内包含的群组邮箱ID，不传则不变，传空为清空"
+        },
+        {
+          "name": "allow_type",
+          "flag": "--allow-type",
+          "type": "str",
+          "help": "群组使用权限。0: 企业成员, 1任何人， 2:组内成员，3:自定义成员。当值为0、1、2时，不得传入allow_emaillist，allow_departmentlist，allow_taglist。当值为3时，必须传入allow_emaillist，allow_departmentlist，allow_taglist至少一项。若不需更新则不传入参数。"
+        },
+        {
+          "name": "allow_emaillist",
+          "flag": "--allow-emaillist",
+          "type": "str",
+          "help": "允许使用群组群发的成员邮箱地址，不传则不变，传空为清空"
+        },
+        {
+          "name": "allow_departmentlist",
+          "flag": "--allow-departmentlist",
+          "type": "str",
+          "help": "允许使用群组群发的部门ID，不传则不变，传空为清空"
+        },
+        {
+          "name": "allow_taglist",
+          "flag": "--allow-taglist",
+          "type": "str",
+          "help": "允许使用群组群发的标签ID，不传则不变，传空为清空"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "groupid": {
+            "from_arg": "groupid"
+          },
+          "groupname": {
+            "from_arg": "groupname"
+          },
+          "email_list": {
+            "from_arg": "email_list"
+          },
+          "tag_list": {
+            "from_arg": "tag_list"
+          },
+          "department_list": {
+            "from_arg": "department_list"
+          },
+          "group_list": {
+            "from_arg": "group_list"
+          },
+          "allow_type": {
+            "from_arg": "allow_type"
+          },
+          "allow_emaillist": {
+            "from_arg": "allow_emaillist"
+          },
+          "allow_departmentlist": {
+            "from_arg": "allow_departmentlist"
+          },
+          "allow_taglist": {
+            "from_arg": "allow_taglist"
+          }
+        }
+      },
+      "examples": [
+        "wecom exmail group-update --groupid <groupid> [--groupname <groupname>] [--email-list <email_list>] [--tag-list <tag_list>] [--department-list <department_list>] [--group-list <group_list>] [--allow-type <allow_type>] [--allow-emaillist <allow_emaillist>] [--allow-departmentlist <allow_departmentlist>] [--allow-taglist <allow_taglist>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "更新邮件群组",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97995",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/group/update?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "groupid",
+            "required": true,
+            "description": "邮件群组ID，邮箱格式",
+            "type": "string"
+          },
+          {
+            "name": "groupname",
+            "required": false,
+            "description": "邮件群组名称，不能与其他群组重名，长度限定200字节",
+            "type": "string"
+          },
+          {
+            "name": "email_list",
+            "required": false,
+            "description": "群组内成员邮箱地址，读取成员的biz_mail字段，不传则不变，传空则清空。成员由email_list，group_list，department_list，tag_list共同组成，不允许全部清空",
+            "type": "string"
+          },
+          {
+            "name": "tag_list",
+            "required": false,
+            "description": "群组内包含的标签ID，不传则不变，传空为清空",
+            "type": "uint32"
+          },
+          {
+            "name": "department_list",
+            "required": false,
+            "description": "群组内包含的部门ID，不传则不变，传空为清空",
+            "type": "uint32"
+          },
+          {
+            "name": "group_list",
+            "required": false,
+            "description": "群组内包含的群组邮箱ID，不传则不变，传空为清空",
+            "type": "string"
+          },
+          {
+            "name": "allow_type",
+            "required": false,
+            "description": "群组使用权限。0: 企业成员, 1任何人， 2:组内成员，3:自定义成员。当值为0、1、2时，不得传入allow_emaillist，allow_departmentlist，allow_taglist。当值为3时，必须传入allow_emaillist，allow_departmentlist，allow_taglist至少一项。若不需更新则不传入参数。",
+            "type": "uint32"
+          },
+          {
+            "name": "allow_emaillist",
+            "required": false,
+            "description": "允许使用群组群发的成员邮箱地址，不传则不变，传空为清空",
+            "type": "string"
+          },
+          {
+            "name": "allow_departmentlist",
+            "required": false,
+            "description": "允许使用群组群发的部门ID，不传则不变，传空为清空",
+            "type": "uint32"
+          },
+          {
+            "name": "allow_taglist",
+            "required": false,
+            "description": "允许使用群组群发的标签ID，不传则不变，传空为清空",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n  \"groupid\": \"zhangsangroup@gzdev.com\",\n  \"groupname\": \"zhangsangroup\",\n  \"email_list\" : {\"list\" : []}\n}",
+        "request_example_json": {
+          "groupid": "zhangsangroup@gzdev.com",
+          "groupname": "zhangsangroup",
+          "email_list": {
+            "list": []
+          }
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "useroption_update",
+      "cli_action": "useroption-update",
+      "summary": "更改用户功能属性",
+      "method": "POST",
+      "endpoint": "/cgi-bin/exmail/useroption/update",
+      "args": [
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "用户UserID",
+          "required": true
+        },
+        {
+          "name": "type",
+          "flag": "--type",
+          "type": "bool",
+          "help": "功能设置属性类型 1: 强制启用安全登录 2: IMAP/SMTP服务 3: POP/SMTP服务 4: 是否启用安全登录",
+          "required": true
+        },
+        {
+          "name": "value",
+          "flag": "--value",
+          "type": "str",
+          "help": "1表示启用，0表示关闭",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "userid": {
+            "from_arg": "userid"
+          },
+          "type": {
+            "from_arg": "type"
+          },
+          "value": {
+            "from_arg": "value"
+          }
+        }
+      },
+      "examples": [
+        "wecom exmail useroption-update --userid <userid> --type <type> --value <value>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "更改用户功能属性",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98008",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/exmail/useroption/update?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "userid",
+            "required": true,
+            "description": "用户UserID",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "required": true,
+            "description": "功能设置属性类型 1: 强制启用安全登录 2: IMAP/SMTP服务 3: POP/SMTP服务 4: 是否启用安全登录",
+            "type": "int32"
+          },
+          {
+            "name": "value",
+            "required": true,
+            "description": "1表示启用，0表示关闭",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n  \"userid\": \"zhangsan\",\n  \"option\": {\n    \"list\": [{\n      \"type\": 1,\n      \"value\": \"0\"\n    }, {\n      \"type\": 2,\n      \"value\": \"1\"\n    }, {\n      \"type\": 3,\n      \"value\": \"0\"\n    }]\n  }\n}",
+        "request_example_json": {
+          "userid": "zhangsan",
+          "option": {
+            "list": [
+              {
+                "type": 1,
+                "value": "0"
+              },
+              {
+                "type": 2,
+                "value": "1"
+              },
+              {
+                "type": 3,
+                "value": "0"
+              }
+            ]
+          }
+        },
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    }
+  ]
+}

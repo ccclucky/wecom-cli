@@ -1,0 +1,212 @@
+{
+  "domain": "hardware",
+  "operations": [
+    {
+      "name": "get_hardware_checkin_data",
+      "cli_action": "get-hardware-checkin-data",
+      "summary": "获取设备打卡数据",
+      "method": "POST",
+      "endpoint": "/cgi-bin/hardware/get_hardware_checkin_data",
+      "args": [
+        {
+          "name": "filter_type",
+          "flag": "--filter-type",
+          "type": "str",
+          "help": "过滤类型，1表示按打卡时间过滤，2表示按设备上传打卡记录的时间过滤，默认值是1"
+        },
+        {
+          "name": "starttime",
+          "flag": "--starttime",
+          "type": "str",
+          "help": "Unix时间戳，当filter_type为1时，表示打卡的开始时间；当filter_type为2时，表示设备上传记录的开始时间",
+          "required": true
+        },
+        {
+          "name": "endtime",
+          "flag": "--endtime",
+          "type": "str",
+          "help": "Unix时间戳，当filter_type为1时，表示打卡的结束时间；当filter_type为2时，表示设备上传记录的结束时间",
+          "required": true
+        },
+        {
+          "name": "useridlist",
+          "flag": "--useridlist",
+          "type": "str",
+          "help": "需要获取打卡记录的用户列表",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "filter_type": {
+            "from_arg": "filter_type"
+          },
+          "starttime": {
+            "from_arg": "starttime"
+          },
+          "endtime": {
+            "from_arg": "endtime"
+          },
+          "useridlist": {
+            "from_arg": "useridlist"
+          }
+        }
+      },
+      "examples": [
+        "wecom hardware get-hardware-checkin-data [--filter-type <filter_type>] --starttime <starttime> --endtime <endtime> --useridlist <useridlist>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "checkindata": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "userid": {
+                    "type": "string",
+                    "description": "用户id"
+                  },
+                  "checkin_time": {
+                    "type": "integer",
+                    "description": "打卡时间。Unix时间戳"
+                  },
+                  "device_sn": {
+                    "type": "string",
+                    "description": "打卡设备的sn"
+                  },
+                  "device_name": {
+                    "type": "string",
+                    "description": "打卡设备名"
+                  }
+                },
+                "required": [
+                  "userid",
+                  "checkin_time",
+                  "device_sn",
+                  "device_name"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "checkindata"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取设备打卡数据",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94126",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/hardware/get_hardware_checkin_data?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。",
+            "type": null
+          },
+          {
+            "name": "filter_type",
+            "required": false,
+            "description": "过滤类型，1表示按打卡时间过滤，2表示按设备上传打卡记录的时间过滤，默认值是1",
+            "type": null
+          },
+          {
+            "name": "starttime",
+            "required": true,
+            "description": "Unix时间戳，当filter_type为1时，表示打卡的开始时间；当filter_type为2时，表示设备上传记录的开始时间",
+            "type": null
+          },
+          {
+            "name": "endtime",
+            "required": true,
+            "description": "Unix时间戳，当filter_type为1时，表示打卡的结束时间；当filter_type为2时，表示设备上传记录的结束时间",
+            "type": null
+          },
+          {
+            "name": "useridlist",
+            "required": true,
+            "description": "需要获取打卡记录的用户列表",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "userid",
+            "required": null,
+            "description": "用户id",
+            "type": null
+          },
+          {
+            "name": "checkin_time",
+            "required": null,
+            "description": "打卡时间。Unix时间戳",
+            "type": null
+          },
+          {
+            "name": "device_sn",
+            "required": null,
+            "description": "打卡设备的sn",
+            "type": null
+          },
+          {
+            "name": "device_name",
+            "required": null,
+            "description": "打卡设备名",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"filter_type\": 1,\n   \"starttime\": 1492617600,\n   \"endtime\": 1492790400,\n   \"useridlist\": [\"james\",\"paul\"]\n}",
+        "request_example_json": {
+          "filter_type": 1,
+          "starttime": 1492617600,
+          "endtime": 1492790400,
+          "useridlist": [
+            "james",
+            "paul"
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\":0,\n   \"errmsg\":\"ok\",\n   \"checkindata\": [{\n\t\t\"userid\" : \"james\",\n\t\t\"checkin_time\" : 1492617610,  \n\t\t\"device_sn\" : \"xxxxx\",    \n\t\t\"device_name\": \"xxxx门店\"\n\t},{\n\t\t\"userid\" : \"paul\",\n\t\t\"checkin_time\" : 1492617620,  \n\t\t\"device_sn\" : \"yyyy\",   \n\t\t\"device_name\": \"yyyy门店\"\n\t}]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "checkindata": [
+            {
+              "userid": "james",
+              "checkin_time": 1492617610,
+              "device_sn": "xxxxx",
+              "device_name": "xxxx门店"
+            },
+            {
+              "userid": "paul",
+              "checkin_time": 1492617620,
+              "device_sn": "yyyy",
+              "device_name": "yyyy门店"
+            }
+          ]
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "1. 获取记录时间跨度不超过一个月\n2. 用户列表不超过100个。若用户超过100个，请分批获取\n3. 获取的是通过考勤设备打卡的原始记录，不包含企业微信app手机打卡的记录\n4. userid无效时，忽略该参数，不报错"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

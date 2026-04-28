@@ -1,0 +1,1743 @@
+{
+  "domain": "kf",
+  "operations": [
+    {
+      "name": "account_add",
+      "cli_action": "account-add",
+      "summary": "添加客服账号",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/account/add",
+      "args": [
+        {
+          "name": "name",
+          "flag": "--name",
+          "type": "str",
+          "help": "客服名称 不多于16个字符",
+          "required": true
+        },
+        {
+          "name": "media_id",
+          "flag": "--media-id",
+          "type": "str",
+          "help": "客服头像临时素材。可以调用上传临时素材接口获取。 不多于128个字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "name": {
+            "from_arg": "name"
+          },
+          "media_id": {
+            "from_arg": "media_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf account-add --name <name> --media-id <media_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "open_kfid": {
+              "type": "string",
+              "description": "新创建的客服账号ID"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "open_kfid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "添加客服账号",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94662",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/account/add?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "required": true,
+            "description": "客服名称 不多于16个字符",
+            "type": "string"
+          },
+          {
+            "name": "media_id",
+            "required": true,
+            "description": "客服头像临时素材。可以调用上传临时素材接口获取。 不多于128个字节",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "open_kfid",
+            "required": null,
+            "description": "新创建的客服账号ID",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"name\": \"新建的客服账号\",\n    \"media_id\": \"294DpAog3YA5b9rTK4PjjfRfYLO0L5qpDHAJIzhhQ2jAEWjb9i661Q4lk8oFnPtmj\"\n}",
+        "request_example_json": {
+          "name": "新建的客服账号",
+          "media_id": "294DpAog3YA5b9rTK4PjjfRfYLO0L5qpDHAJIzhhQ2jAEWjb9i661Q4lk8oFnPtmj"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"open_kfid\": \"wkAJ2GCAAAZSfhHCt7IFSvLKtMPxyJTw\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "open_kfid": "wkAJ2GCAAAZSfhHCt7IFSvLKtMPxyJTw"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情\n \n通过接口创建的客服账号，将自动拥有该客服账号的管理权限。企业可在管理后台“微信客服-通过API管理微信客服账号”处设置对应的客服账号通过API来管理。"
+        ]
+      }
+    },
+    {
+      "name": "account_del",
+      "cli_action": "account-del",
+      "summary": "删除客服账号",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/account/del",
+      "args": [
+        {
+          "name": "open_kfid",
+          "flag": "--open-kfid",
+          "type": "str",
+          "help": "客服账号ID。 不多于64字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "open_kfid": {
+            "from_arg": "open_kfid"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf account-del --open-kfid <open_kfid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除客服账号",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94663",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/account/del?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "open_kfid",
+            "required": true,
+            "description": "客服账号ID。 不多于64字节",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"open_kfid\": \"wkAJ2GCAAAZSfhHCt7IFSvLKtMPxyJTw\"\n}",
+        "request_example_json": {
+          "open_kfid": "wkAJ2GCAAAZSfhHCt7IFSvLKtMPxyJTw"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "get_corp_statistic",
+      "cli_action": "get-corp-statistic",
+      "summary": "获取「客户数据统计」企业汇总数据",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/get_corp_statistic",
+      "args": [
+        {
+          "name": "open_kfid",
+          "flag": "--open-kfid",
+          "type": "str",
+          "help": "客服账号ID",
+          "required": true
+        },
+        {
+          "name": "start_time",
+          "flag": "--start-time",
+          "type": "str",
+          "help": "起始日期的时间戳，填这一天的0时0分0秒（否则系统自动处理为当天的0分0秒）。取值范围：昨天至前180天",
+          "required": true
+        },
+        {
+          "name": "end_time",
+          "flag": "--end-time",
+          "type": "str",
+          "help": "结束日期的时间戳，填这一天的0时0分0秒（否则系统自动处理为当天的0分0秒）。取值范围：昨天至前180天",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "open_kfid": {
+            "from_arg": "open_kfid"
+          },
+          "start_time": {
+            "from_arg": "start_time"
+          },
+          "end_time": {
+            "from_arg": "end_time"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf get-corp-statistic --open-kfid <open_kfid> --start-time <start_time> --end-time <end_time>"
+      ],
+      "doc": {
+        "title": "获取「客户数据统计」企业汇总数据",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95489",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/get_corp_statistic?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "open_kfid",
+            "required": true,
+            "description": "客服账号ID",
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "required": true,
+            "description": "起始日期的时间戳，填这一天的0时0分0秒（否则系统自动处理为当天的0分0秒）。取值范围：昨天至前180天",
+            "type": "uint32"
+          },
+          {
+            "name": "end_time",
+            "required": true,
+            "description": "结束日期的时间戳，填这一天的0时0分0秒（否则系统自动处理为当天的0分0秒）。取值范围：昨天至前180天",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "statistic_list",
+            "required": null,
+            "description": "统计数据列表",
+            "type": "obj"
+          },
+          {
+            "name": "statistic_list_stat_time",
+            "required": null,
+            "description": "数据统计日期，为当日0点的时间戳",
+            "type": "uint32"
+          },
+          {
+            "name": "statistic_list_statistic",
+            "required": null,
+            "description": "一天的统计数据。若当天未产生任何下列统计数据或统计数据还未计算完成则不会返回此项",
+            "type": "obj"
+          },
+          {
+            "name": "statistic_list_statistic_session_cnt",
+            "required": null,
+            "description": "咨询会话数。客户发过消息并分配给接待人员或智能助手的客服会话数，转接不会产生新的会话",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_customer_cnt",
+            "required": null,
+            "description": "咨询客户数。在会话中发送过消息的客户数量，若客户多次咨询只计算一个客户",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_customer_msg_cnt",
+            "required": null,
+            "description": "咨询消息总数。客户在会话中发送的消息的数量",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_upgrade_service_customer_cnt",
+            "required": null,
+            "description": "升级服务客户数。通过「升级服务」功能成功添加专员或加入客户群的客户数，若同一个客户添加多个专员或客户群，只计算一个客户。在2022年3月10日以后才会有对应统计数据",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_ai_session_reply_cnt",
+            "required": null,
+            "description": "智能回复会话数。客户发过消息并分配给智能助手的咨询会话数。通过API发消息或者开启智能回复功能会将客户分配给智能助手",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_ai_transfer_rate",
+            "required": null,
+            "description": "转人工率。一个自然日内，客户给智能助手发消息的会话中，转人工的会话的占比。",
+            "type": "float"
+          },
+          {
+            "name": "statistic_list_statistic_ai_knowledge_hit_rate",
+            "required": null,
+            "description": "知识命中率。一个自然日内，客户给智能助手发送的消息中，命中知识库的占比。只有在开启了智能回复原生功能并配置了知识库的情况下，才会产生该项统计数据。当api托管了会话分配，智能回复原生功能失效。若不返回，代表没有向配置知识库的智能接待助手发送消息，该项无法计算",
+            "type": "float"
+          },
+          {
+            "name": "statistic_list_statistic_msg_rejected_customer_cnt",
+            "required": null,
+            "description": "被拒收消息的客户数。被接待人员设置了“不再接收消息”的客户数",
+            "type": "uint64"
+          }
+        ],
+        "request_example_text": "{\n    \"open_kfid\": \"OPEN_KFID\",\n    \"start_time\": 1645545600,\n\t\"end_time\": 1645632000\n}",
+        "request_example_json": {
+          "open_kfid": "OPEN_KFID",
+          "start_time": 1645545600,
+          "end_time": 1645632000
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n\t\"statistic_list\" : [\n            {\n                \"stat_time\" : 1645545600,\n                \"statistic\" : {\n                    \"session_cnt\" : 2,\n                    \"customer_cnt\" : 1,\n                    \"customer_msg_cnt\" : 6,\n                    \"upgrade_service_customer_cnt\" : 0,\n                    \"ai_session_reply_cnt\" : 1,\n                    \"ai_transfer_rate\" : 1,\n                    \"ai_knowledge_hit_rate\" : 0,\n                    \"msg_rejected_customer_cnt\" : 1\n                },\n            },\n\t\t\t {\n                 \"stat_time\" : 1645632000,\n                 \"statistic\" : {\n                     ...\n                 }\n            }\n        ]\n}",
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "查询时间区间[start_time, end_time]为闭区间，最大查询跨度为31天，用户最多可获取最近180天内的数据。当天的数据需要等到第二天才能获取，建议在第二天早上六点以后再调用此接口获取前一天的数据",
+          "当传入的时间不为0点时，会向下取整，如传入1554296400(Wed Apr 3 21:00:00 CST 2019)会被自动转换为1554220800（Wed Apr 3 00:00:00 CST 2019）;",
+          "开启API或授权第三方应用管理会话，没有2022年3月11日以前的统计数据"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "get_servicer_statistic",
+      "cli_action": "get-servicer-statistic",
+      "summary": "获取「客户数据统计」接待人员明细数据",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/get_servicer_statistic",
+      "args": [
+        {
+          "name": "open_kfid",
+          "flag": "--open-kfid",
+          "type": "str",
+          "help": "客服账号ID",
+          "required": true
+        },
+        {
+          "name": "servicer_userid",
+          "flag": "--servicer-userid",
+          "type": "str",
+          "help": "接待人员的userid。第三方应用为密文userid，即open_userid"
+        },
+        {
+          "name": "start_time",
+          "flag": "--start-time",
+          "type": "str",
+          "help": "起始日期的时间戳，填当天的0时0分0秒（否则系统自动处理为当天的0分0秒）。取值范围：昨天至前180天",
+          "required": true
+        },
+        {
+          "name": "end_time",
+          "flag": "--end-time",
+          "type": "str",
+          "help": "结束日期的时间戳，填当天的0时0分0秒（否则系统自动处理为当天的0分0秒）。取值范围：昨天至前180天",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "open_kfid": {
+            "from_arg": "open_kfid"
+          },
+          "servicer_userid": {
+            "from_arg": "servicer_userid"
+          },
+          "start_time": {
+            "from_arg": "start_time"
+          },
+          "end_time": {
+            "from_arg": "end_time"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf get-servicer-statistic --open-kfid <open_kfid> [--servicer-userid <servicer_userid>] --start-time <start_time> --end-time <end_time>"
+      ],
+      "doc": {
+        "title": "获取「客户数据统计」接待人员明细数据",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95490",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/get_servicer_statistic?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "open_kfid",
+            "required": true,
+            "description": "客服账号ID",
+            "type": "string"
+          },
+          {
+            "name": "servicer_userid",
+            "required": false,
+            "description": "接待人员的userid。第三方应用为密文userid，即open_userid",
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "required": true,
+            "description": "起始日期的时间戳，填当天的0时0分0秒（否则系统自动处理为当天的0分0秒）。取值范围：昨天至前180天",
+            "type": "uint32"
+          },
+          {
+            "name": "end_time",
+            "required": true,
+            "description": "结束日期的时间戳，填当天的0时0分0秒（否则系统自动处理为当天的0分0秒）。取值范围：昨天至前180天",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "statistic_list",
+            "required": null,
+            "description": "统计数据列表",
+            "type": "obj"
+          },
+          {
+            "name": "statistic_list_stat_time",
+            "required": null,
+            "description": "数据统计日期，为当日0点的时间戳",
+            "type": "uint32"
+          },
+          {
+            "name": "statistic_list_statistic",
+            "required": null,
+            "description": "一天的统计数据。若当天未产生任何下列统计数据或统计数据还未计算完成则不会返回此项",
+            "type": "obj"
+          },
+          {
+            "name": "statistic_list_statistic_session_cnt",
+            "required": null,
+            "description": "接入人工会话数。客户发过消息并分配给接待人员的咨询会话数",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_customer_cnt",
+            "required": null,
+            "description": "咨询客户数。在会话中发送过消息且接入了人工会话的客户数量，若客户多次咨询只计算一个客户",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_customer_msg_cnt",
+            "required": null,
+            "description": "咨询消息总数。客户在会话中发送的消息的数量",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_reply_rate",
+            "required": null,
+            "description": "人工回复率。一个自然日内，客户给接待人员发消息的会话中，接待人员回复了的会话的占比。若数据项不返回，代表没有给接待人员发送消息的客户，此项无法计算。",
+            "type": "float"
+          },
+          {
+            "name": "statistic_list_statistic_first_reply_average_sec",
+            "required": null,
+            "description": "平均首次响应时长，单位：秒。一个自然日内，客户给接待人员发送的第一条消息至接待人员回复之间的时长，为首次响应时长。所有的首次回复总时长/已回复的咨询会话数，即为平均首次响应时长 。若数据项不返回，代表没有给接待人员发送消息的客户，此项无法计算",
+            "type": "float"
+          },
+          {
+            "name": "statistic_list_statistic_satisfaction_investgate_cnt",
+            "required": null,
+            "description": "满意度评价发送数。当api托管了会话分配，满意度原生功能失效，满意度评价发送数为0",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_satisfaction_participation_rate",
+            "required": null,
+            "description": "满意度参评率 。当api托管了会话分配，满意度原生功能失效。若数据项不返回，代表没有发送满意度评价，此项无法计算",
+            "type": "float"
+          },
+          {
+            "name": "statistic_list_statistic_satisfied_rate",
+            "required": null,
+            "description": "“满意”评价占比 。在客户参评的满意度评价中，评价是“满意”的占比。当api托管了会话分配，满意度原生功能失效。若数据项不返回，代表没有客户参评的满意度评价，此项无法计算",
+            "type": "float"
+          },
+          {
+            "name": "statistic_list_statistic_middling_rate",
+            "required": null,
+            "description": "“一般”评价占比 。在客户参评的满意度评价中，评价是“一般”的占比。当api托管了会话分配，满意度原生功能失效。若数据项不返回，代表没有客户参评的满意度评价，此项无法计算",
+            "type": "float"
+          },
+          {
+            "name": "statistic_list_statistic_dissatisfied_rate",
+            "required": null,
+            "description": "“不满意”评价占比。在客户参评的满意度评价中，评价是“不满意”的占比。当api托管了会话分配，满意度原生功能失效。若数据项不返回，代表没有客户参评的满意度评价，此项无法计算",
+            "type": "float"
+          },
+          {
+            "name": "statistic_list_statistic_upgrade_service_customer_cnt",
+            "required": null,
+            "description": "升级服务客户数。通过「升级服务」功能成功添加专员或加入客户群的客户数，若同一个客户添加多个专员或客户群，只计算一个客户。在2022年3月10日以后才会有对应统计数据",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_upgrade_service_member_invite_cnt",
+            "required": null,
+            "description": "专员服务邀请数。接待人员通过「升级服务-专员服务」向客户发送服务专员名片的次数。在2022年3月10日以后才会有对应统计数据",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_upgrade_service_member_customer_cnt",
+            "required": null,
+            "description": "添加专员的客户数 。客户成功添加专员为好友的数量，若同一个客户添加多个专员，则计算多个客户数。在2022年3月10日以后才会有对应统计数据",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_upgrade_service_groupchat_invite_cnt",
+            "required": null,
+            "description": "客户群服务邀请数。接待人员通过「升级服务-客户群服务」向客户发送客户群二维码的次数。在2022年3月10日以后才会有对应统计数据",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_upgrade_service_groupchat_customer_cnt",
+            "required": null,
+            "description": "加入客户群的客户数。客户成功加入客户群的数量，若同一个客户加多个客户群，则计算多个客户数。在2022年3月10日以后才会有对应统计数据",
+            "type": "uint64"
+          },
+          {
+            "name": "statistic_list_statistic_msg_rejected_customer_cnt",
+            "required": null,
+            "description": "被拒收消息的客户数。被接待人员设置了“不再接收消息”的客户数",
+            "type": "uint64"
+          }
+        ],
+        "request_example_text": "{\n    \"open_kfid\": \"OPEN_KFID\",\n\t\"servicer_userid\":\"zhangsan\",\n    \"start_time\": 1645545600,\n\t\"end_time\": 1645632000\n}",
+        "request_example_json": {
+          "open_kfid": "OPEN_KFID",
+          "servicer_userid": "zhangsan",
+          "start_time": 1645545600,
+          "end_time": 1645632000
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n\t\"statistic_list\" : [\n            {\n                \"stat_time\" : 1645545600,\n                \"statistic\" : {\n                    \"session_cnt\" : 1,\n                    \"customer_cnt\" : 1,\n                    \"customer_msg_cnt\" : 1,\n                    \"reply_rate\" : 1,\n                    \"first_reply_average_sec\" : 17,\n                    \"satisfaction_investgate_cnt\" : 1,\n                    \"satisfaction_participation_rate\" : 1,\n                    \"satisfied_rate\" : 1,\n                    \"middling_rate\" : 0,\n                    \"dissatisfied_rate\" : 0,\n                    \"upgrade_service_customer_cnt\" : 0,\n                    \"upgrade_service_member_invite_cnt\" : 0,\n                    \"upgrade_service_member_customer_cnt\" : 0,\n                    \"upgrade_service_groupchat_invite_cnt\" : 0,\n                    \"upgrade_service_groupchat_customer_cnt\" : 0,\n                    \"msg_rejected_customer_cnt\" : 1\n                }\n            },\n\t\t\t{\n\t\t\t\t \"stat_time\" : 1645632000,\n\t\t\t\t \"statistic\" : {\n\t\t\t\t \t...\n\t\t\t\t }\n\t\t\t}\n        ]\n}",
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "servicer_userid为非必填参数:\n1. 不指定servicer_userid，返回客服账号维度汇总数据；\n2. 指定servicer_userid，返回该接待人员在此客服账号下的数据。",
+          "查询时间区间[start_time, end_time]为闭区间，最大查询跨度为31天，用户最多可获取最近180天内的数据。当天的数据需要等到第二天才能获取，建议在第二天早上六点以后再调用此接口获取前一天的数据",
+          "当传入的时间不为0点时，会向下取整，如传入1554296400(Wed Apr 3 21:00:00 CST 2019)会被自动转换为1554220800（Wed Apr 3 00:00:00 CST 2019）;",
+          "开启API或授权第三方应用管理会话，没有2022年3月11日以前的统计数据"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "knowledge_add_group",
+      "cli_action": "knowledge-add-group",
+      "summary": "知识库分组管理",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/knowledge/add_group",
+      "args": [
+        {
+          "name": "name",
+          "flag": "--name",
+          "type": "str",
+          "help": "分组名。不超过12个字",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "name": {
+            "from_arg": "name"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf knowledge-add-group --name <name>"
+      ],
+      "doc": {
+        "title": "知识库分组管理",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95971",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/knowledge/add_group?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "required": true,
+            "description": "分组名。不超过12个字",
+            "type": "stirng"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "group_id",
+            "required": null,
+            "description": "分组ID",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n\t\"name\": \"分组名\"\n}",
+        "request_example_json": {
+          "name": "分组名"
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"group_id\" \"GROUP_ID\"\n}",
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情",
+          "添加分组",
+          "可通过此接口创建新的知识库分组。",
+          "请求方式: POST (HTTPS)",
+          "请求地址: https://qyapi.weixin.qq.com/cgi-bin/kf/knowledge/add_group?access_token=ACCESS_TOKEN"
+        ]
+      }
+    },
+    {
+      "name": "knowledge_add_intent",
+      "cli_action": "knowledge-add-intent",
+      "summary": "知识库问答管理",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/knowledge/add_intent",
+      "args": [
+        {
+          "name": "group_id",
+          "flag": "--group-id",
+          "type": "str",
+          "help": "分组ID",
+          "required": true
+        },
+        {
+          "name": "question",
+          "flag": "--question",
+          "type": "str",
+          "help": "主问题",
+          "required": true
+        },
+        {
+          "name": "question_text",
+          "flag": "--question-text",
+          "type": "str",
+          "help": "主问题文本",
+          "required": true
+        },
+        {
+          "name": "question_text_content",
+          "flag": "--question-text-content",
+          "type": "str",
+          "help": "主问题文本内容。不超过200个字",
+          "required": true
+        },
+        {
+          "name": "similar_questions",
+          "flag": "--similar-questions",
+          "type": "str",
+          "help": "相似问题"
+        },
+        {
+          "name": "similar_questions_items",
+          "flag": "--similar-questions-items",
+          "type": "str",
+          "help": "相似问题列表。最多支持100个"
+        },
+        {
+          "name": "similar_questions_items_text",
+          "flag": "--similar-questions-items-text",
+          "type": "str",
+          "help": "相似问题文本",
+          "required": true
+        },
+        {
+          "name": "similar_questions_items_text_content",
+          "flag": "--similar-questions-items-text-content",
+          "type": "str",
+          "help": "相似问题文本内容。不超过200个字",
+          "required": true
+        },
+        {
+          "name": "answers",
+          "flag": "--answers",
+          "type": "str",
+          "help": "回答列表。目前仅支持1个",
+          "required": true
+        },
+        {
+          "name": "answers_text",
+          "flag": "--answers-text",
+          "type": "str",
+          "help": "回答文本",
+          "required": true
+        },
+        {
+          "name": "answers_text_content",
+          "flag": "--answers-text-content",
+          "type": "str",
+          "help": "回答文本内容。不超过500个字",
+          "required": true
+        },
+        {
+          "name": "answers_attachments",
+          "flag": "--answers-attachments",
+          "type": "str",
+          "help": "回答附件列表。最多支持4个"
+        },
+        {
+          "name": "answers_attachments_1",
+          "flag": "--answers-attachments-1",
+          "type": "str",
+          "help": "回答附件。具体见附录-问答附件类型",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "group_id": {
+            "from_arg": "group_id"
+          },
+          "question": {
+            "from_arg": "question"
+          },
+          "question_text": {
+            "from_arg": "question_text"
+          },
+          "question_text_content": {
+            "from_arg": "question_text_content"
+          },
+          "similar_questions": {
+            "from_arg": "similar_questions"
+          },
+          "similar_questions_items": {
+            "from_arg": "similar_questions_items"
+          },
+          "similar_questions_items_text": {
+            "from_arg": "similar_questions_items_text"
+          },
+          "similar_questions_items_text_content": {
+            "from_arg": "similar_questions_items_text_content"
+          },
+          "answers": {
+            "from_arg": "answers"
+          },
+          "answers_text": {
+            "from_arg": "answers_text"
+          },
+          "answers_text_content": {
+            "from_arg": "answers_text_content"
+          },
+          "answers_attachments": {
+            "from_arg": "answers_attachments"
+          },
+          "answers_attachments_1": {
+            "from_arg": "answers_attachments_1"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf knowledge-add-intent --group-id <group_id> --question <question> --question-text <question_text> --question-text-content <question_text_content> [--similar-questions <similar_questions>] [--similar-questions-items <similar_questions_items>] --similar-questions-items-text <similar_questions_items_text> --similar-questions-items-text-content <similar_questions_items_text_content> --answers <answers> --answers-text <answers_text> --answers-text-content <answers_text_content> [--answers-attachments <answers_attachments>] --answers-attachments-1 <answers_attachments_1>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "intent_id": {
+              "type": "string",
+              "description": "问答ID"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "intent_id"
+          ]
+        }
+      },
+      "doc": {
+        "title": "知识库问答管理",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95972",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/knowledge/add_intent?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "group_id",
+            "required": true,
+            "description": "分组ID",
+            "type": "string"
+          },
+          {
+            "name": "question",
+            "required": true,
+            "description": "主问题",
+            "type": "obj"
+          },
+          {
+            "name": "question_text",
+            "required": true,
+            "description": "主问题文本",
+            "type": "obj"
+          },
+          {
+            "name": "question_text_content",
+            "required": true,
+            "description": "主问题文本内容。不超过200个字",
+            "type": "string"
+          },
+          {
+            "name": "similar_questions",
+            "required": false,
+            "description": "相似问题",
+            "type": "obj"
+          },
+          {
+            "name": "similar_questions_items",
+            "required": false,
+            "description": "相似问题列表。最多支持100个",
+            "type": "obj[]"
+          },
+          {
+            "name": "similar_questions_items_text",
+            "required": true,
+            "description": "相似问题文本",
+            "type": "obj"
+          },
+          {
+            "name": "similar_questions_items_text_content",
+            "required": true,
+            "description": "相似问题文本内容。不超过200个字",
+            "type": "string"
+          },
+          {
+            "name": "answers",
+            "required": true,
+            "description": "回答列表。目前仅支持1个",
+            "type": "obj[]"
+          },
+          {
+            "name": "answers_text",
+            "required": true,
+            "description": "回答文本",
+            "type": "obj"
+          },
+          {
+            "name": "answers_text_content",
+            "required": true,
+            "description": "回答文本内容。不超过500个字",
+            "type": "string"
+          },
+          {
+            "name": "answers_attachments",
+            "required": false,
+            "description": "回答附件列表。最多支持4个",
+            "type": "obj[]"
+          },
+          {
+            "name": "answers_attachments_1",
+            "required": true,
+            "description": "回答附件。具体见附录-问答附件类型",
+            "type": "obj"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "intent_id",
+            "required": null,
+            "description": "问答ID",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"group_id\": \"GROUP_ID\",\n    \"question\": {\n        \"text\": {\n            \"content\": \"主问题\"\n        }\n    }, \n    \"similar_questions\": {\n        \"items\": [\n            {\n                \"text\": {\n                    \"content\": \"相似问题1\"\n                }\n            }, \n            {\n                \"text\": {\n                    \"content\": \"相似问题2\"\n                }\n            }\n        ]\n    }, \n    \"answers\": [\n        {\n            \"text\": {\n                \"content\": \"问题的回复\"\n            }, \n            \"attachments\": [\n                {\n                    \"msgtype\": \"image\",\n                    \"image\": {\n                        \"media_id\": \"MEDIA_ID\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
+        "request_example_json": {
+          "group_id": "GROUP_ID",
+          "question": {
+            "text": {
+              "content": "主问题"
+            }
+          },
+          "similar_questions": {
+            "items": [
+              {
+                "text": {
+                  "content": "相似问题1"
+                }
+              },
+              {
+                "text": {
+                  "content": "相似问题2"
+                }
+              }
+            ]
+          },
+          "answers": [
+            {
+              "text": {
+                "content": "问题的回复"
+              },
+              "attachments": [
+                {
+                  "msgtype": "image",
+                  "image": {
+                    "media_id": "MEDIA_ID"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"intent_id\": \"INTENT_ID\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "intent_id": "INTENT_ID"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情",
+          "添加问答",
+          "可通过此接口创建新的知识库问答。",
+          "请求方式: POST (HTTPS)",
+          "请求地址: https://qyapi.weixin.qq.com/cgi-bin/kf/knowledge/add_intent?access_token=ACCESS_TOKEN"
+        ]
+      }
+    },
+    {
+      "name": "send_msg",
+      "cli_action": "send-msg",
+      "summary": "发送消息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/send_msg",
+      "args": [
+        {
+          "name": "touser",
+          "flag": "--touser",
+          "type": "str",
+          "help": "TODO: touser"
+        },
+        {
+          "name": "open_kfid",
+          "flag": "--open-kfid",
+          "type": "str",
+          "help": "TODO: open_kfid"
+        },
+        {
+          "name": "msgid",
+          "flag": "--msgid",
+          "type": "str",
+          "help": "TODO: msgid"
+        },
+        {
+          "name": "msgtype",
+          "flag": "--msgtype",
+          "type": "str",
+          "help": "TODO: msgtype"
+        },
+        {
+          "name": "text",
+          "flag": "--text",
+          "type": "json",
+          "help": "TODO: text"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "touser": {
+            "from_arg": "touser"
+          },
+          "open_kfid": {
+            "from_arg": "open_kfid"
+          },
+          "msgid": {
+            "from_arg": "msgid"
+          },
+          "msgtype": {
+            "from_arg": "msgtype"
+          },
+          "text": {
+            "from_arg": "text"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf send-msg [--touser <touser>] [--open-kfid <open_kfid>] [--msgid <msgid>] [--msgtype <msgtype>] [--text <text>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "msgid": {
+              "type": "string",
+              "description": "消息ID。如果请求参数指定了msgid，则原样返回，否则系统自动生成并返回。若指定msgid，开发者需确保客服账号内唯一，否则接口返回错误。 不多于32字节 字符串取值范围(正则表达式)：[0-9a-zA-Z_-]*"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "msgid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "发送消息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94677",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/send_msg?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "msgid",
+            "required": null,
+            "description": "消息ID。如果请求参数指定了msgid，则原样返回，否则系统自动生成并返回。若指定msgid，开发者需确保客服账号内唯一，否则接口返回错误。 不多于32字节 字符串取值范围(正则表达式)：[0-9a-zA-Z_-]*",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n   \"touser\" : \"EXTERNAL_USERID\",\n   \"open_kfid\": \"OPEN_KFID\",\n   \"msgid\": \"MSGID\",\n   \"msgtype\" : \"text\",\n   \"text\" : {\n       \"content\" : \"你购买的物品已发货，可点击链接查看物流状态http://work.weixin.qq.com/xxxxxx\"\n   }\n}",
+        "request_example_json": {
+          "touser": "EXTERNAL_USERID",
+          "open_kfid": "OPEN_KFID",
+          "msgid": "MSGID",
+          "msgtype": "text",
+          "text": {
+            "content": "你购买的物品已发货，可点击链接查看物流状态http://work.weixin.qq.com/xxxxxx"
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"msgid\": \"MSG_ID\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "msgid": "MSG_ID"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "注意：接口返回成功，不代表消息最终发送成功，还需要关注消息发送失败事件的回调事件。"
+        ],
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping.",
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "send_msg_on_event",
+      "cli_action": "send-msg-on-event",
+      "summary": "发送欢迎语等事件响应消息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/send_msg_on_event",
+      "args": [
+        {
+          "name": "code",
+          "flag": "--code",
+          "type": "str",
+          "help": "事件响应消息对应的code。通过事件回调下发，仅可使用一次。",
+          "required": true
+        },
+        {
+          "name": "msgid",
+          "flag": "--msgid",
+          "type": "str",
+          "help": "消息ID。如果请求参数指定了msgid，则原样返回，否则系统自动生成并返回。 不多于32字节 字符串取值范围(正则表达式)：[0-9a-zA-Z_-]*"
+        },
+        {
+          "name": "msgtype",
+          "flag": "--msgtype",
+          "type": "str",
+          "help": "消息类型。对不同的msgtype，有相应的结构描述，详见消息类型",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "code": {
+            "from_arg": "code"
+          },
+          "msgid": {
+            "from_arg": "msgid"
+          },
+          "msgtype": {
+            "from_arg": "msgtype"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf send-msg-on-event --code <code> [--msgid <msgid>] --msgtype <msgtype>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "msgid": {
+              "type": "string",
+              "description": "消息ID"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "msgid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "发送欢迎语等事件响应消息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95122",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/send_msg_on_event?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "code",
+            "required": true,
+            "description": "事件响应消息对应的code。通过事件回调下发，仅可使用一次。",
+            "type": "string"
+          },
+          {
+            "name": "msgid",
+            "required": false,
+            "description": "消息ID。如果请求参数指定了msgid，则原样返回，否则系统自动生成并返回。 不多于32字节 字符串取值范围(正则表达式)：[0-9a-zA-Z_-]*",
+            "type": "string"
+          },
+          {
+            "name": "msgtype",
+            "required": true,
+            "description": "消息类型。对不同的msgtype，有相应的结构描述，详见消息类型",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "msgid",
+            "required": null,
+            "description": "消息ID",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n\t\"code\": \"CODE\",\n\t\"msgid\": \"MSG_ID\",\n\t\"msgtype\": \"MSG_TYPE\"\n}",
+        "request_example_json": {
+          "code": "CODE",
+          "msgid": "MSG_ID",
+          "msgtype": "MSG_TYPE"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n\t\"msgid\": \"MSG_ID\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "msgid": "MSG_ID"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "「进入会话事件」响应消息：\n如果满足通过API下发欢迎语条件（条件为：用户在过去48小时里未收过欢迎语，且未向客服发过消息），则用户进入会话事件会额外返回一个welcome_code，开发者以此为凭据调用接口（填到该接口code参数），即可向客户发送客服欢迎语。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "service_state_get",
+      "cli_action": "service-state-get",
+      "summary": "分配客服会话",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/service_state/get",
+      "args": [
+        {
+          "name": "open_kfid",
+          "flag": "--open-kfid",
+          "type": "str",
+          "help": "客服账号ID",
+          "required": true
+        },
+        {
+          "name": "external_userid",
+          "flag": "--external-userid",
+          "type": "str",
+          "help": "微信客户的external_userid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "open_kfid": {
+            "from_arg": "open_kfid"
+          },
+          "external_userid": {
+            "from_arg": "external_userid"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf service-state-get --open-kfid <open_kfid> --external-userid <external_userid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "service_state": {
+              "type": "integer",
+              "description": "当前的会话状态，状态定义参考概述中的表格"
+            },
+            "servicer_userid": {
+              "type": "string",
+              "description": "接待人员的userid。第三方应用为密文userid，即open_userid。仅当state=3时有效"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "service_state",
+            "servicer_userid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "分配客服会话",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94669",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/service_state/get?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "open_kfid",
+            "required": true,
+            "description": "客服账号ID",
+            "type": null
+          },
+          {
+            "name": "external_userid",
+            "required": true,
+            "description": "微信客户的external_userid",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "service_state",
+            "required": null,
+            "description": "当前的会话状态，状态定义参考概述中的表格",
+            "type": "int"
+          },
+          {
+            "name": "servicer_userid",
+            "required": null,
+            "description": "接待人员的userid。第三方应用为密文userid，即open_userid。仅当state=3时有效",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n\t\"open_kfid\": \"wkxxxxxxxxxxxxxxxxxx\",\n\t\"external_userid\": \"wmxxxxxxxxxxxxxxxxxx\"\n}",
+        "request_example_json": {
+          "open_kfid": "wkxxxxxxxxxxxxxxxxxx",
+          "external_userid": "wmxxxxxxxxxxxxxxxxxx"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n\t\"service_state\": 3,\n\t\"servicer_userid\": \"zhangsan\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "service_state": 3,
+          "servicer_userid": "zhangsan"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "sync_msg",
+      "cli_action": "sync-msg",
+      "summary": "接收消息和事件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/kf/sync_msg",
+      "args": [
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "上一次调用时返回的next_cursor，第一次拉取可以不填。若不填，从3天内最早的消息开始返回。 不多于64字节"
+        },
+        {
+          "name": "token",
+          "flag": "--token",
+          "type": "str",
+          "help": "回调事件返回的token字段，10分钟内有效；可不填，如果不填接口有严格的频率限制。 不多于128字节"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "bool",
+          "help": "期望请求的数据量，默认值和最大值都为1000。 注意：可能会出现返回条数少于limit的情况，需结合返回的has_more字段判断是否继续请求。"
+        },
+        {
+          "name": "voice_format",
+          "flag": "--voice-format",
+          "type": "str",
+          "help": "语音消息类型，0-Amr 1-Silk，默认0。可通过该参数控制返回的语音格式，开发者可按需选择自己程序支持的一种格式"
+        },
+        {
+          "name": "open_kfid",
+          "flag": "--open-kfid",
+          "type": "str",
+          "help": "指定拉取某个客服账号的消息",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "token": {
+            "from_arg": "token"
+          },
+          "limit": {
+            "from_arg": "limit"
+          },
+          "voice_format": {
+            "from_arg": "voice_format"
+          },
+          "open_kfid": {
+            "from_arg": "open_kfid"
+          }
+        }
+      },
+      "examples": [
+        "wecom kf sync-msg [--cursor <cursor>] [--token <token>] [--limit <limit>] [--voice-format <voice_format>] --open-kfid <open_kfid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "下次调用带上该值，则从当前的位置继续往后拉，以实现增量拉取。 强烈建议对该字段入库保存，每次请求读取带上，请求结束后更新。避免因意外丢，导致必须从头开始拉取，引起消息延迟。"
+            },
+            "has_more": {
+              "type": "integer",
+              "description": "是否还有更多数据。0-否；1-是。 不能通过判断msg_list是否空来停止拉取，可能会出现has_more为1，而msg_list为空的情况"
+            },
+            "msg_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "msgid": {
+                    "type": "string"
+                  },
+                  "open_kfid": {
+                    "type": "string"
+                  },
+                  "external_userid": {
+                    "type": "string"
+                  },
+                  "send_time": {
+                    "type": "integer"
+                  },
+                  "origin": {
+                    "type": "integer"
+                  },
+                  "servicer_userid": {
+                    "type": "string"
+                  },
+                  "msgtype": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "msgid",
+                  "open_kfid",
+                  "external_userid",
+                  "send_time",
+                  "origin",
+                  "servicer_userid",
+                  "msgtype"
+                ]
+              },
+              "description": "消息列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "next_cursor",
+            "has_more",
+            "msg_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "接收消息和事件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94670",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "上一次调用时返回的next_cursor，第一次拉取可以不填。若不填，从3天内最早的消息开始返回。 不多于64字节",
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "required": false,
+            "description": "回调事件返回的token字段，10分钟内有效；可不填，如果不填接口有严格的频率限制。 不多于128字节",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "期望请求的数据量，默认值和最大值都为1000。 注意：可能会出现返回条数少于limit的情况，需结合返回的has_more字段判断是否继续请求。",
+            "type": "uint32"
+          },
+          {
+            "name": "voice_format",
+            "required": false,
+            "description": "语音消息类型，0-Amr 1-Silk，默认0。可通过该参数控制返回的语音格式，开发者可按需选择自己程序支持的一种格式",
+            "type": "uint32"
+          },
+          {
+            "name": "open_kfid",
+            "required": true,
+            "description": "指定拉取某个客服账号的消息",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "下次调用带上该值，则从当前的位置继续往后拉，以实现增量拉取。 强烈建议对该字段入库保存，每次请求读取带上，请求结束后更新。避免因意外丢，导致必须从头开始拉取，引起消息延迟。",
+            "type": "string"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有更多数据。0-否；1-是。 不能通过判断msg_list是否空来停止拉取，可能会出现has_more为1，而msg_list为空的情况",
+            "type": "uint32"
+          },
+          {
+            "name": "msg_list",
+            "required": null,
+            "description": "消息列表",
+            "type": "obj[]"
+          },
+          {
+            "name": "msg_list_msgid",
+            "required": null,
+            "description": "消息ID",
+            "type": "string"
+          },
+          {
+            "name": "msg_list_open_kfid",
+            "required": null,
+            "description": "客服账号ID（msgtype为event，该字段不返回）",
+            "type": "string"
+          },
+          {
+            "name": "msg_list_external_userid",
+            "required": null,
+            "description": "客户UserID（msgtype为event，该字段不返回）",
+            "type": "string"
+          },
+          {
+            "name": "msg_list_send_time",
+            "required": null,
+            "description": "消息发送时间",
+            "type": "uint64"
+          },
+          {
+            "name": "msg_list_origin",
+            "required": null,
+            "description": "消息来源。3-微信客户发送的消息 4-系统推送的事件消息 5-接待人员在企业微信客户端发送的消息",
+            "type": "uint32"
+          },
+          {
+            "name": "msg_list_servicer_userid",
+            "required": null,
+            "description": "从企业微信给客户发消息的接待人员userid（即仅origin为5才返回；msgtype为event，该字段不返回）",
+            "type": "string"
+          },
+          {
+            "name": "msg_list_msgtype",
+            "required": null,
+            "description": "对不同的msgtype，有相应的结构描述，下面进一步说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "<xml>\n   <ToUserName><![CDATA[ww12345678910]]></ToUserName>\n   <CreateTime>1348831860</CreateTime>\n   <MsgType><![CDATA[event]]></MsgType>\n   <Event><![CDATA[kf_msg_or_event]]></Event>\n   <Token><![CDATA[ENCApHxnGDNAVNY4AaSJKj4Tb5mwsEMzxhFmHVGcra996NR]]></Token>\n   <OpenKfId><![CDATA[wkxxxxxxx]]></OpenKfId>\n</xml>",
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"next_cursor\": \"4gw7MepFLfgF2VC5npN\",\n\t\"has_more\": 1,\n    \"msg_list\": [\n        {\n            \"msgid\": \"from_msgid_4622416642169452483\",\n            \"open_kfid\": \"wkAJ2GCAAASSm4_FhToWMFea0xAFfd3Q\",\n            \"external_userid\": \"wmAJ2GCAAAme1XQRC-NI-q0_ZM9ukoAw\",\n            \"send_time\": 1615478585,\n            \"origin\": 3,\n\t\t\t\"servicer_userid\": \"Zhangsan\",\n            \"msgtype\": \"MSG_TYPE\"\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "next_cursor": "4gw7MepFLfgF2VC5npN",
+          "has_more": 1,
+          "msg_list": [
+            {
+              "msgid": "from_msgid_4622416642169452483",
+              "open_kfid": "wkAJ2GCAAASSm4_FhToWMFea0xAFfd3Q",
+              "external_userid": "wmAJ2GCAAAme1XQRC-NI-q0_ZM9ukoAw",
+              "send_time": 1615478585,
+              "origin": 3,
+              "servicer_userid": "Zhangsan",
+              "msgtype": "MSG_TYPE"
+            }
+          ]
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    }
+  ]
+}

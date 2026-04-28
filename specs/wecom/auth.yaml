@@ -69,8 +69,8 @@
         }
       },
       "doc": {
-        "title": "获取access_token",
-        "source_url": "https://developer.work.weixin.qq.com/document/path/91039",
+        "title": "接口代码参考示例",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90469",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=ID&corpsecret=SECRET",
         "request_params": [
           {
@@ -111,6 +111,220 @@
             "description": "凭证的有效时间（秒）",
             "type": null
           }
+        ],
+        "request_example_text": "public function getAccessToken($corpid,$secret) {      \n        //TODO: access_token 应该全局存储与更新，以下代码以写入到文件中做示例                      \n\t\t//TODO: 每个应用的access_token应独立存储，此处用secret作为区分应用的标识\n        $path = \"../cache/$secret.php\";\n        $data = json_decode(get_php_file($path));\n        \n        if($data->expire_time < time()) {                \n            $url = \"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=$corpid&corpsecret=$secret\";                      \n            $res = json_decode(http_get($url)[\"content\"]);\n\n            $access_token = $res->access_token;\n            \n            if($access_token) {\n                $data->expire_time = time() + 7000;\n                $data->access_token = $access_token;        \n                set_php_file($path, json_encode($data));\n            }\n        } else {\n            $access_token = $data->access_token;\n        }\n        return $access_token;    \n    }"
+      }
+    },
+    {
+      "name": "getuserdetail",
+      "cli_action": "getuserdetail",
+      "summary": "获取访问用户敏感信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/auth/getuserdetail",
+      "args": [
+        {
+          "name": "user_ticket",
+          "flag": "--user-ticket",
+          "type": "str",
+          "help": "成员票据",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "user_ticket": {
+            "from_arg": "user_ticket"
+          }
+        }
+      },
+      "examples": [
+        "wecom auth getuserdetail --user-ticket <user_ticket>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "userid": {
+              "type": "string",
+              "description": "成员UserID"
+            },
+            "gender": {
+              "type": "string",
+              "description": "性别。0表示未定义，1表示男性，2表示女性。仅在用户同意snsapi_privateinfo授权时返回真实值，否则返回0."
+            },
+            "avatar": {
+              "type": "string",
+              "description": "头像url。仅在用户同意snsapi_privateinfo授权时返回真实头像，否则返回默认头像"
+            },
+            "qr_code": {
+              "type": "string",
+              "description": "员工个人二维码（扫描可添加为外部联系人），仅在用户同意snsapi_privateinfo授权时返回"
+            },
+            "mobile": {
+              "type": "string",
+              "description": "手机，仅在用户同意snsapi_privateinfo授权时返回，第三方应用不可获取"
+            },
+            "email": {
+              "type": "string",
+              "description": "邮箱，仅在用户同意snsapi_privateinfo授权时返回，第三方应用不可获取"
+            },
+            "biz_mail": {
+              "type": "string",
+              "description": "企业邮箱，仅在用户同意snsapi_privateinfo授权时返回，第三方应用不可获取"
+            },
+            "address": {
+              "type": "string",
+              "description": "仅在用户同意snsapi_privateinfo授权时返回，第三方应用不可获取"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "userid",
+            "gender",
+            "avatar",
+            "qr_code",
+            "mobile",
+            "email",
+            "biz_mail",
+            "address"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取访问用户敏感信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95833",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "user_ticket",
+            "required": true,
+            "description": "成员票据",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": null,
+            "description": "成员UserID",
+            "type": null
+          },
+          {
+            "name": "gender",
+            "required": null,
+            "description": "性别。0表示未定义，1表示男性，2表示女性。仅在用户同意snsapi_privateinfo授权时返回真实值，否则返回0.",
+            "type": null
+          },
+          {
+            "name": "avatar",
+            "required": null,
+            "description": "头像url。仅在用户同意snsapi_privateinfo授权时返回真实头像，否则返回默认头像",
+            "type": null
+          },
+          {
+            "name": "qr_code",
+            "required": null,
+            "description": "员工个人二维码（扫描可添加为外部联系人），仅在用户同意snsapi_privateinfo授权时返回",
+            "type": null
+          },
+          {
+            "name": "mobile",
+            "required": null,
+            "description": "手机，仅在用户同意snsapi_privateinfo授权时返回，第三方应用不可获取",
+            "type": null
+          },
+          {
+            "name": "email",
+            "required": null,
+            "description": "邮箱，仅在用户同意snsapi_privateinfo授权时返回，第三方应用不可获取",
+            "type": null
+          },
+          {
+            "name": "biz_mail",
+            "required": null,
+            "description": "企业邮箱，仅在用户同意snsapi_privateinfo授权时返回，第三方应用不可获取",
+            "type": null
+          },
+          {
+            "name": "address",
+            "required": null,
+            "description": "仅在用户同意snsapi_privateinfo授权时返回，第三方应用不可获取",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"user_ticket\": \"USER_TICKET\"\n}",
+        "request_example_json": {
+          "user_ticket": "USER_TICKET"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"userid\":\"lisi\",\n   \"gender\":\"1\",\n   \"avatar\":\"http://shp.qpic.cn/bizmp/xxxxxxxxxxx/0\",\n   \"qr_code\":\"https://open.work.weixin.qq.com/wwopen/userQRCode?vcode=vcfc13b01dfs78e981c\",\n   \"mobile\": \"13800000000\",\n   \"email\": \"zhangsan@gzdev.com\",\n   \"biz_mail\":\"zhangsan@qyycs2.wecom.work\",\n   \"address\": \"广州市海珠区新港中路\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "userid": "lisi",
+          "gender": "1",
+          "avatar": "http://shp.qpic.cn/bizmp/xxxxxxxxxxx/0",
+          "qr_code": "https://open.work.weixin.qq.com/wwopen/userQRCode?vcode=vcfc13b01dfs78e981c",
+          "mobile": "13800000000",
+          "email": "zhangsan@gzdev.com",
+          "biz_mail": "zhangsan@qyycs2.wecom.work",
+          "address": "广州市海珠区新港中路"
+        }
+      }
+    },
+    {
+      "name": "getuserinfo",
+      "cli_action": "getuserinfo",
+      "summary": "获取用户登录身份",
+      "method": "GET",
+      "endpoint": "/cgi-bin/auth/getuserinfo",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom auth getuserinfo"
+      ],
+      "doc": {
+        "title": "获取用户登录身份",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98176",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo?access_token=ACCESS_TOKEN&code=CODE",
+        "request_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"userid\":\"USERID\"\n}",
+        "request_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "userid": "USERID"
+        },
+        "permissions": [
+          "b) 非企业成员时，返回示例如下：",
+          "出错返回示例："
         ]
       }
     }

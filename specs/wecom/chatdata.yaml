@@ -1,0 +1,1254 @@
+{
+  "domain": "chatdata",
+  "operations": [
+    {
+      "name": "async_program_task",
+      "cli_action": "async-program-task",
+      "summary": "应用异步调用专区程序",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/async_program_task",
+      "args": [
+        {
+          "name": "program_id",
+          "flag": "--program-id",
+          "type": "str",
+          "help": "应用关联的程序id",
+          "required": true
+        },
+        {
+          "name": "ability_id",
+          "flag": "--ability-id",
+          "type": "str",
+          "help": "程序关联的能力id",
+          "required": true
+        },
+        {
+          "name": "request_data",
+          "flag": "--request-data",
+          "type": "str",
+          "help": "请求的输入JSON，要求与配置的格式匹配",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "program_id": {
+            "from_arg": "program_id"
+          },
+          "ability_id": {
+            "from_arg": "ability_id"
+          },
+          "request_data": {
+            "from_arg": "request_data"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata async-program-task --program-id <program_id> --ability-id <ability_id> --request-data <request_data>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "任务id"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "应用异步调用专区程序",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99966",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/async_program_task?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "program_id",
+            "required": true,
+            "description": "应用关联的程序id",
+            "type": null
+          },
+          {
+            "name": "ability_id",
+            "required": true,
+            "description": "程序关联的能力id",
+            "type": null
+          },
+          {
+            "name": "request_data",
+            "required": true,
+            "description": "请求的输入JSON，要求与配置的格式匹配",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "任务id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \t\"program_id\": \"xxx\",\n\t\"ability_id\": \"xxx\",\n\t\"request_data\": \"{\\\"input\\\":\\\"xxx\\\"}\"\n}",
+        "request_example_json": {
+          "program_id": "xxx",
+          "ability_id": "xxx",
+          "request_data": "{\"input\":\"xxx\"}"
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"jobid\": \"JOBID\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "JOBID"
+        },
+        "permissions": [
+          "创建专区程序调用任务",
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/chatdata/async_program_task?access_token=ACCESS_TOKEN",
+          "请求包体："
+        ]
+      }
+    },
+    {
+      "name": "check_debug_mode",
+      "cli_action": "check-debug-mode",
+      "summary": "获取专区调试模式状态",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/check_debug_mode",
+      "args": [
+        {
+          "name": "program_id",
+          "flag": "--program-id",
+          "type": "str",
+          "help": "应用关联的程序id",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "program_id": {
+            "from_arg": "program_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata check-debug-mode --program-id <program_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "debug_mode_status": {
+              "type": "integer",
+              "description": "程序当前的调试模式状态，1为关闭，2为开启"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "debug_mode_status"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取专区调试模式状态",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100113",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/check_debug_mode?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "program_id",
+            "required": true,
+            "description": "应用关联的程序id",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          },
+          {
+            "name": "debug_mode_status",
+            "required": null,
+            "description": "程序当前的调试模式状态，1为关闭，2为开启",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \t\"program_id\": \"xxx\"\n}",
+        "request_example_json": {
+          "program_id": "xxx"
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"debug_mode_status\":1\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "debug_mode_status": 1
+        },
+        "permissions": [
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/chatdata/check_debug_mode?access_token=ACCESS_TOKEN",
+          "请求包体："
+        ],
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "close_debug_mode",
+      "cli_action": "close-debug-mode",
+      "summary": "关闭专区调试模式",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/close_debug_mode",
+      "args": [
+        {
+          "name": "program_id",
+          "flag": "--program-id",
+          "type": "str",
+          "help": "应用关联的程序id",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "program_id": {
+            "from_arg": "program_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata close-debug-mode --program-id <program_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "关闭专区调试模式",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100088",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/close_debug_mode?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "program_id",
+            "required": true,
+            "description": "应用关联的程序id",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \t\"program_id\": \"xxx\"\n}",
+        "request_example_json": {
+          "program_id": "xxx"
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/chatdata/close_debug_mode?access_token=ACCESS_TOKEN",
+          "请求包体："
+        ],
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "get_auth_user_list",
+      "cli_action": "get-auth-user-list",
+      "summary": "获取授权存档的成员列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/get_auth_user_list",
+      "args": [
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "上一次调用时返回的next_cursor，第一次拉取可以不填"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "本次查询返回的最大条数。不超过1000，默认200条"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata get-auth-user-list [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "auth_user_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "userid": {
+                    "type": "string"
+                  },
+                  "edition_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "required": [
+                  "userid",
+                  "edition_list"
+                ]
+              },
+              "description": "生效成员列表，详见AuthUser"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "下一次查询时使用，将值填到请求包的cursor字段中"
+            },
+            "has_more": {
+              "type": "boolean",
+              "description": "是否还有更多未拉取的数据，1：是；0：否"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "auth_user_list",
+            "next_cursor",
+            "has_more"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取授权存档的成员列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99962",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/get_auth_user_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "String"
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "上一次调用时返回的next_cursor，第一次拉取可以不填",
+            "type": "String"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "本次查询返回的最大条数。不超过1000，默认200条",
+            "type": "Interger"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "Integer"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "String"
+          },
+          {
+            "name": "auth_user_list",
+            "required": null,
+            "description": "生效成员列表，详见AuthUser",
+            "type": "Object数组"
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "下一次查询时使用，将值填到请求包的cursor字段中",
+            "type": "String"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有更多未拉取的数据，1：是；0：否",
+            "type": "Integer"
+          }
+        ],
+        "request_example_text": "{\n\t\"cursor\":\"JMgigeong\",\n\t\"limit\":2\n}",
+        "request_example_json": {
+          "cursor": "JMgigeong",
+          "limit": 2
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"auth_user_list\": [{\n\t\t\t\"userid\": \"woxxxjigegen\",\n\t\t\t\"edition_list\":[1]\n\t\t},\n\t\t{\n\t\t\t\"userid\": \"woaaaaaaaaaa\",\n\t\t\t\"edition_list\":[1,2,3]\n\t\t}\n\t],\n\t\"next_cursor\":\"xjigeojgeigwj\",\n\t\"has_more\":true\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "auth_user_list": [
+            {
+              "userid": "woxxxjigegen",
+              "edition_list": [
+                1
+              ]
+            },
+            {
+              "userid": "woaaaaaaaaaa",
+              "edition_list": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "next_cursor": "xjigeojgeigwj",
+          "has_more": true
+        },
+        "permissions": [
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/chatdata/get_auth_user_list?access_token=ACCESS_TOKEN",
+          "请求包体"
+        ]
+      }
+    },
+    {
+      "name": "open_debug_mode",
+      "cli_action": "open-debug-mode",
+      "summary": "开启专区调试模式",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/open_debug_mode",
+      "args": [
+        {
+          "name": "program_id",
+          "flag": "--program-id",
+          "type": "str",
+          "help": "应用关联的程序id",
+          "required": true
+        },
+        {
+          "name": "debug_token",
+          "flag": "--debug-token",
+          "type": "str",
+          "help": "程序的调试凭证",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "program_id": {
+            "from_arg": "program_id"
+          },
+          "debug_token": {
+            "from_arg": "debug_token"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata open-debug-mode --program-id <program_id> --debug-token <debug_token>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "开启专区调试模式",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100087",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/open_debug_mode?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "program_id",
+            "required": true,
+            "description": "应用关联的程序id",
+            "type": null
+          },
+          {
+            "name": "debug_token",
+            "required": true,
+            "description": "程序的调试凭证",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \t\"program_id\": \"xxx\",\n\t\"debug_token\": \"xxx\"\n}",
+        "request_example_json": {
+          "program_id": "xxx",
+          "debug_token": "xxx"
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/chatdata/open_debug_mode?access_token=ACCESS_TOKEN",
+          "请求包体："
+        ],
+        "notes": [
+          "对于第三方应用，仅通过测试安装的企业可开启调试模式\n对于代开发应用，企业必须为服务商的测试企业"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "set_hide_sensitiveinfo_config",
+      "cli_action": "set-hide-sensitiveinfo-config",
+      "summary": "会话组件敏感信息隐藏设置",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/set_hide_sensitiveinfo_config",
+      "args": [
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "成员的userid",
+          "required": true
+        },
+        {
+          "name": "config",
+          "flag": "--config",
+          "type": "str",
+          "help": "敏感信息隐藏配置，详见Config结构说明",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "userid": {
+            "from_arg": "userid"
+          },
+          "config": {
+            "from_arg": "config"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata set-hide-sensitiveinfo-config --userid <userid> --config <config>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "会话组件敏感信息隐藏设置",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100139",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/set_hide_sensitiveinfo_config?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "成员的userid",
+            "type": null
+          },
+          {
+            "name": "config",
+            "required": true,
+            "description": "敏感信息隐藏配置，详见Config结构说明",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "成员的密文userid",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"userid\":\"xxxxx\",\n\t\"config\":{\n\t\t\"hide_mobile\":false,\n\t\t\"hide_idcard\":true,\n\t\t\"hide_bankno\":true\n\t}\n}",
+        "request_example_json": {
+          "userid": "xxxxx",
+          "config": {
+            "hide_mobile": false,
+            "hide_idcard": true,
+            "hide_bankno": true
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "请求方式：POST（HTTPS）\n请求地址：https://qyapi.weixin.qq.com/cgi-bin/chatdata/set_hide_sensitiveinfo_config?access_token=ACCESS_TOKEN"
+        ],
+        "notes": [
+          "如果未调用接口开启展示敏感信息，会话组件默认为不打星"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "set_log_level",
+      "cli_action": "set-log-level",
+      "summary": "设置日志打印级别",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/set_log_level",
+      "args": [
+        {
+          "name": "program_id",
+          "flag": "--program-id",
+          "type": "str",
+          "help": "应用关联的程序id",
+          "required": true
+        },
+        {
+          "name": "log_level",
+          "flag": "--log-level",
+          "type": "str",
+          "help": "日志级别 指定后，仅会存储不高于改级别的日志。例如指定级别为2，那么只会存储级别为1或2的日志 默认级别为2 取值范围： 1 - ERR 2 - INFO 3 - DBG",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "program_id": {
+            "from_arg": "program_id"
+          },
+          "log_level": {
+            "from_arg": "log_level"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata set-log-level --program-id <program_id> --log-level <log_level>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "设置日志打印级别",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100108",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/set_log_level?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "string"
+          },
+          {
+            "name": "program_id",
+            "required": true,
+            "description": "应用关联的程序id",
+            "type": "string"
+          },
+          {
+            "name": "log_level",
+            "required": true,
+            "description": "日志级别 指定后，仅会存储不高于改级别的日志。例如指定级别为2，那么只会存储级别为1或2的日志 默认级别为2 取值范围： 1 - ERR 2 - INFO 3 - DBG",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"program_id\": \"xxxx\",\n    \"log_level\": 2\n}",
+        "request_example_json": {
+          "program_id": "xxxx",
+          "log_level": 2
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "set_public_key",
+      "cli_action": "set-public-key",
+      "summary": "设置公钥",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/set_public_key",
+      "args": [
+        {
+          "name": "public_key",
+          "flag": "--public-key",
+          "type": "str",
+          "help": "开发者为该企业生成的公钥，可以参考下方使用openssl命令生成",
+          "required": true
+        },
+        {
+          "name": "public_key_ver",
+          "flag": "--public-key-ver",
+          "type": "str",
+          "help": "公钥对应的版本号，当重复调用该接口更换公钥时要求比旧公钥版本号大",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "public_key": {
+            "from_arg": "public_key"
+          },
+          "public_key_ver": {
+            "from_arg": "public_key_ver"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata set-public-key --public-key <public_key> --public-key-ver <public_key_ver>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "设置公钥",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99961",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/set_public_key?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "public_key",
+            "required": true,
+            "description": "开发者为该企业生成的公钥，可以参考下方使用openssl命令生成",
+            "type": null
+          },
+          {
+            "name": "public_key_ver",
+            "required": true,
+            "description": "公钥对应的版本号，当重复调用该接口更换公钥时要求比旧公钥版本号大",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"public_key\": \"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt2JoW+P8uWG3ijm0fa4S\\nVnnQ7fjcffaAoin3KEI6WykAz6+oNxFf+hSWX1cndPg8pMXZJGYhWMCXXgFLQXGv\\naXSYEYxdCgbCDL2j0HmvzHEnLLgnY4jPYxoi7S9hQbJVB+nnci9U8wUD//s5YSiY\\nAjDLMwwLlE29VPNp6GCw3oVRseKl3kKnlrifxUgJv3BVgCcgpDT5LMwrsAV2gYR1\\nolyINpA9LgWesSjSQPydBtaI5CmHTB1Fm1Xcr3OEFmSCoi6hdqFJXclDCRyTJqHQ\\n4U1RuCVK8ahfzqoapc53H3kWkOzplhcBxEV/S1voaxScKbX5TuYm4A97fS6ok+sr\\nUQIDAQAB\\n-----END PUBLIC KEY-----\\n\",\n\t\"public_key_ver\":1\n}",
+        "request_example_json": {
+          "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt2JoW+P8uWG3ijm0fa4S\nVnnQ7fjcffaAoin3KEI6WykAz6+oNxFf+hSWX1cndPg8pMXZJGYhWMCXXgFLQXGv\naXSYEYxdCgbCDL2j0HmvzHEnLLgnY4jPYxoi7S9hQbJVB+nnci9U8wUD//s5YSiY\nAjDLMwwLlE29VPNp6GCw3oVRseKl3kKnlrifxUgJv3BVgCcgpDT5LMwrsAV2gYR1\nolyINpA9LgWesSjSQPydBtaI5CmHTB1Fm1Xcr3OEFmSCoi6hdqFJXclDCRyTJqHQ\n4U1RuCVK8ahfzqoapc53H3kWkOzplhcBxEV/S1voaxScKbX5TuYm4A97fS6ok+sr\nUQIDAQAB\n-----END PUBLIC KEY-----\n",
+          "public_key_ver": 1
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "开发者公钥：",
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/chatdata/set_public_key?access_token=ACCESS_TOKEN",
+          "请求包体："
+        ],
+        "notes": [
+          "开发者可为每个企业生成一个密钥对，其中开发者自己保存私钥，将公钥上传到企业微信。该公钥用于加密每条消息的密钥。开发者通过sync_msg接口获取消息后，用私钥解开encrypted_secret_key后即可使用展示组件来展示消息。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "set_receive_callback",
+      "cli_action": "set-receive-callback",
+      "summary": "设置专区接收回调事件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/set_receive_callback",
+      "args": [
+        {
+          "name": "program_id",
+          "flag": "--program-id",
+          "type": "str",
+          "help": "应用关联的程序id，同一个应用只能设置一个程序接收。若先设置了程序A接收，再调用该接口设置程序B时，会更改为程序B接收",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "program_id": {
+            "from_arg": "program_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata set-receive-callback --program-id <program_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "设置专区接收回调事件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99963",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/set_receive_callback?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "program_id",
+            "required": true,
+            "description": "应用关联的程序id，同一个应用只能设置一个程序接收。若先设置了程序A接收，再调用该接口设置程序B时，会更改为程序B接收",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"program_id\": \"xxx\"\n}",
+        "request_example_json": {
+          "program_id": "xxx"
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/chatdata/set_receive_callback?access_token=ACCESS_TOKEN",
+          "请求包体："
+        ],
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "sync_call_program",
+      "cli_action": "sync-call-program",
+      "summary": "应用同步调用专区程序",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/sync_call_program",
+      "args": [
+        {
+          "name": "program_id",
+          "flag": "--program-id",
+          "type": "str",
+          "help": "应用关联的程序id",
+          "required": true
+        },
+        {
+          "name": "ability_id",
+          "flag": "--ability-id",
+          "type": "str",
+          "help": "程序关联的能力id",
+          "required": true
+        },
+        {
+          "name": "notify_id",
+          "flag": "--notify-id",
+          "type": "str",
+          "help": "通知id。由专区通知应用返回"
+        },
+        {
+          "name": "request_data",
+          "flag": "--request-data",
+          "type": "str",
+          "help": "请求的输入JSON，要求与配置的输入协议格式匹配，如需使用专区程序示例，请留意Java版本demo的输入无需在request_data内包裹一层input对象",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "program_id": {
+            "from_arg": "program_id"
+          },
+          "ability_id": {
+            "from_arg": "ability_id"
+          },
+          "notify_id": {
+            "from_arg": "notify_id"
+          },
+          "request_data": {
+            "from_arg": "request_data"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata sync-call-program --program-id <program_id> --ability-id <ability_id> [--notify-id <notify_id>] --request-data <request_data>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "response_data": {
+              "type": "string",
+              "description": "专区程序的输出结果，为自定义的JSON字符串，要求与管理端配置的输出协议格式匹配，如需使用专区程序示例，请留意Java版本的demo没有在输出的response_data内包裹一层output对象"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "response_data"
+          ]
+        }
+      },
+      "doc": {
+        "title": "应用同步调用专区程序",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99965",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/sync_call_program?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "program_id",
+            "required": true,
+            "description": "应用关联的程序id",
+            "type": null
+          },
+          {
+            "name": "ability_id",
+            "required": true,
+            "description": "程序关联的能力id",
+            "type": null
+          },
+          {
+            "name": "notify_id",
+            "required": false,
+            "description": "通知id。由专区通知应用返回",
+            "type": null
+          },
+          {
+            "name": "request_data",
+            "required": true,
+            "description": "请求的输入JSON，要求与配置的输入协议格式匹配，如需使用专区程序示例，请留意Java版本demo的输入无需在request_data内包裹一层input对象",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          },
+          {
+            "name": "response_data",
+            "required": null,
+            "description": "专区程序的输出结果，为自定义的JSON字符串，要求与管理端配置的输出协议格式匹配，如需使用专区程序示例，请留意Java版本的demo没有在输出的response_data内包裹一层output对象",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"program_id\": \"xxx\",\n\t\"ability_id\": \"xxx\",\n\t\"notify_id\":\"xxx\",\n\t\"request_data\": \"{\\\"input\\\":\\\"xxx\\\"}\"\n}",
+        "request_example_json": {
+          "program_id": "xxx",
+          "ability_id": "xxx",
+          "notify_id": "xxx",
+          "request_data": "{\"input\":\"xxx\"}"
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"response_data\": \"{\\\"output\\\":\\\"xxx\\\"}\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "response_data": "{\"output\":\"xxx\"}"
+        },
+        "permissions": [
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/chatdata/sync_call_program?access_token=ACCESS_TOKEN",
+          "请求包体（Python）："
+        ]
+      }
+    },
+    {
+      "name": "upload_media",
+      "cli_action": "upload-media",
+      "summary": "上传临时文件到专区",
+      "method": "POST",
+      "endpoint": "/cgi-bin/chatdata/upload_media",
+      "args": [
+        {
+          "name": "type",
+          "flag": "--type",
+          "type": "str",
+          "help": "文件类型，目前仅支持普通文件：file",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "type": {
+            "from_arg": "type"
+          }
+        }
+      },
+      "examples": [
+        "wecom chatdata upload-media --type <type>"
+      ],
+      "doc": {
+        "title": "上传临时文件到专区",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/100174",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/upload_media?access_token=ACCESS_TOKEN&type=TYPE",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "type",
+            "required": true,
+            "description": "文件类型，目前仅支持普通文件：file",
+            "type": null
+          }
+        ],
+        "request_example_text": "POST https://qyapi.weixin.qq.com/cgi-bin/chatdata/upload_media?access_token=accesstoken001&type=file HTTP/1.1\nContent-Type: multipart/form-data; boundary=-------------------------acebdf13572468\nContent-Length: 220\n\n---------------------------acebdf13572468\nContent-Disposition: form-data; name=\"media\";filename=\"wework.txt\"; filelength=6\nContent-Type: application/octet-stream\n\nmytext\n---------------------------acebdf13572468--",
+        "notes": [
+          "media_id 仅三天内有效\nmedia_id 不能跨企业使用，也不能跨应用使用\nmedia_id 仅可以用于数据专区接口或SDK\n应用需具备「数据与智能专区」权限",
+          "filename标识文件展示的名称。比如，下载文件时，展示的文件名由该字段控制"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "domain": "ticket",
+  "operations": [
+    {
+      "name": "get",
+      "cli_action": "get",
+      "summary": "JS-SDK 签名算法",
+      "method": "GET",
+      "endpoint": "/cgi-bin/ticket/get",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom ticket get"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "ticket": {
+              "type": "string"
+            },
+            "expires_in": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "ticket",
+            "expires_in"
+          ]
+        }
+      },
+      "doc": {
+        "title": "JS-SDK 签名算法",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90506",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证， 企业内部开发，获取方式参考“获取 access_token” 第三方应用开发，获取方式参考“获取企业凭证”",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "应用的调用接口凭证， 企业内部开发，获取方式参考“获取 access_token” 第三方应用开发，获取方式参考“获取企业凭证”",
+            "type": null
+          }
+        ],
+        "request_example_text": "jsapi_ticket=JSAPI_TICKET&noncestr=NONCESTR&timestamp=TIMESTAMP&url=URL",
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"ticket\": \"bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA\",\n  \"expires_in\": 7200\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "ticket": "bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA",
+          "expires_in": 7200
+        }
+      }
+    }
+  ]
+}

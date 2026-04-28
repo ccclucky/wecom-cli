@@ -1,0 +1,3919 @@
+{
+  "domain": "wedrive",
+  "operations": [
+    {
+      "name": "file_acl_del",
+      "cli_action": "file-acl-del",
+      "summary": "删除成员",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_acl_del",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        },
+        {
+          "name": "auth_info",
+          "flag": "--auth-info",
+          "type": "str",
+          "help": "被移除的成员信息",
+          "required": true
+        },
+        {
+          "name": "type_后续将废弃",
+          "flag": "--type-后续将废弃",
+          "type": "str",
+          "help": "成员类型 1:个人 2:部门",
+          "required": true
+        },
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "成员userid,字符串",
+          "required": true
+        },
+        {
+          "name": "departmentid_后续将废弃",
+          "flag": "--departmentid-后续将废弃",
+          "type": "str",
+          "help": "部门departmentid, 32位整型范围是[0, 2^32) (type为2时填写)",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          },
+          "auth_info": {
+            "from_arg": "auth_info"
+          },
+          "type_后续将废弃": {
+            "from_arg": "type_后续将废弃"
+          },
+          "userid": {
+            "from_arg": "userid"
+          },
+          "departmentid_后续将废弃": {
+            "from_arg": "departmentid_后续将废弃"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-acl-del --fileid <fileid> --auth-info <auth_info> --type-后续将废弃 <type_后续将废弃> --userid <userid> --departmentid-后续将废弃 <departmentid_后续将废弃>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除成员",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97888",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_acl_del?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string"
+          },
+          {
+            "name": "auth_info",
+            "required": true,
+            "description": "被移除的成员信息",
+            "type": "obj[]"
+          },
+          {
+            "name": "type_后续将废弃",
+            "required": true,
+            "description": "成员类型 1:个人 2:部门",
+            "type": "uint32"
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "成员userid,字符串",
+            "type": "string"
+          },
+          {
+            "name": "departmentid_后续将废弃",
+            "required": true,
+            "description": "部门departmentid, 32位整型范围是[0, 2^32) (type为2时填写)",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": \"FILEID\",\n    \"auth_info\": [{\n        \"type\":1,\n        \"userid\": \"USERID1\"\n    },{\n        \"type\":2,\n        \"departmentid\": 1\n    }]\n}",
+        "request_example_json": {
+          "fileid": "FILEID",
+          "auth_info": [
+            {
+              "type": 1,
+              "userid": "USERID1"
+            },
+            {
+              "type": 2,
+              "departmentid": 1
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "file_create",
+      "cli_action": "file-create",
+      "summary": "新建文件夹/文档",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_create",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid",
+          "required": true
+        },
+        {
+          "name": "fatherid",
+          "flag": "--fatherid",
+          "type": "str",
+          "help": "父目录fileid, 在根目录时为空间spaceid",
+          "required": true
+        },
+        {
+          "name": "file_type",
+          "flag": "--file-type",
+          "type": "str",
+          "help": "文件类型, 1:文件夹 3:文档(文档) 4:文档(表格)",
+          "required": true
+        },
+        {
+          "name": "file_name",
+          "flag": "--file-name",
+          "type": "str",
+          "help": "文件名字（注意：文件名最多填255个字符, 英文算1个, 汉字算2个）",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          },
+          "fatherid": {
+            "from_arg": "fatherid"
+          },
+          "file_type": {
+            "from_arg": "file_type"
+          },
+          "file_name": {
+            "from_arg": "file_name"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-create --spaceid <spaceid> --fatherid <fatherid> --file-type <file_type> --file-name <file_name>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "fileid": {
+              "type": "string",
+              "description": "新建文件的fileid"
+            },
+            "url": {
+              "type": "string",
+              "description": "文档的访问链接，仅在新建文档时返回"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "fileid",
+            "url"
+          ]
+        }
+      },
+      "doc": {
+        "title": "新建文件夹/文档",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97882",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_create?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": true,
+            "description": "空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "fatherid",
+            "required": true,
+            "description": "父目录fileid, 在根目录时为空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "file_type",
+            "required": true,
+            "description": "文件类型, 1:文件夹 3:文档(文档) 4:文档(表格)",
+            "type": "uint32"
+          },
+          {
+            "name": "file_name",
+            "required": true,
+            "description": "文件名字（注意：文件名最多填255个字符, 英文算1个, 汉字算2个）",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "fileid",
+            "required": null,
+            "description": "新建文件的fileid",
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "required": null,
+            "description": "文档的访问链接，仅在新建文档时返回",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\",\n    \"fatherid\": \"FATHERID\",\n    \"file_type\": FILE_TYPE,\n    \"file_name\": \"FILE_NAME\"\n}",
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"fileid\": \"FILEID\",\n    \"url\": \"URL\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "fileid": "FILEID",
+          "url": "URL"
+        }
+      }
+    },
+    {
+      "name": "file_delete",
+      "cli_action": "file-delete",
+      "summary": "删除文件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_delete",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-delete --fileid <fileid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97885",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_delete?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string[]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": [\"FILEID1\", \"FILEID2\"]\n}",
+        "request_example_json": {
+          "fileid": [
+            "FILEID1",
+            "FILEID2"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "file_download",
+      "cli_action": "file-download",
+      "summary": "下载文件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_download",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid（只支持下载普通文件，不支持下载文件夹或微文档）"
+        },
+        {
+          "name": "selected_ticket",
+          "flag": "--selected-ticket",
+          "type": "str",
+          "help": "微盘和文件选择器jsapi返回的selectedTicket。若填此参数，则不需要填fileid。"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          },
+          "selected_ticket": {
+            "from_arg": "selected_ticket"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-download [--fileid <fileid>] [--selected-ticket <selected_ticket>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "download_url": {
+              "type": "string",
+              "description": "下载请求url (有效期2个小时)"
+            },
+            "cookie_name": {
+              "type": "string",
+              "description": "下载请求带cookie的key"
+            },
+            "cookie_value": {
+              "type": "string",
+              "description": "下载请求带cookie的value"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "download_url",
+            "cookie_name",
+            "cookie_value"
+          ]
+        }
+      },
+      "doc": {
+        "title": "下载文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97881",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_download?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": false,
+            "description": "文件fileid（只支持下载普通文件，不支持下载文件夹或微文档）",
+            "type": "string"
+          },
+          {
+            "name": "selected_ticket",
+            "required": false,
+            "description": "微盘和文件选择器jsapi返回的selectedTicket。若填此参数，则不需要填fileid。",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "download_url",
+            "required": null,
+            "description": "下载请求url (有效期2个小时)",
+            "type": "string"
+          },
+          {
+            "name": "cookie_name",
+            "required": null,
+            "description": "下载请求带cookie的key",
+            "type": "string"
+          },
+          {
+            "name": "cookie_value",
+            "required": null,
+            "description": "下载请求带cookie的value",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": \"FILEID\",\n    \"selected_ticket\": \"SELECTED_TICKET\"\n}",
+        "request_example_json": {
+          "fileid": "FILEID",
+          "selected_ticket": "SELECTED_TICKET"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"download_url\": \"DOWNLOAD_URL\",\n    \"cookie_name\": \"COOKIE_NAME\",\n    \"cookie_value\": \"COOKIE_VALUE\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "download_url": "DOWNLOAD_URL",
+          "cookie_name": "COOKIE_NAME",
+          "cookie_value": "COOKIE_VALUE"
+        }
+      }
+    },
+    {
+      "name": "file_info",
+      "cli_action": "file-info",
+      "summary": "获取文件信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_info",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-info --fileid <fileid>"
+      ],
+      "doc": {
+        "title": "获取文件信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97886",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "fileid",
+            "required": null,
+            "description": "文件fileid",
+            "type": "string"
+          },
+          {
+            "name": "file_name",
+            "required": null,
+            "description": "文件名字",
+            "type": "string"
+          },
+          {
+            "name": "spaceid",
+            "required": null,
+            "description": "文件所在的空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "fatherid",
+            "required": null,
+            "description": "文件所在的目录fileid, 在根目录时为fileid",
+            "type": "string"
+          },
+          {
+            "name": "file_size",
+            "required": null,
+            "description": "文件大小",
+            "type": "uint64"
+          },
+          {
+            "name": "ctime",
+            "required": null,
+            "description": "文件创建时间",
+            "type": "uint64"
+          },
+          {
+            "name": "mtime",
+            "required": null,
+            "description": "文件最后修改时间",
+            "type": "uint64"
+          },
+          {
+            "name": "file_type",
+            "required": null,
+            "description": "1: 文件夹 2:文件 3: 文档(文档) 4: 文档(表格) 5:文档(收集表) 6:文档(幻灯片)",
+            "type": "uint32"
+          },
+          {
+            "name": "file_status",
+            "required": null,
+            "description": "文件状态, 1:正常 2:删除",
+            "type": "uint32"
+          },
+          {
+            "name": "sha",
+            "required": null,
+            "description": "文件sha。可用于确认是否跟与上传的文件一致，或避免重复上传相同的文件",
+            "type": "string"
+          },
+          {
+            "name": "md5",
+            "required": null,
+            "description": "文件md5。可用于确认是否跟与上传的文件一致，或避免重复上传相同的文件",
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "required": null,
+            "description": "仅微文档类型返回访问链接",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": \"FILEID\"\n}",
+        "request_example_json": {
+          "fileid": "FILEID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file_info\": {\n        \"fileid\": \"FILEID\",\n        \"file_name\": \"FILE_NAME\",\n        \"spaceid\": \"SPACEID\",\n        \"fatherid\": \"FATHERID\",\n        \"file_size\": FILE_SIZE,\n        \"ctime\": CTIME,\n        \"mtime\": MTIME,\n        \"file_type\": FILE_TYPE,\n        \"file_status\": FILE_STATUS,\n        \"sha\": \"SHA\",\n        \"md5\": \"MD5\",\n        \"url\": \"URL\"\n    }\n}",
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "file_move",
+      "cli_action": "file-move",
+      "summary": "移动文件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_move",
+      "args": [
+        {
+          "name": "fatherid",
+          "flag": "--fatherid",
+          "type": "str",
+          "help": "当前目录的fileid,根目录时为空间spaceid",
+          "required": true
+        },
+        {
+          "name": "replace",
+          "flag": "--replace",
+          "type": "bool",
+          "help": "如果移动到的目标目录与需要移动的文件重名时，是否覆盖。true:重名文件覆盖 false:重名文件进行冲突重命名处理（移动后文件名格式如xxx(1).txt xxx(1).doc等）"
+        },
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fatherid": {
+            "from_arg": "fatherid"
+          },
+          "replace": {
+            "from_arg": "replace"
+          },
+          "fileid": {
+            "from_arg": "fileid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-move --fatherid <fatherid> [--replace <replace>] --fileid <fileid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "file_list": {
+              "type": "object",
+              "properties": {
+                "item": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fileid": {
+                        "type": "string",
+                        "description": "文件fileid"
+                      },
+                      "file_name": {
+                        "type": "string",
+                        "description": "文件名字"
+                      },
+                      "spaceid": {
+                        "type": "string",
+                        "description": "文件所在的空间spaceid"
+                      },
+                      "fatherid": {
+                        "type": "string",
+                        "description": "文件所在的目录fileid, 在根目录时为fileid"
+                      },
+                      "file_size": {
+                        "type": "integer",
+                        "description": "文件大小"
+                      },
+                      "ctime": {
+                        "type": "integer",
+                        "description": "文件创建时间"
+                      },
+                      "mtime": {
+                        "type": "integer",
+                        "description": "文件最后修改时间"
+                      },
+                      "file_type": {
+                        "type": "integer",
+                        "description": "文件类型, 1:文件夹 2:文件 3:文档(文档) 4:文档(表格) 5:文档(收集表) 6:文档(幻灯片)"
+                      },
+                      "file_status": {
+                        "type": "integer",
+                        "description": "文件状态, 1:正常 2:删除"
+                      },
+                      "sha": {
+                        "type": "string",
+                        "description": "文件sha"
+                      },
+                      "md5": {
+                        "type": "string",
+                        "description": "文件md5"
+                      }
+                    },
+                    "required": [
+                      "fileid",
+                      "file_name",
+                      "spaceid",
+                      "fatherid",
+                      "file_size",
+                      "ctime",
+                      "mtime",
+                      "file_type",
+                      "file_status",
+                      "sha",
+                      "md5"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "item"
+              ],
+              "description": "移动文件的信息列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "file_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "移动文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97884",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_move?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fatherid",
+            "required": true,
+            "description": "当前目录的fileid,根目录时为空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "replace",
+            "required": false,
+            "description": "如果移动到的目标目录与需要移动的文件重名时，是否覆盖。true:重名文件覆盖 false:重名文件进行冲突重命名处理（移动后文件名格式如xxx(1).txt xxx(1).doc等）",
+            "type": "bool"
+          },
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "file_list",
+            "required": null,
+            "description": "移动文件的信息列表",
+            "type": "obj[]"
+          },
+          {
+            "name": "fileid",
+            "required": null,
+            "description": "文件fileid",
+            "type": "string"
+          },
+          {
+            "name": "file_name",
+            "required": null,
+            "description": "文件名字",
+            "type": "string"
+          },
+          {
+            "name": "spaceid",
+            "required": null,
+            "description": "文件所在的空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "fatherid",
+            "required": null,
+            "description": "文件所在的目录fileid, 在根目录时为fileid",
+            "type": "string"
+          },
+          {
+            "name": "file_size",
+            "required": null,
+            "description": "文件大小",
+            "type": "uint64"
+          },
+          {
+            "name": "ctime",
+            "required": null,
+            "description": "文件创建时间",
+            "type": "uint64"
+          },
+          {
+            "name": "mtime",
+            "required": null,
+            "description": "文件最后修改时间",
+            "type": "uint64"
+          },
+          {
+            "name": "file_type",
+            "required": null,
+            "description": "文件类型, 1:文件夹 2:文件 3:文档(文档) 4:文档(表格) 5:文档(收集表) 6:文档(幻灯片)",
+            "type": "uint32"
+          },
+          {
+            "name": "file_status",
+            "required": null,
+            "description": "文件状态, 1:正常 2:删除",
+            "type": "uint32"
+          },
+          {
+            "name": "sha",
+            "required": null,
+            "description": "文件sha",
+            "type": "string"
+          },
+          {
+            "name": "md5",
+            "required": null,
+            "description": "文件md5",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fatherid\": \"FATHERID\",\n    \"replace\": true,\n    \"fileid\": [\"FILEID1\", \"FILEID2\"]\n}",
+        "request_example_json": {
+          "fatherid": "FATHERID",
+          "replace": true,
+          "fileid": [
+            "FILEID1",
+            "FILEID2"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file_list\": {\n        \"item\": [\n            {\n                \"fileid\": \"FILEID\",\n                \"file_name\": \"FILE_NAME\",\n                \"spaceid\": \"SPACEID\",\n                \"fatherid\": \"FATHERID\",\n                \"file_size\": 11,\n                \"ctime\": 17777777777,\n                \"mtime\": 2777777777777,\n                \"file_type\": 3,\n                \"file_status\": 2,\n                \"sha\": \"SHA\",\n                \"md5\": \"MD5\"\n            }\n        ]\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "file_list": {
+            "item": [
+              {
+                "fileid": "FILEID",
+                "file_name": "FILE_NAME",
+                "spaceid": "SPACEID",
+                "fatherid": "FATHERID",
+                "file_size": 11,
+                "ctime": 17777777777,
+                "mtime": 2777777777777,
+                "file_type": 3,
+                "file_status": 2,
+                "sha": "SHA",
+                "md5": "MD5"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "file_rename",
+      "cli_action": "file-rename",
+      "summary": "重命名文件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_rename",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        },
+        {
+          "name": "new_name",
+          "flag": "--new-name",
+          "type": "str",
+          "help": "重命名后的文件名 （注意：文件名最多填255个字符, 英文算1个, 汉字算2个）",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          },
+          "new_name": {
+            "from_arg": "new_name"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-rename --fileid <fileid> --new-name <new_name>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "file": {
+              "type": "object",
+              "properties": {
+                "fileid": {
+                  "type": "string",
+                  "description": "文件fileid"
+                },
+                "file_name": {
+                  "type": "string",
+                  "description": "文件名字"
+                },
+                "spaceid": {
+                  "type": "string",
+                  "description": "文件所在的空间spaceid"
+                },
+                "fatherid": {
+                  "type": "string",
+                  "description": "文件所在的目录fileid, 在根目录时为spaceid"
+                },
+                "file_size": {
+                  "type": "integer",
+                  "description": "文件大小"
+                },
+                "ctime": {
+                  "type": "integer",
+                  "description": "文件创建时间"
+                },
+                "mtime": {
+                  "type": "integer",
+                  "description": "文件最后修改时间"
+                },
+                "file_type": {
+                  "type": "integer",
+                  "description": "文件类型, 1:文件夹 2:文件 3:文档(文档) 4:文档(表格) 5:文档(收集表) 6:文档(幻灯片)"
+                },
+                "file_status": {
+                  "type": "integer",
+                  "description": "文件状态, 1:正常 2:删除"
+                },
+                "sha": {
+                  "type": "string",
+                  "description": "文件sha"
+                },
+                "md5": {
+                  "type": "string",
+                  "description": "文件md5"
+                }
+              },
+              "required": [
+                "fileid",
+                "file_name",
+                "spaceid",
+                "fatherid",
+                "file_size",
+                "ctime",
+                "mtime",
+                "file_type",
+                "file_status",
+                "sha",
+                "md5"
+              ]
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "file"
+          ]
+        }
+      },
+      "doc": {
+        "title": "重命名文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97883",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_rename?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string"
+          },
+          {
+            "name": "new_name",
+            "required": true,
+            "description": "重命名后的文件名 （注意：文件名最多填255个字符, 英文算1个, 汉字算2个）",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "fileid",
+            "required": null,
+            "description": "文件fileid",
+            "type": "string"
+          },
+          {
+            "name": "file_name",
+            "required": null,
+            "description": "文件名字",
+            "type": "string"
+          },
+          {
+            "name": "spaceid",
+            "required": null,
+            "description": "文件所在的空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "fatherid",
+            "required": null,
+            "description": "文件所在的目录fileid, 在根目录时为spaceid",
+            "type": "string"
+          },
+          {
+            "name": "file_size",
+            "required": null,
+            "description": "文件大小",
+            "type": "uint64"
+          },
+          {
+            "name": "ctime",
+            "required": null,
+            "description": "文件创建时间",
+            "type": "uint64"
+          },
+          {
+            "name": "mtime",
+            "required": null,
+            "description": "文件最后修改时间",
+            "type": "uint64"
+          },
+          {
+            "name": "file_type",
+            "required": null,
+            "description": "文件类型, 1:文件夹 2:文件 3:文档(文档) 4:文档(表格) 5:文档(收集表) 6:文档(幻灯片)",
+            "type": "uint32"
+          },
+          {
+            "name": "file_status",
+            "required": null,
+            "description": "文件状态, 1:正常 2:删除",
+            "type": "uint32"
+          },
+          {
+            "name": "sha",
+            "required": null,
+            "description": "文件sha",
+            "type": "string"
+          },
+          {
+            "name": "md5",
+            "required": null,
+            "description": "文件md5",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": \"FILEID\",\n    \"new_name\": \"NEW_NAME\"\n}",
+        "request_example_json": {
+          "fileid": "FILEID",
+          "new_name": "NEW_NAME"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file\": {\n        \"fileid\": \"FILEID\",\n        \"file_name\": \"FILE_NAME\",\n        \"spaceid\": \"SPACEID\",\n        \"fatherid\": \"FATHERID\",\n        \"file_size\": 1777777777,\n        \"ctime\": 17777777777,\n        \"mtime\": 177777777,\n        \"file_type\": 2,\n        \"file_status\": 1,\n        \"sha\": \"SHA\",\n        \"md5\": \"MD5\"\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "file": {
+            "fileid": "FILEID",
+            "file_name": "FILE_NAME",
+            "spaceid": "SPACEID",
+            "fatherid": "FATHERID",
+            "file_size": 1777777777,
+            "ctime": 17777777777,
+            "mtime": 177777777,
+            "file_type": 2,
+            "file_status": 1,
+            "sha": "SHA",
+            "md5": "MD5"
+          }
+        }
+      }
+    },
+    {
+      "name": "file_secure_setting",
+      "cli_action": "file-secure-setting",
+      "summary": "修改文件安全设置",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_secure_setting",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        },
+        {
+          "name": "text",
+          "flag": "--text",
+          "type": "str",
+          "help": "水印文字，此字段不填则保持原样"
+        },
+        {
+          "name": "margin_type",
+          "flag": "--margin-type",
+          "type": "str",
+          "help": "水印类型。1：低密度水印， 2： 高密度水印，此字段不填则保持原样"
+        },
+        {
+          "name": "show_visitor_name",
+          "flag": "--show-visitor-name",
+          "type": "bool",
+          "help": "是否显示访问人名称，此字段不填则保持原样"
+        },
+        {
+          "name": "show_text",
+          "flag": "--show-text",
+          "type": "bool",
+          "help": "是否展示水印文本，此字段不填则保持原样"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          },
+          "text": {
+            "from_arg": "text"
+          },
+          "margin_type": {
+            "from_arg": "margin_type"
+          },
+          "show_visitor_name": {
+            "from_arg": "show_visitor_name"
+          },
+          "show_text": {
+            "from_arg": "show_text"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-secure-setting --fileid <fileid> [--text <text>] [--margin-type <margin_type>] [--show-visitor-name <show_visitor_name>] [--show-text <show_text>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "修改文件安全设置",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97892",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_secure_setting?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string"
+          },
+          {
+            "name": "text",
+            "required": false,
+            "description": "水印文字，此字段不填则保持原样",
+            "type": "string"
+          },
+          {
+            "name": "margin_type",
+            "required": false,
+            "description": "水印类型。1：低密度水印， 2： 高密度水印，此字段不填则保持原样",
+            "type": "uint32"
+          },
+          {
+            "name": "show_visitor_name",
+            "required": false,
+            "description": "是否显示访问人名称，此字段不填则保持原样",
+            "type": "bool"
+          },
+          {
+            "name": "show_text",
+            "required": false,
+            "description": "是否展示水印文本，此字段不填则保持原样",
+            "type": "bool"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": \"FILEID\",\n    \"watermark\": {\n        \"text\": \"WATERMARK_TEXT\",\n        \"margin_type\": 0,\n        \"show_visitor_name\": false,\n        \"show_text\": false\n    }\n}",
+        "request_example_json": {
+          "fileid": "FILEID",
+          "watermark": {
+            "text": "WATERMARK_TEXT",
+            "margin_type": 0,
+            "show_visitor_name": false,
+            "show_text": false
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "file_setting",
+      "cli_action": "file-setting",
+      "summary": "分享设置",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_setting",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        },
+        {
+          "name": "auth_scope",
+          "flag": "--auth-scope",
+          "type": "str",
+          "help": "权限范围：1:指定人 2:企业内 3:企业外 4: 企业内需管理员审批（仅有管理员时可设置） 5: 企业外需管理员审批（仅有管理员时可设置）",
+          "required": true
+        },
+        {
+          "name": "auth",
+          "flag": "--auth",
+          "type": "str",
+          "help": "权限信息 普通文档： 1:仅浏览（可下载) 4:仅预览（仅专业版企业可设置）；如果不填充此字段为保持原有状态 微文档： 1:仅浏览（可下载）；如果不填充此字段为保持原有状态"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          },
+          "auth_scope": {
+            "from_arg": "auth_scope"
+          },
+          "auth": {
+            "from_arg": "auth"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-setting --fileid <fileid> --auth-scope <auth_scope> [--auth <auth>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "分享设置",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97889",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_setting?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string"
+          },
+          {
+            "name": "auth_scope",
+            "required": true,
+            "description": "权限范围：1:指定人 2:企业内 3:企业外 4: 企业内需管理员审批（仅有管理员时可设置） 5: 企业外需管理员审批（仅有管理员时可设置）",
+            "type": "uint32"
+          },
+          {
+            "name": "auth",
+            "required": false,
+            "description": "权限信息 普通文档： 1:仅浏览（可下载) 4:仅预览（仅专业版企业可设置）；如果不填充此字段为保持原有状态 微文档： 1:仅浏览（可下载）；如果不填充此字段为保持原有状态",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": \"FILDID\",\n    \"auth_scope\": 1,\n    \"auth\": 1\n}",
+        "request_example_json": {
+          "fileid": "FILDID",
+          "auth_scope": 1,
+          "auth": 1
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "file_share",
+      "cli_action": "file-share",
+      "summary": "获取分享链接",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_share",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-share --fileid <fileid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "share_url": {
+              "type": "string",
+              "description": "分享文件的链接"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "share_url"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取分享链接",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97890",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_share?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "share_url",
+            "required": null,
+            "description": "分享文件的链接",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": \"FILEID\"\n}",
+        "request_example_json": {
+          "fileid": "FILEID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"share_url\": \"SHARE_URL\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "share_url": "SHARE_URL"
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "file_upload",
+      "cli_action": "file-upload",
+      "summary": "上传文件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_upload",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid"
+        },
+        {
+          "name": "fatherid",
+          "flag": "--fatherid",
+          "type": "str",
+          "help": "父目录fileid, 在根目录时为空间spaceid"
+        },
+        {
+          "name": "selected_ticket",
+          "flag": "--selected-ticket",
+          "type": "str",
+          "help": "微盘和文件选择器jsapi返回的selectedTicket。若填此参数，则不需要填spaceid/fatherid。"
+        },
+        {
+          "name": "file_name",
+          "flag": "--file-name",
+          "type": "str",
+          "help": "文件名字（注意：文件名最多填255个字符, 英文算1个, 汉字算2个）",
+          "required": true
+        },
+        {
+          "name": "file_base64_content",
+          "flag": "--file-base64-content",
+          "type": "str",
+          "help": "文件内容base64（注意：只需要填入文件内容的Base64，不需要添加任何如：\"data:application/x-javascript;base64\" 的数据类型描述信息），文件大小上限为10M。大于10M文件，可使用文件分块上传接口",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          },
+          "fatherid": {
+            "from_arg": "fatherid"
+          },
+          "selected_ticket": {
+            "from_arg": "selected_ticket"
+          },
+          "file_name": {
+            "from_arg": "file_name"
+          },
+          "file_base64_content": {
+            "from_arg": "file_base64_content"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-upload [--spaceid <spaceid>] [--fatherid <fatherid>] [--selected-ticket <selected_ticket>] --file-name <file_name> --file-base64-content <file_base64_content>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "fileid": {
+              "type": "string",
+              "description": "新建文件的fielid"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "fileid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "上传文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97880",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_upload?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": false,
+            "description": "空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "fatherid",
+            "required": false,
+            "description": "父目录fileid, 在根目录时为空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "selected_ticket",
+            "required": false,
+            "description": "微盘和文件选择器jsapi返回的selectedTicket。若填此参数，则不需要填spaceid/fatherid。",
+            "type": "string"
+          },
+          {
+            "name": "file_name",
+            "required": true,
+            "description": "文件名字（注意：文件名最多填255个字符, 英文算1个, 汉字算2个）",
+            "type": "string"
+          },
+          {
+            "name": "file_base64_content",
+            "required": true,
+            "description": "文件内容base64（注意：只需要填入文件内容的Base64，不需要添加任何如：\"data:application/x-javascript;base64\" 的数据类型描述信息），文件大小上限为10M。大于10M文件，可使用文件分块上传接口",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "fileid",
+            "required": null,
+            "description": "新建文件的fielid",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\",\n    \"fatherid\": \"FATHERID\",\n    \"selected_ticket\": \"SELECTED_TICKET\",\n    \"file_name\": \"FILE_NAME\",\n    \"file_base64_content\": \"FILE_BASE64_CONTENT\"\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID",
+          "fatherid": "FATHERID",
+          "selected_ticket": "SELECTED_TICKET",
+          "file_name": "FILE_NAME",
+          "file_base64_content": "FILE_BASE64_CONTENT"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"fileid\": \"FILEID\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "fileid": "FILEID"
+        }
+      }
+    },
+    {
+      "name": "file_upload_init",
+      "cli_action": "file-upload-init",
+      "summary": "文件分块上传",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/file_upload_init",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid"
+        },
+        {
+          "name": "fatherid",
+          "flag": "--fatherid",
+          "type": "str",
+          "help": "当前目录的fileid，根目录时为空间spaceid"
+        },
+        {
+          "name": "selected_ticket",
+          "flag": "--selected-ticket",
+          "type": "str",
+          "help": "微盘和文件选择器jsapi返回的selectedTicket。若填此参数，则不需要填spaceid/fatherid。"
+        },
+        {
+          "name": "file_name",
+          "flag": "--file-name",
+          "type": "str",
+          "help": "文件名字",
+          "required": true
+        },
+        {
+          "name": "size",
+          "flag": "--size",
+          "type": "str",
+          "help": "文件大小。最大支持20G",
+          "required": true
+        },
+        {
+          "name": "block_sha",
+          "flag": "--block-sha",
+          "type": "str",
+          "help": "文件分块累积sha值，按分块顺序填入数组。参考附录-分块累积sha说明",
+          "required": true
+        },
+        {
+          "name": "skip_push_card",
+          "flag": "--skip-push-card",
+          "type": "bool",
+          "help": "文件创建完成时是否推送企业微信卡片。默认false，即默认推送卡片"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          },
+          "fatherid": {
+            "from_arg": "fatherid"
+          },
+          "selected_ticket": {
+            "from_arg": "selected_ticket"
+          },
+          "file_name": {
+            "from_arg": "file_name"
+          },
+          "size": {
+            "from_arg": "size"
+          },
+          "block_sha": {
+            "from_arg": "block_sha"
+          },
+          "skip_push_card": {
+            "from_arg": "skip_push_card"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive file-upload-init [--spaceid <spaceid>] [--fatherid <fatherid>] [--selected-ticket <selected_ticket>] --file-name <file_name> --size <size> --block-sha <block_sha> [--skip-push-card <skip_push_card>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "hit_exist": {
+              "type": "boolean",
+              "description": "是否命中秒传"
+            },
+            "upload_key": {
+              "type": "string",
+              "description": "文件上传凭证。不命中秒传时返回，作为file_upload_part参数"
+            },
+            "fileid": {
+              "type": "string",
+              "description": "文件fileid。命中秒传时返回，此时上传流程完成"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "hit_exist",
+            "upload_key",
+            "fileid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "文件分块上传",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98004",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_upload_init?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": false,
+            "description": "空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "fatherid",
+            "required": false,
+            "description": "当前目录的fileid，根目录时为空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "selected_ticket",
+            "required": false,
+            "description": "微盘和文件选择器jsapi返回的selectedTicket。若填此参数，则不需要填spaceid/fatherid。",
+            "type": "string"
+          },
+          {
+            "name": "file_name",
+            "required": true,
+            "description": "文件名字",
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "required": true,
+            "description": "文件大小。最大支持20G",
+            "type": "uint64"
+          },
+          {
+            "name": "block_sha",
+            "required": true,
+            "description": "文件分块累积sha值，按分块顺序填入数组。参考附录-分块累积sha说明",
+            "type": "string[]"
+          },
+          {
+            "name": "skip_push_card",
+            "required": false,
+            "description": "文件创建完成时是否推送企业微信卡片。默认false，即默认推送卡片",
+            "type": "bool"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "hit_exist",
+            "required": null,
+            "description": "是否命中秒传",
+            "type": "bool"
+          },
+          {
+            "name": "upload_key",
+            "required": null,
+            "description": "文件上传凭证。不命中秒传时返回，作为file_upload_part参数",
+            "type": "string"
+          },
+          {
+            "name": "fileid",
+            "required": null,
+            "description": "文件fileid。命中秒传时返回，此时上传流程完成",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\",\n    \"fatherid\": \"FATHERID\",\n    \"selected_ticket\": \"SELECTED_TICKET\",\n    \"file_name\": \"FILE_NAME\",\n    \"size\": 123,\n    \"block_sha\": [\n        \"STATE1\",\n        \"STATE2\"\n    ],\n    \"skip_push_card\": false\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID",
+          "fatherid": "FATHERID",
+          "selected_ticket": "SELECTED_TICKET",
+          "file_name": "FILE_NAME",
+          "size": 123,
+          "block_sha": [
+            "STATE1",
+            "STATE2"
+          ],
+          "skip_push_card": false
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"hit_exist\": false,\n    \"upload_key\": \"UPLOAD_KEY\",\n    \"fileid\": \"FILEID\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "hit_exist": false,
+          "upload_key": "UPLOAD_KEY",
+          "fileid": "FILEID"
+        },
+        "permissions": [
+          "分块上传初始化",
+          "请求分块上传初始化接口，如果命中秒传，则流程结束，完成上传。",
+          "请求方式：POST（HTTPS）\n请求地址:  https://qyapi.weixin.qq.com/cgi-bin/wedrive/file_upload_init?access_token=ACCESS_TOKEN",
+          "请求包体"
+        ]
+      }
+    },
+    {
+      "name": "get_file_permission",
+      "cli_action": "get-file-permission",
+      "summary": "获取文件权限信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/get_file_permission",
+      "args": [
+        {
+          "name": "fileid",
+          "flag": "--fileid",
+          "type": "str",
+          "help": "文件fileid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "fileid": {
+            "from_arg": "fileid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive get-file-permission --fileid <fileid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "share_range": {
+              "type": "object",
+              "properties": {
+                "enable_corp_internal": {
+                  "type": "boolean",
+                  "description": "是否为企业内可访问"
+                },
+                "corp_internal_auth": {
+                  "type": "integer",
+                  "description": "企业内权限信息 普通文档： 1:仅浏览（可下载) 4:仅预览（仅专业版企业可设置）255:无权限或需要审批；如果不填充此字段为保持原有状态 微文档： 1:仅浏览（可下载）；如果不填充此字段为保持原有状态"
+                },
+                "enable_corp_external": {
+                  "type": "boolean",
+                  "description": "是否为企业外可访问"
+                },
+                "corp_external_auth": {
+                  "type": "integer",
+                  "description": "企业外权限信息 普通文档： 1:仅浏览（可下载) 4:仅预览（仅专业版企业可设置） 255:无权限或需要审批；如果不填充此字段为保持原有状态 微文档： 1:仅浏览（可下载）；如果不填充此字段为保持原有状态"
+                }
+              },
+              "required": [
+                "enable_corp_internal",
+                "corp_internal_auth",
+                "enable_corp_external",
+                "corp_external_auth"
+              ],
+              "description": "文件分享设置"
+            },
+            "secure_setting": {
+              "type": "object",
+              "properties": {
+                "enable_readonly_copy": {
+                  "type": "boolean",
+                  "description": "是否开启只读备份"
+                },
+                "modify_only_by_admin": {
+                  "type": "boolean",
+                  "description": "是否只允许管理员进行修改"
+                },
+                "enable_readonly_comment": {
+                  "type": "boolean",
+                  "description": "是否开启只读评论"
+                },
+                "ban_share_external": {
+                  "type": "boolean",
+                  "description": "是否禁止分享到企业外部"
+                }
+              },
+              "required": [
+                "enable_readonly_copy",
+                "modify_only_by_admin",
+                "enable_readonly_comment",
+                "ban_share_external"
+              ],
+              "description": "文件安全配置"
+            },
+            "inherit_father_auth": {
+              "type": "object",
+              "properties": {
+                "auth_list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "integer"
+                      },
+                      "userid": {
+                        "type": "string",
+                        "description": "成员userid,字符串"
+                      },
+                      "auth": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "userid",
+                      "auth"
+                    ]
+                  }
+                },
+                "inherit": {
+                  "type": "boolean",
+                  "description": "文件是否开启父路径权限继承"
+                }
+              },
+              "required": [
+                "auth_list",
+                "inherit"
+              ],
+              "description": "从文件父路径继承的权限"
+            },
+            "file_member_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "integer"
+                  },
+                  "userid": {
+                    "type": "string",
+                    "description": "成员userid,字符串"
+                  },
+                  "auth": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "type",
+                  "userid",
+                  "auth"
+                ]
+              },
+              "description": "查询fileid为文档时返回，为文档所在目录成员，以及其他授权列表"
+            },
+            "watermark": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "description": "水印文字，此字段不填则保持原样"
+                },
+                "margin_type": {
+                  "type": "integer",
+                  "description": "水印类型。1：低密度水印， 2： 高密度水印，此字段不填则保持原样"
+                },
+                "show_visitor_name": {
+                  "type": "boolean",
+                  "description": "是否显示访问人名称，此字段不填则保持原样（仅专业版支持）"
+                },
+                "force_by_admin": {
+                  "type": "boolean",
+                  "description": "管理员是否强制要求使用水印，此字段不填则保持原样"
+                },
+                "show_text": {
+                  "type": "boolean",
+                  "description": "是否展示水印文本，此字段不填则保持原样"
+                },
+                "force_by_space_admin": {
+                  "type": "boolean",
+                  "description": "空间管理员是否强制要求使用水印，此字段不填则保持原样"
+                }
+              },
+              "required": [
+                "text",
+                "margin_type",
+                "show_visitor_name",
+                "force_by_admin",
+                "show_text",
+                "force_by_space_admin"
+              ],
+              "description": "水印相关设置（除show_visitor_name字段外，其余字段仅文档可设置）"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "share_range",
+            "secure_setting",
+            "inherit_father_auth",
+            "file_member_list",
+            "watermark"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取文件权限信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97891",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/get_file_permission?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "fileid",
+            "required": true,
+            "description": "文件fileid",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "share_range",
+            "required": null,
+            "description": "文件分享设置",
+            "type": "obj"
+          },
+          {
+            "name": "enable_corp_internal",
+            "required": null,
+            "description": "是否为企业内可访问",
+            "type": "bool"
+          },
+          {
+            "name": "corp_internal_auth",
+            "required": null,
+            "description": "企业内权限信息 普通文档： 1:仅浏览（可下载) 4:仅预览（仅专业版企业可设置）255:无权限或需要审批；如果不填充此字段为保持原有状态 微文档： 1:仅浏览（可下载）；如果不填充此字段为保持原有状态",
+            "type": "uint32"
+          },
+          {
+            "name": "enable_corp_external",
+            "required": null,
+            "description": "是否为企业外可访问",
+            "type": "bool"
+          },
+          {
+            "name": "corp_external_auth",
+            "required": null,
+            "description": "企业外权限信息 普通文档： 1:仅浏览（可下载) 4:仅预览（仅专业版企业可设置） 255:无权限或需要审批；如果不填充此字段为保持原有状态 微文档： 1:仅浏览（可下载）；如果不填充此字段为保持原有状态",
+            "type": "uint32"
+          },
+          {
+            "name": "corp_internal_approve_only_by_admin",
+            "required": null,
+            "description": "是否开启企业内管理员审批",
+            "type": "bool"
+          },
+          {
+            "name": "corp_external_approve_only_by_admin",
+            "required": null,
+            "description": "是否开启企业外管理员审批",
+            "type": "bool"
+          },
+          {
+            "name": "secure_setting",
+            "required": null,
+            "description": "文件安全配置",
+            "type": "obj"
+          },
+          {
+            "name": "enable_readonly_copy",
+            "required": null,
+            "description": "是否开启只读备份",
+            "type": "bool"
+          },
+          {
+            "name": "modify_only_by_admin",
+            "required": null,
+            "description": "是否只允许管理员进行修改",
+            "type": "bool"
+          },
+          {
+            "name": "enable_readonly_comment",
+            "required": null,
+            "description": "是否开启只读评论",
+            "type": "bool"
+          },
+          {
+            "name": "ban_share_external",
+            "required": null,
+            "description": "是否禁止分享到企业外部",
+            "type": "bool"
+          },
+          {
+            "name": "inherit_father_auth",
+            "required": null,
+            "description": "从文件父路径继承的权限",
+            "type": "obj"
+          },
+          {
+            "name": "inherit",
+            "required": null,
+            "description": "文件是否开启父路径权限继承",
+            "type": "bool"
+          },
+          {
+            "name": "member_list",
+            "required": null,
+            "description": "文件夹、文档成员",
+            "type": "obj"
+          },
+          {
+            "name": "file_member_list",
+            "required": null,
+            "description": "查询fileid为文档时返回，为文档所在目录成员，以及其他授权列表",
+            "type": "obj"
+          },
+          {
+            "name": "co_auth_list",
+            "required": null,
+            "description": "分享指定的部门列表",
+            "type": "obj"
+          },
+          {
+            "name": "type_后续将废弃",
+            "required": null,
+            "description": "成员类型 1:个人 2:部门",
+            "type": "uint32"
+          },
+          {
+            "name": "userid",
+            "required": null,
+            "description": "成员userid,字符串",
+            "type": "string"
+          },
+          {
+            "name": "departmentid_后续将废弃",
+            "required": null,
+            "description": "部门departmentid, 32位整型范围是[0, 2^32) (type为2时填写)",
+            "type": "uint32"
+          },
+          {
+            "name": "watermark",
+            "required": null,
+            "description": "水印相关设置（除show_visitor_name字段外，其余字段仅文档可设置）",
+            "type": "obj"
+          },
+          {
+            "name": "text",
+            "required": null,
+            "description": "水印文字，此字段不填则保持原样",
+            "type": "string"
+          },
+          {
+            "name": "margin_type",
+            "required": null,
+            "description": "水印类型。1：低密度水印， 2： 高密度水印，此字段不填则保持原样",
+            "type": "uint32"
+          },
+          {
+            "name": "show_visitor_name",
+            "required": null,
+            "description": "是否显示访问人名称，此字段不填则保持原样（仅专业版支持）",
+            "type": "bool"
+          },
+          {
+            "name": "force_by_admin",
+            "required": null,
+            "description": "管理员是否强制要求使用水印，此字段不填则保持原样",
+            "type": "bool"
+          },
+          {
+            "name": "show_text",
+            "required": null,
+            "description": "是否展示水印文本，此字段不填则保持原样",
+            "type": "bool"
+          },
+          {
+            "name": "force_by_space_admin",
+            "required": null,
+            "description": "空间管理员是否强制要求使用水印，此字段不填则保持原样",
+            "type": "bool"
+          }
+        ],
+        "request_example_text": "{\n    \"fileid\": \"FILEID\"\n}",
+        "request_example_json": {
+          "fileid": "FILEID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"share_range\": {\n        \"enable_corp_internal\": true,\n        \"corp_internal_auth\": 1,\n        \"enable_corp_external\": false,\n        \"corp_external_auth\": 2\n    },\n    \"secure_setting\": {\n        \"enable_readonly_copy\": true,\n        \"modify_only_by_admin\": true,\n        \"enable_readonly_comment\": false,\n        \"ban_share_external\": true\n    },\n    \"inherit_father_auth\": {\n        \"auth_list\": [\n            {\n                \"type\": 1,\n                \"userid\": \"USERID\",\n                \"auth\": 1\n            }\n        ],\n        \"inherit\": true\n    },\n    \"file_member_list\": [\n        {\n            \"type\": 1,\n            \"userid\": \"USERID\",\n            \"auth\": 1\n        }\n    ],\n    \"watermark\": {\n        \"text\": \"WATERMARK_TEXT\",\n        \"margin_type\": 1,\n        \"show_visitor_name\": false,\n        \"force_by_admin\": false,\n        \"show_text\": false,\n        \"force_by_space_admin\": false\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "share_range": {
+            "enable_corp_internal": true,
+            "corp_internal_auth": 1,
+            "enable_corp_external": false,
+            "corp_external_auth": 2
+          },
+          "secure_setting": {
+            "enable_readonly_copy": true,
+            "modify_only_by_admin": true,
+            "enable_readonly_comment": false,
+            "ban_share_external": true
+          },
+          "inherit_father_auth": {
+            "auth_list": [
+              {
+                "type": 1,
+                "userid": "USERID",
+                "auth": 1
+              }
+            ],
+            "inherit": true
+          },
+          "file_member_list": [
+            {
+              "type": 1,
+              "userid": "USERID",
+              "auth": 1
+            }
+          ],
+          "watermark": {
+            "text": "WATERMARK_TEXT",
+            "margin_type": 1,
+            "show_visitor_name": false,
+            "force_by_admin": false,
+            "show_text": false,
+            "force_by_space_admin": false
+          }
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "mng_pro_info",
+      "cli_action": "mng-pro-info",
+      "summary": "版本和容量管理",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/mng_pro_info",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom wedrive mng-pro-info"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "is_pro": {
+              "type": "boolean",
+              "description": "true为专业版，false为不是专业版"
+            },
+            "total_vip_acct_num": {
+              "type": "integer",
+              "description": "总的vip账号数量"
+            },
+            "use_vip_acct_num": {
+              "type": "integer",
+              "description": "已使用的vip账号数量"
+            },
+            "pro_expire_time": {
+              "type": "integer",
+              "description": "专业版到期时间，时间戳，精确到秒"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "is_pro",
+            "total_vip_acct_num",
+            "use_vip_acct_num",
+            "pro_expire_time"
+          ]
+        }
+      },
+      "doc": {
+        "title": "版本和容量管理",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95856",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/mng_pro_info?access_token=ACCESS_TOKEN",
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "is_pro",
+            "required": null,
+            "description": "true为专业版，false为不是专业版",
+            "type": "bool"
+          },
+          {
+            "name": "total_vip_acct_num",
+            "required": null,
+            "description": "总的vip账号数量",
+            "type": "uint32"
+          },
+          {
+            "name": "use_vip_acct_num",
+            "required": null,
+            "description": "已使用的vip账号数量",
+            "type": "uint32"
+          },
+          {
+            "name": "pro_expire_time",
+            "required": null,
+            "description": "专业版到期时间，时间戳，精确到秒",
+            "type": "uint32"
+          }
+        ],
+        "request_example_text": "{\n}",
+        "request_example_json": {},
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"is_pro\": true,\n    \"total_vip_acct_num\": 10,\n    \"use_vip_acct_num\": 5,\n    \"pro_expire_time\": 1754827419\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "is_pro": true,
+          "total_vip_acct_num": 10,
+          "use_vip_acct_num": 5,
+          "pro_expire_time": 1754827419
+        }
+      }
+    },
+    {
+      "name": "new_space_info",
+      "cli_action": "new-space-info",
+      "summary": "获取空间信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/new_space_info",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive new-space-info --spaceid <spaceid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "space_info": {
+              "type": "object",
+              "properties": {
+                "spaceid": {
+                  "type": "string",
+                  "description": "空间id"
+                },
+                "space_name": {
+                  "type": "string",
+                  "description": "空间名"
+                },
+                "auth_list": {
+                  "type": "object",
+                  "properties": {
+                    "auth_info": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "integer"
+                          },
+                          "userid": {
+                            "type": "string"
+                          },
+                          "auth": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "userid",
+                          "auth"
+                        ]
+                      }
+                    },
+                    "quit_userid": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "auth_info",
+                    "quit_userid"
+                  ]
+                },
+                "space_sub_type": {
+                  "type": "integer"
+                },
+                "secure_setting": {
+                  "type": "object",
+                  "properties": {
+                    "enable_watermark": {
+                      "type": "boolean"
+                    },
+                    "add_member_only_admin": {
+                      "type": "boolean"
+                    },
+                    "enable_share_url": {
+                      "type": "boolean"
+                    },
+                    "share_url_no_approve": {
+                      "type": "boolean"
+                    },
+                    "share_url_no_approve_default_auth": {
+                      "type": "integer"
+                    },
+                    "enable_share_external": {
+                      "type": "boolean"
+                    },
+                    "enable_share_external_admin": {
+                      "type": "boolean"
+                    },
+                    "enable_space_add_external_member": {
+                      "type": "boolean"
+                    },
+                    "enable_space_add_external_member_admin": {
+                      "type": "boolean"
+                    },
+                    "enable_confidential_mode": {
+                      "type": "boolean"
+                    },
+                    "default_file_scope": {
+                      "type": "integer"
+                    },
+                    "create_file_only_admin": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "enable_watermark",
+                    "add_member_only_admin",
+                    "enable_share_url",
+                    "share_url_no_approve",
+                    "share_url_no_approve_default_auth",
+                    "enable_share_external",
+                    "enable_share_external_admin",
+                    "enable_space_add_external_member",
+                    "enable_space_add_external_member_admin",
+                    "enable_confidential_mode",
+                    "default_file_scope",
+                    "create_file_only_admin"
+                  ]
+                }
+              },
+              "required": [
+                "spaceid",
+                "space_name",
+                "auth_list",
+                "space_sub_type",
+                "secure_setting"
+              ],
+              "description": "空间信息"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "space_info"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取空间信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97878",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/new_space_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": true,
+            "description": "空间spaceid",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "space_info",
+            "required": null,
+            "description": "空间信息",
+            "type": "obj"
+          },
+          {
+            "name": "spaceid",
+            "required": null,
+            "description": "空间id",
+            "type": "string"
+          },
+          {
+            "name": "space_name",
+            "required": null,
+            "description": "空间名",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\"\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"space_info\": {\n        \"spaceid\": \"SPACEID\",\n        \"space_name\": \"SPACE_NAME\",\n        \"auth_list\": {\n            \"auth_info\": [\n                {\n                    \"type\": 1,\n                    \"userid\": \"USERID\",\n                    \"auth\": 1\n                },\n                {\n                    \"type\": 2,\n                    \"departmentid\": \"DEPARTMENTID\",\n                    \"auth\": 7\n                }\n            ],\n            \"quit_userid\": [\n                \"USERID1\",\n                \"USERID2\"\n            ]\n        },\n        \"space_sub_type\": 0,\n        \"secure_setting\": {\n            \"enable_watermark\": false,\n            \"add_member_only_admin\": true,\n            \"enable_share_url\": false,\n            \"share_url_no_approve\": false,\n            \"share_url_no_approve_default_auth\": 2,\n            \"enable_share_external\": false,\n            \"enable_share_external_admin\": true,\n            \"enable_space_add_external_member\": false,\n            \"enable_space_add_external_member_admin\": true,\n            \"enable_confidential_mode\": false,\n            \"default_file_scope\": 2,\n            \"create_file_only_admin\": false\n        }\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "space_info": {
+            "spaceid": "SPACEID",
+            "space_name": "SPACE_NAME",
+            "auth_list": {
+              "auth_info": [
+                {
+                  "type": 1,
+                  "userid": "USERID",
+                  "auth": 1
+                },
+                {
+                  "type": 2,
+                  "departmentid": "DEPARTMENTID",
+                  "auth": 7
+                }
+              ],
+              "quit_userid": [
+                "USERID1",
+                "USERID2"
+              ]
+            },
+            "space_sub_type": 0,
+            "secure_setting": {
+              "enable_watermark": false,
+              "add_member_only_admin": true,
+              "enable_share_url": false,
+              "share_url_no_approve": false,
+              "share_url_no_approve_default_auth": 2,
+              "enable_share_external": false,
+              "enable_share_external_admin": true,
+              "enable_space_add_external_member": false,
+              "enable_space_add_external_member_admin": true,
+              "enable_confidential_mode": false,
+              "default_file_scope": 2,
+              "create_file_only_admin": false
+            }
+          }
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "space_acl_del",
+      "cli_action": "space-acl-del",
+      "summary": "移除成员/部门",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/space_acl_del",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid",
+          "required": true
+        },
+        {
+          "name": "auth_info",
+          "flag": "--auth-info",
+          "type": "str",
+          "help": "被移除的空间成员信息",
+          "required": true
+        },
+        {
+          "name": "type",
+          "flag": "--type",
+          "type": "str",
+          "help": "成员类型 1:个人 2:部门",
+          "required": true
+        },
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "成员userid,字符串 (type为1时填写)",
+          "required": true
+        },
+        {
+          "name": "departmentid",
+          "flag": "--departmentid",
+          "type": "str",
+          "help": "部门departmentid, 32位整型范围是[0, 2^32) (type为2时填写)",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          },
+          "auth_info": {
+            "from_arg": "auth_info"
+          },
+          "type": {
+            "from_arg": "type"
+          },
+          "userid": {
+            "from_arg": "userid"
+          },
+          "departmentid": {
+            "from_arg": "departmentid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive space-acl-del --spaceid <spaceid> --auth-info <auth_info> --type <type> --userid <userid> --departmentid <departmentid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "移除成员/部门",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97875",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/space_acl_del?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": true,
+            "description": "空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "auth_info",
+            "required": true,
+            "description": "被移除的空间成员信息",
+            "type": "obj[]"
+          },
+          {
+            "name": "type",
+            "required": true,
+            "description": "成员类型 1:个人 2:部门",
+            "type": "uint32"
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "成员userid,字符串 (type为1时填写)",
+            "type": "string"
+          },
+          {
+            "name": "departmentid",
+            "required": true,
+            "description": "部门departmentid, 32位整型范围是[0, 2^32) (type为2时填写)",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\",\n    \"auth_info\": [{\n        \"type\": 1,\n        \"userid\": \"USERID1\"\n    }, {\n        \"type\": 2,\n        \"departmentid\": 1\n    }]\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID",
+          "auth_info": [
+            {
+              "type": 1,
+              "userid": "USERID1"
+            },
+            {
+              "type": 2,
+              "departmentid": 1
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "space_dismiss",
+      "cli_action": "space-dismiss",
+      "summary": "解散空间",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/space_dismiss",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive space-dismiss --spaceid <spaceid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "解散空间",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97857",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/space_dismiss?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": true,
+            "description": "空间spaceid",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\"\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "space_info",
+      "cli_action": "space-info",
+      "summary": "获取空间信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/space_info",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive space-info --spaceid <spaceid>"
+      ],
+      "doc": {
+        "title": "获取空间信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97858",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/space_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": true,
+            "description": "空间spaceid",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "spaceid",
+            "required": null,
+            "description": "空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "space_name",
+            "required": null,
+            "description": "空间名称",
+            "type": "string"
+          },
+          {
+            "name": "auth_list",
+            "required": null,
+            "description": "空间成员列表",
+            "type": "obj[]"
+          },
+          {
+            "name": "auth_info",
+            "required": null,
+            "description": "空间成员信息",
+            "type": "obj[]"
+          },
+          {
+            "name": "type",
+            "required": null,
+            "description": "成员类型 1:个人 2:部门",
+            "type": "uint32"
+          },
+          {
+            "name": "userid",
+            "required": null,
+            "description": "成员userid,字符串",
+            "type": "string"
+          },
+          {
+            "name": "departmentid",
+            "required": null,
+            "description": "部门departmentid, 32位整型范围是[0, 2^32)",
+            "type": "uint32"
+          },
+          {
+            "name": "auth",
+            "required": null,
+            "description": "成员权限 1:仅下载 4:可预览 7:应用空间管理员",
+            "type": "uint32"
+          },
+          {
+            "name": "quit_userid",
+            "required": null,
+            "description": "空间无权限成员userid (成员在一个有权限的部门中, 自己退出空间或者被移除权限)",
+            "type": "string[]"
+          },
+          {
+            "name": "space_sub_type",
+            "required": null,
+            "description": "空间类型 0:普通",
+            "type": "uint32"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\"\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"space_info\": {\n        \"spaceid\": \"SPACEID\",\n        \"space_name\": \"SPACE_NAME\",\n        \"auth_list\": {\n            \"auth_info\": [{\n                \"type\": 1,\n                \"userid\": \"USERID1\",\n                \"auth\": 3,\n            }, {\n                \"type\": 1,\n                \"userid\": \"USERID2\",\n                \"auth\": 2\n            }, {\n                \"type\": 2,\n                \"departmentid\": DEPARTMENTID1,\n                \"auth\": 1\n            }],\n            \"quit_userid\": [\"USERID3\",\"USERID4\"]\n        }\n        \"space_sub_type\":0\n    }\n}",
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "space_rename",
+      "cli_action": "space-rename",
+      "summary": "重命名空间",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/space_rename",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid",
+          "required": true
+        },
+        {
+          "name": "space_name",
+          "flag": "--space-name",
+          "type": "str",
+          "help": "重命名后的空间名",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          },
+          "space_name": {
+            "from_arg": "space_name"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive space-rename --spaceid <spaceid> --space-name <space_name>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "重命名空间",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97856",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/space_rename?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": true,
+            "description": "空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "space_name",
+            "required": true,
+            "description": "重命名后的空间名",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\",\n    \"space_name\": \"SPACE_NAME\"\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID",
+          "space_name": "SPACE_NAME"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "space_setting",
+      "cli_action": "space-setting",
+      "summary": "安全设置",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/space_setting",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid",
+          "required": true
+        },
+        {
+          "name": "enable_watermark",
+          "flag": "--enable-watermark",
+          "type": "bool",
+          "help": "（本字段仅专业版企业可设置）启用水印。false:关 true:开 ;如果不填充此字段为保持原有状态"
+        },
+        {
+          "name": "enable_confidential_mode",
+          "flag": "--enable-confidential-mode",
+          "type": "bool",
+          "help": "是否开启保密模式。false:关 true:开 如果不填充此字段为保持原有状态"
+        },
+        {
+          "name": "share_url_no_approve",
+          "flag": "--share-url-no-approve",
+          "type": "bool",
+          "help": "通过链接加入空间无需审批。false:关； true:开； 如果不填充此字段为保持原有状态"
+        },
+        {
+          "name": "share_url_no_approve_default_auth",
+          "flag": "--share-url-no-approve-default-auth",
+          "type": "str",
+          "help": "邀请链接默认权限。1:仅下载 2:可编辑 4:仅预览 5:可上传下载 200:自定义权限；如果不填充此字段为保持原有状态"
+        },
+        {
+          "name": "default_file_scope",
+          "flag": "--default-file-scope",
+          "type": "str",
+          "help": "文件默认可查看范围。1:仅成员；2:企业内。如果不填充此字段为保持原有状态"
+        },
+        {
+          "name": "ban_share_external",
+          "flag": "--ban-share-external",
+          "type": "bool",
+          "help": "是否禁止文件分享到企业外｜false:关 true:开 如果不填充此字段为保持原有状态"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          },
+          "enable_watermark": {
+            "from_arg": "enable_watermark"
+          },
+          "enable_confidential_mode": {
+            "from_arg": "enable_confidential_mode"
+          },
+          "share_url_no_approve": {
+            "from_arg": "share_url_no_approve"
+          },
+          "share_url_no_approve_default_auth": {
+            "from_arg": "share_url_no_approve_default_auth"
+          },
+          "default_file_scope": {
+            "from_arg": "default_file_scope"
+          },
+          "ban_share_external": {
+            "from_arg": "ban_share_external"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive space-setting --spaceid <spaceid> [--enable-watermark <enable_watermark>] [--enable-confidential-mode <enable_confidential_mode>] [--share-url-no-approve <share_url_no_approve>] [--share-url-no-approve-default-auth <share_url_no_approve_default_auth>] [--default-file-scope <default_file_scope>] [--ban-share-external <ban_share_external>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "安全设置",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97876",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/space_setting?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": true,
+            "description": "空间spaceid",
+            "type": "string"
+          },
+          {
+            "name": "enable_watermark",
+            "required": false,
+            "description": "（本字段仅专业版企业可设置）启用水印。false:关 true:开 ;如果不填充此字段为保持原有状态",
+            "type": "bool"
+          },
+          {
+            "name": "enable_confidential_mode",
+            "required": false,
+            "description": "是否开启保密模式。false:关 true:开 如果不填充此字段为保持原有状态",
+            "type": "bool"
+          },
+          {
+            "name": "share_url_no_approve",
+            "required": false,
+            "description": "通过链接加入空间无需审批。false:关； true:开； 如果不填充此字段为保持原有状态",
+            "type": "bool"
+          },
+          {
+            "name": "share_url_no_approve_default_auth",
+            "required": false,
+            "description": "邀请链接默认权限。1:仅下载 2:可编辑 4:仅预览 5:可上传下载 200:自定义权限；如果不填充此字段为保持原有状态",
+            "type": "uint32"
+          },
+          {
+            "name": "default_file_scope",
+            "required": false,
+            "description": "文件默认可查看范围。1:仅成员；2:企业内。如果不填充此字段为保持原有状态",
+            "type": "uint32"
+          },
+          {
+            "name": "ban_share_external",
+            "required": false,
+            "description": "是否禁止文件分享到企业外｜false:关 true:开 如果不填充此字段为保持原有状态",
+            "type": "bool"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\",\n    \"enable_watermark\": true,\n    \"share_url_no_approve\": true,\n    \"share_url_no_approve_default_auth\": 1,\n    \"enable_confidential_mode\":true,\n    \"default_file_scope\":1,\n    \"ban_share_external\":false\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID",
+          "enable_watermark": true,
+          "share_url_no_approve": true,
+          "share_url_no_approve_default_auth": 1,
+          "enable_confidential_mode": true,
+          "default_file_scope": 1,
+          "ban_share_external": false
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "space_share",
+      "cli_action": "space-share",
+      "summary": "获取邀请链接",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/space_share",
+      "args": [
+        {
+          "name": "spaceid",
+          "flag": "--spaceid",
+          "type": "str",
+          "help": "空间spaceid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "spaceid": {
+            "from_arg": "spaceid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive space-share --spaceid <spaceid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "space_share_url": {
+              "type": "string",
+              "description": "邀请链接"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "space_share_url"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取邀请链接",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97877",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/space_share?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "spaceid",
+            "required": true,
+            "description": "空间spaceid",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "space_share_url",
+            "required": null,
+            "description": "邀请链接",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"spaceid\": \"SPACEID\"\n}",
+        "request_example_json": {
+          "spaceid": "SPACEID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"space_share_url\": \"SPACE_SHARE_URL\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "space_share_url": "SPACE_SHARE_URL"
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "vip_batch_add",
+      "cli_action": "vip-batch-add",
+      "summary": "分配高级功能账号",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/vip/batch_add",
+      "args": [
+        {
+          "name": "userid_list",
+          "flag": "--userid-list",
+          "type": "str",
+          "help": "要分配高级功能的企业成员userid列表，单次操作最大限制100个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "userid_list": {
+            "from_arg": "userid_list"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive vip-batch-add --userid-list <userid_list>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "succ_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "分配成功的userid列表，包括已经是高级功能账号的userid"
+            },
+            "fail_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "分配失败的userid列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "succ_userid_list",
+            "fail_userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "分配高级功能账号",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99512",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/vip/batch_add?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": true,
+            "description": "要分配高级功能的企业成员userid列表，单次操作最大限制100个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "succ_userid_list",
+            "required": null,
+            "description": "分配成功的userid列表，包括已经是高级功能账号的userid",
+            "type": null
+          },
+          {
+            "name": "fail_userid_list",
+            "required": null,
+            "description": "分配失败的userid列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"userid_list\": [\"zhangsan\",\"lisi\",\"wangwu\"]\n}",
+        "request_example_json": {
+          "userid_list": [
+            "zhangsan",
+            "lisi",
+            "wangwu"
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"succ_userid_list\":[\"zhangsan\",\"lisi\"],\n   \"fail_userid_list\":[\"wangwu\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "succ_userid_list": [
+            "zhangsan",
+            "lisi"
+          ],
+          "fail_userid_list": [
+            "wangwu"
+          ]
+        }
+      }
+    },
+    {
+      "name": "vip_batch_del",
+      "cli_action": "vip-batch-del",
+      "summary": "取消高级功能账号",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/vip/batch_del",
+      "args": [
+        {
+          "name": "userid_list",
+          "flag": "--userid-list",
+          "type": "str",
+          "help": "要撤销分配高级功能的企业成员userid列表，单次操作最多限制100个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "userid_list": {
+            "from_arg": "userid_list"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive vip-batch-del --userid-list <userid_list>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "succ_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "撤销分配成功的userid列表"
+            },
+            "fail_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "撤销分配失败的userid列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "succ_userid_list",
+            "fail_userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "取消高级功能账号",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99513",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/vip/batch_del?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": true,
+            "description": "要撤销分配高级功能的企业成员userid列表，单次操作最多限制100个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "succ_userid_list",
+            "required": null,
+            "description": "撤销分配成功的userid列表",
+            "type": null
+          },
+          {
+            "name": "fail_userid_list",
+            "required": null,
+            "description": "撤销分配失败的userid列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"userid_list\": [\"zhangsan\",\"lisi\",\"wangwu\"]\n}",
+        "request_example_json": {
+          "userid_list": [
+            "zhangsan",
+            "lisi",
+            "wangwu"
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"succ_userid_list\":[\"zhangsan\",\"lisi\"],\n   \"fail_userid_list\":[\"wangwu\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "succ_userid_list": [
+            "zhangsan",
+            "lisi"
+          ],
+          "fail_userid_list": [
+            "wangwu"
+          ]
+        }
+      }
+    },
+    {
+      "name": "vip_list",
+      "cli_action": "vip-list",
+      "summary": "获取高级功能账号列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedrive/vip/list",
+      "args": [
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "bool",
+          "help": "用于分页查询，每次请求返回的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，必须用返回的has_more判断是否继续请求"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedrive vip-list [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "has_more": {
+              "type": "boolean",
+              "description": "是否还有更多数据未获取"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "下一次请求的cursor值"
+            },
+            "userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "符合条件的企业成员userid列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "has_more",
+            "next_cursor",
+            "userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取高级功能账号列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99514",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedrive/vip/list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "用于分页查询，每次请求返回的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，必须用返回的has_more判断是否继续请求",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有更多数据未获取",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "下一次请求的cursor值",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": null,
+            "description": "符合条件的企业成员userid列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"cursor\":\"CURSOR\",\n\t\"limit\":2\n}",
+        "request_example_json": {
+          "cursor": "CURSOR",
+          "limit": 2
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"has_more\":true,\n   \"next_cursor\":\"GNIJIGEO\",\n   \"userid_list\":[\"zhangsan\",\"lisi\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "has_more": true,
+          "next_cursor": "GNIJIGEO",
+          "userid_list": [
+            "zhangsan",
+            "lisi"
+          ]
+        }
+      }
+    }
+  ]
+}

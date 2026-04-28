@@ -1,0 +1,229 @@
+{
+  "domain": "dial",
+  "operations": [
+    {
+      "name": "get_dial_record",
+      "cli_action": "get-dial-record",
+      "summary": "获取公费电话拨打记录",
+      "method": "POST",
+      "endpoint": "/cgi-bin/dial/get_dial_record",
+      "args": [
+        {
+          "name": "start_time",
+          "flag": "--start-time",
+          "type": "str",
+          "help": "查询的起始时间戳"
+        },
+        {
+          "name": "end_time",
+          "flag": "--end-time",
+          "type": "str",
+          "help": "查询的结束时间戳"
+        },
+        {
+          "name": "offset",
+          "flag": "--offset",
+          "type": "str",
+          "help": "分页查询的偏移量"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "分页查询的每页大小,默认为100条，如该参数大于100则按100处理"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "start_time": {
+            "from_arg": "start_time"
+          },
+          "end_time": {
+            "from_arg": "end_time"
+          },
+          "offset": {
+            "from_arg": "offset"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom dial get-dial-record [--start-time <start_time>] [--end-time <end_time>] [--offset <offset>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "record": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "call_time": {
+                    "type": "integer"
+                  },
+                  "total_duration": {
+                    "type": "integer"
+                  },
+                  "call_type": {
+                    "type": "integer"
+                  },
+                  "caller": {
+                    "type": "object",
+                    "properties": {
+                      "userid": {
+                        "type": "string"
+                      },
+                      "duration": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "userid",
+                      "duration"
+                    ]
+                  },
+                  "callee": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "phone": {
+                          "type": "integer"
+                        },
+                        "duration": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "phone",
+                        "duration"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "call_time",
+                  "total_duration",
+                  "call_type",
+                  "caller",
+                  "callee"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "record"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取公费电话拨打记录",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93662",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/dial/get_dial_record?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "start_time",
+            "required": false,
+            "description": "查询的起始时间戳",
+            "type": null
+          },
+          {
+            "name": "end_time",
+            "required": false,
+            "description": "查询的结束时间戳",
+            "type": null
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "description": "分页查询的偏移量",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "分页查询的每页大小,默认为100条，如该参数大于100则按100处理",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"start_time\": 1536508800,\n   \"end_time\": 1536940800,\n   \"offset\": 0,\n   \"limit\": 100\n}",
+        "request_example_json": {
+          "start_time": 1536508800,
+          "end_time": 1536940800,
+          "offset": 0,
+          "limit": 100
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"record\":[\n   \t\t{\n\t\t\t\"call_time\":1536508800,\n\t\t\t\"total_duration\":10,\n\t\t\t\"call_type\":1,\n\t\t\t\"caller\":\n\t\t\t{\n\t\t\t\t\"userid\":\"tony\",\n\t\t\t\t\"duration\":10\n\t\t\t},\n\t\t\t\"callee\":[\n\t\t\t{\n\t\t\t\t\"phone\":138000800,\n\t\t\t\t\"duration\":10\n\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"call_time\":1536940800,\n\t\t\t\"total_duration\":20,\n\t\t\t\"call_type\":2,\n\t\t\t\"caller\":\n\t\t\t{\n\t\t\t\t\"userid\":\"tony\",\n\t\t\t\t\"duration\":10\n\t\t\t},\n\t\t\t\"callee\":[\n\t\t\t\t{\n\t\t\t\t\t\"phone\":138000800,\n\t\t\t\t\t\"duration\":5\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"userid\":\"tom\",\n\t\t\t\t\t\"duration\":5\n\t\t\t\t}\n\t\t\t]\n\t\t}\n   ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "record": [
+            {
+              "call_time": 1536508800,
+              "total_duration": 10,
+              "call_type": 1,
+              "caller": {
+                "userid": "tony",
+                "duration": 10
+              },
+              "callee": [
+                {
+                  "phone": 138000800,
+                  "duration": 10
+                }
+              ]
+            },
+            {
+              "call_time": 1536940800,
+              "total_duration": 20,
+              "call_type": 2,
+              "caller": {
+                "userid": "tony",
+                "duration": 10
+              },
+              "callee": [
+                {
+                  "phone": 138000800,
+                  "duration": 5
+                },
+                {
+                  "userid": "tom",
+                  "duration": 5
+                }
+              ]
+            }
+          ]
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "应用可见范围外用户相关的record会被过滤掉，不会返回"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

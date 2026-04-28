@@ -1,0 +1,136 @@
+{
+  "domain": "miniprogram",
+  "operations": [
+    {
+      "name": "transfer_session",
+      "cli_action": "transfer-session",
+      "summary": "获取下级/下游企业小程序session",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniprogram/transfer_session",
+      "args": [
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "通过code2Session接口获取到的加密的userid 不多于64字节",
+          "required": true
+        },
+        {
+          "name": "session_key",
+          "flag": "--session-key",
+          "type": "str",
+          "help": "通过code2Session接口获取到的属于上级/上游企业的会话密钥- 不多于64字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "userid": {
+            "from_arg": "userid"
+          },
+          "session_key": {
+            "from_arg": "session_key"
+          }
+        }
+      },
+      "examples": [
+        "wecom miniprogram transfer-session --userid <userid> --session-key <session_key>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "userid": {
+              "type": "string",
+              "description": "下级/下游企业用户的ID"
+            },
+            "session_key": {
+              "type": "string",
+              "description": "属于下级/下游企业的会话密钥"
+            },
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            }
+          },
+          "required": [
+            "userid",
+            "session_key",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取下级/下游企业小程序session",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95817",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniprogram/transfer_session?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。下级/下游企业的 access_token",
+            "type": "string"
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "通过code2Session接口获取到的加密的userid 不多于64字节",
+            "type": "string"
+          },
+          {
+            "name": "session_key",
+            "required": true,
+            "description": "通过code2Session接口获取到的属于上级/上游企业的会话密钥- 不多于64字节",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "userid",
+            "required": null,
+            "description": "下级/下游企业用户的ID",
+            "type": "string"
+          },
+          {
+            "name": "session_key",
+            "required": null,
+            "description": "属于下级/下游企业的会话密钥",
+            "type": "string"
+          },
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"userid\": \"wmAoNVCwAAUrSqEqz7oQpEIEMVWDrPeg\",\n    \"session_key\": \"n8cnNEoyW1pxSRz6/Lwjwg==\"\n}",
+        "request_example_json": {
+          "userid": "wmAoNVCwAAUrSqEqz7oQpEIEMVWDrPeg",
+          "session_key": "n8cnNEoyW1pxSRz6/Lwjwg=="
+        },
+        "response_example_text": "{\n    \"userid\": \"abcdef\",\n    \"session_key\": \"DGAuy2KVaGcnsUrXk8ERgw==\",\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "userid": "abcdef",
+          "session_key": "DGAuy2KVaGcnsUrXk8ERgw==",
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    }
+  ]
+}

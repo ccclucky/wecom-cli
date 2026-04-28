@@ -113,6 +113,9 @@
         ],
         "notes": [
           "仅供参考，最新IP列表以接口获取到的为准。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
         ]
       }
     }

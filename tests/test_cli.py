@@ -7,13 +7,13 @@ from cli.main import route
 
 
 class DummyClient:
-    def contacts_list_users(self, *, department_id, fetch_child):
+    def contacts_list_users(self, *, department_id, fetch_child, **kwargs):
         return {"department_id": department_id, "fetch_child": fetch_child}
 
-    def messages_send_text(self, *, to_user, agent_id, content):
+    def messages_send_text(self, *, to_user, agent_id, content, **kwargs):
         return {"to_user": to_user, "agent_id": agent_id, "content": content}
 
-    def customers_list_follow_users(self):
+    def customers_list_follow_users(self, **kwargs):
         return {"user": ["zhangsan"]}
 
 

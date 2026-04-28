@@ -1,0 +1,647 @@
+{
+  "domain": "advanced_feature",
+  "operations": [
+    {
+      "name": "get_apply_id_list",
+      "cli_action": "get-apply-id-list",
+      "summary": "批量获取申请单ID",
+      "method": "POST",
+      "endpoint": "/cgi-bin/advanced_feature/get_apply_id_list",
+      "args": [
+        {
+          "name": "business_type",
+          "flag": "--business-type",
+          "type": "str",
+          "help": "申请的高级账号类型 1-邮件 2-文档 3-微盘 4-会议",
+          "required": true
+        },
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "申请的userid",
+          "required": true
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "bool",
+          "help": "分页查询的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，须用返回的has_more判断是否继续请求"
+        },
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填"
+        },
+        {
+          "name": "req_type",
+          "flag": "--req-type",
+          "type": "str",
+          "help": "0-所有 1-仅api单 2-非api 申请单， 默认为0"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "business_type": {
+            "from_arg": "business_type"
+          },
+          "userid": {
+            "from_arg": "userid"
+          },
+          "limit": {
+            "from_arg": "limit"
+          },
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "req_type": {
+            "from_arg": "req_type"
+          }
+        }
+      },
+      "examples": [
+        "wecom advanced_feature get-apply-id-list --business-type <business_type> --userid <userid> [--limit <limit>] [--cursor <cursor>] [--req-type <req_type>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "分页请求的下一页游标"
+            },
+            "apply_id_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "申请id列表"
+            },
+            "has_more": {
+              "type": "boolean",
+              "description": "是否还有下一页数据"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "next_cursor",
+            "apply_id_list",
+            "has_more"
+          ]
+        }
+      },
+      "doc": {
+        "title": "批量获取申请单ID",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99883",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/advanced_feature/get_apply_id_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "business_type",
+            "required": true,
+            "description": "申请的高级账号类型 1-邮件 2-文档 3-微盘 4-会议",
+            "type": "uint32"
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "申请的userid",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "分页查询的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，须用返回的has_more判断是否继续请求",
+            "type": "uint32"
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填",
+            "type": "string"
+          },
+          {
+            "name": "req_type",
+            "required": false,
+            "description": "0-所有 1-仅api单 2-非api 申请单， 默认为0",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "分页请求的下一页游标",
+            "type": null
+          },
+          {
+            "name": "apply_id_list",
+            "required": null,
+            "description": "申请id列表",
+            "type": null
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有下一页数据",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"business_type\":1,\n    \"limit\":10,\n    \"cursor\":\"CURSOR\",\n    \"req_type\":1\n}",
+        "request_example_json": {
+          "business_type": 1,
+          "limit": 10,
+          "cursor": "CURSOR",
+          "req_type": 1
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"next_cursor\": \"CURSOR\",\n    \"apply_id_list\":[\n        \"APPLY_ID1\",\n        \"APPLY_ID2\"\n    ],\n    \"has_more\": true\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "next_cursor": "CURSOR",
+          "apply_id_list": [
+            "APPLY_ID1",
+            "APPLY_ID2"
+          ],
+          "has_more": true
+        }
+      }
+    },
+    {
+      "name": "get_approval_info",
+      "cli_action": "get-approval-info",
+      "summary": "获取申请单详细信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/advanced_feature/get_approval_info",
+      "args": [
+        {
+          "name": "apply_id",
+          "flag": "--apply-id",
+          "type": "str",
+          "help": "申请id",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "apply_id": {
+            "from_arg": "apply_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom advanced_feature get-approval-info --apply-id <apply_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "approval_info": {
+              "type": "object",
+              "properties": {
+                "applicant": {
+                  "type": "string"
+                },
+                "create_time": {
+                  "type": "integer"
+                },
+                "business_type": {
+                  "type": "integer"
+                },
+                "approval_id": {
+                  "type": "string"
+                },
+                "apply_id": {
+                  "type": "string"
+                },
+                "approval_url": {
+                  "type": "string"
+                },
+                "approval_status": {
+                  "type": "integer"
+                },
+                "approval_type": {
+                  "type": "integer"
+                },
+                "request_reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "applicant",
+                "create_time",
+                "business_type",
+                "approval_id",
+                "apply_id",
+                "approval_url",
+                "approval_status",
+                "approval_type",
+                "request_reason"
+              ]
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "approval_info"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取申请单详细信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99885",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/advanced_feature/get_approval_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "apply_id",
+            "required": true,
+            "description": "申请id",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          },
+          {
+            "name": "approval_info_applicant",
+            "required": null,
+            "description": "申请人userid",
+            "type": null
+          },
+          {
+            "name": "approval_info_create_time",
+            "required": null,
+            "description": "创建时间戳",
+            "type": null
+          },
+          {
+            "name": "approval_info_business_type",
+            "required": null,
+            "description": "申请的高级账号类型 1-邮件 2-文档 3-微盘 4-会议",
+            "type": null
+          },
+          {
+            "name": "approval_info_apply_id",
+            "required": null,
+            "description": "请求id",
+            "type": null
+          },
+          {
+            "name": "approval_info_approval_id",
+            "required": null,
+            "description": "自建应用中的审批id",
+            "type": null
+          },
+          {
+            "name": "approval_info_approval_url",
+            "required": null,
+            "description": "自建应用中的审批单跳转链接",
+            "type": null
+          },
+          {
+            "name": "approval_info_approval_status",
+            "required": null,
+            "description": "审批单状态：1-审批人审批中 2-审批人驳回 3-审批人已同意 4-管理员驳回 5-管理员已分配 0-历史的申请记录，无流程信息",
+            "type": null
+          },
+          {
+            "name": "approval_info_approval_type",
+            "required": null,
+            "description": "0-默认申请 1-自定义审批 2-企业openapi",
+            "type": null
+          },
+          {
+            "name": "approval_info_request_reason",
+            "required": null,
+            "description": "申请原因",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"apply_id\": \"APPLY_ID\"\n}",
+        "request_example_json": {
+          "apply_id": "APPLY_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"approval_info\":{\n        \"applicant\":\"USERID\",\n        \"create_time\": 1715681559,\n        \"business_type\":1,\n        \"approval_id\":\"APPROVAL_ID\",\n        \"apply_id\":\"ApplyId\",\n        \"approval_url\":\"APPROVAL_URL\",\n        \"approval_status\":0,\n        \"approval_type\":1,\n        \"request_reason\":\"我有很多客户资料要管理，需要更多微盘空间\"\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "approval_info": {
+            "applicant": "USERID",
+            "create_time": 1715681559,
+            "business_type": 1,
+            "approval_id": "APPROVAL_ID",
+            "apply_id": "ApplyId",
+            "approval_url": "APPROVAL_URL",
+            "approval_status": 0,
+            "approval_type": 1,
+            "request_reason": "我有很多客户资料要管理，需要更多微盘空间"
+          }
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "set_approval_detail",
+      "cli_action": "set-approval-detail",
+      "summary": "设置审批单审批信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/advanced_feature/set_approval_detail",
+      "args": [
+        {
+          "name": "apply_id",
+          "flag": "--apply-id",
+          "type": "str",
+          "help": "申请id",
+          "required": true
+        },
+        {
+          "name": "approval_id",
+          "flag": "--approval-id",
+          "type": "str",
+          "help": "审批id，注意：应用生成审批id后，审批id和申请id是一一对应的，不可改变",
+          "required": true
+        },
+        {
+          "name": "approval_status",
+          "flag": "--approval-status",
+          "type": "str",
+          "help": "审批单状态：1-审批中; 2-已驳回; 3-已同意; 101-已撤销",
+          "required": true
+        },
+        {
+          "name": "approval_url",
+          "flag": "--approval-url",
+          "type": "str",
+          "help": "审批单跳转链接，须已\"http://\"或\"https://\"开头",
+          "required": true
+        },
+        {
+          "name": "process_list_node_list",
+          "flag": "--process-list-node-list",
+          "type": "str",
+          "help": "审批单审批节点，注意：如果需要变更审批节点信息，需要全量节点都传入",
+          "required": true
+        },
+        {
+          "name": "process_list_node_list_node_apv_status",
+          "flag": "--process-list-node-list-node-apv-status",
+          "type": "str",
+          "help": "审批节点状态：1-审批中; 2-已驳回; 3-已同意; 101-已撤销; 102-未到流程",
+          "required": true
+        },
+        {
+          "name": "process_list_node_list_node_apv_rel",
+          "flag": "--process-list-node-list-node-apv-rel",
+          "type": "str",
+          "help": "审批节点多人审批方式：1-会签；2-或签；3-依次审批",
+          "required": true
+        },
+        {
+          "name": "process_list_node_list_current_approvers",
+          "flag": "--process-list-node-list-current-approvers",
+          "type": "str",
+          "help": "当前审批节点待处理人列表，最多100个，待处理人列表和已处理人列表不可同时为空"
+        },
+        {
+          "name": "process_list_node_list_completed_approvers",
+          "flag": "--process-list-node-list-completed-approvers",
+          "type": "str",
+          "help": "当前审批节点已处理人列表，做多100个，待处理人列表和已处理人列表不可同时为空"
+        },
+        {
+          "name": "process_list_node_list_apv_update_time",
+          "flag": "--process-list-node-list-apv-update-time",
+          "type": "str",
+          "help": "审批节点更新时间"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "apply_id": {
+            "from_arg": "apply_id"
+          },
+          "approval_id": {
+            "from_arg": "approval_id"
+          },
+          "approval_status": {
+            "from_arg": "approval_status"
+          },
+          "approval_url": {
+            "from_arg": "approval_url"
+          },
+          "process_list_node_list": {
+            "from_arg": "process_list_node_list"
+          },
+          "process_list_node_list_node_apv_status": {
+            "from_arg": "process_list_node_list_node_apv_status"
+          },
+          "process_list_node_list_node_apv_rel": {
+            "from_arg": "process_list_node_list_node_apv_rel"
+          },
+          "process_list_node_list_current_approvers": {
+            "from_arg": "process_list_node_list_current_approvers"
+          },
+          "process_list_node_list_completed_approvers": {
+            "from_arg": "process_list_node_list_completed_approvers"
+          },
+          "process_list_node_list_apv_update_time": {
+            "from_arg": "process_list_node_list_apv_update_time"
+          }
+        }
+      },
+      "examples": [
+        "wecom advanced_feature set-approval-detail --apply-id <apply_id> --approval-id <approval_id> --approval-status <approval_status> --approval-url <approval_url> --process-list-node-list <process_list_node_list> --process-list-node-list-node-apv-status <process_list_node_list_node_apv_status> --process-list-node-list-node-apv-rel <process_list_node_list_node_apv_rel> [--process-list-node-list-current-approvers <process_list_node_list_current_approvers>] [--process-list-node-list-completed-approvers <process_list_node_list_completed_approvers>] [--process-list-node-list-apv-update-time <process_list_node_list_apv_update_time>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "设置审批单审批信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/99880",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/advanced_feature/set_approval_detail?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "apply_id",
+            "required": true,
+            "description": "申请id",
+            "type": "string"
+          },
+          {
+            "name": "approval_id",
+            "required": true,
+            "description": "审批id，注意：应用生成审批id后，审批id和申请id是一一对应的，不可改变",
+            "type": "string"
+          },
+          {
+            "name": "approval_status",
+            "required": true,
+            "description": "审批单状态：1-审批中; 2-已驳回; 3-已同意; 101-已撤销",
+            "type": "uint32"
+          },
+          {
+            "name": "approval_url",
+            "required": true,
+            "description": "审批单跳转链接，须已\"http://\"或\"https://\"开头",
+            "type": "string"
+          },
+          {
+            "name": "process_list_node_list",
+            "required": true,
+            "description": "审批单审批节点，注意：如果需要变更审批节点信息，需要全量节点都传入",
+            "type": "array(obj)"
+          },
+          {
+            "name": "process_list_node_list_node_apv_status",
+            "required": true,
+            "description": "审批节点状态：1-审批中; 2-已驳回; 3-已同意; 101-已撤销; 102-未到流程",
+            "type": "uint32"
+          },
+          {
+            "name": "process_list_node_list_node_apv_rel",
+            "required": true,
+            "description": "审批节点多人审批方式：1-会签；2-或签；3-依次审批",
+            "type": "uint32"
+          },
+          {
+            "name": "process_list_node_list_current_approvers",
+            "required": false,
+            "description": "当前审批节点待处理人列表，最多100个，待处理人列表和已处理人列表不可同时为空",
+            "type": "array(string )"
+          },
+          {
+            "name": "process_list_node_list_completed_approvers",
+            "required": false,
+            "description": "当前审批节点已处理人列表，做多100个，待处理人列表和已处理人列表不可同时为空",
+            "type": "array(string)"
+          },
+          {
+            "name": "process_list_node_list_apv_update_time",
+            "required": false,
+            "description": "审批节点更新时间",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"approval_id\": \"APPROVALID\",\n    \"approval_status\":1,\n    \"apply_id\":\"ApplyId\",\n    \"approval_url\":\"www.qq.com\",\n    \"process_list\":{\n        \"node_list\":[\n            {\n                \"current_approvers\":[\"LEADER1\", \"LEADER2\"],\n                \"completed_approvers\":[\"LEADER0\"],\n                \"node_apv_status\":1,\n                \"node_apv_rel\":1,\n                \"apv_update_time\":1715741759\n            },\n            {\n                \"current_approvers\":[\"LEADER3\", \"LEADER4\"],\n                \"completed_approvers\":[\"LEADER5\"],\n                \"node_status\":1,\n                \"node_apv_rel\":1,\n                \"apv_update_time\":1715741759\n            }\n        ]\n    }\n}",
+        "request_example_json": {
+          "approval_id": "APPROVALID",
+          "approval_status": 1,
+          "apply_id": "ApplyId",
+          "approval_url": "www.qq.com",
+          "process_list": {
+            "node_list": [
+              {
+                "current_approvers": [
+                  "LEADER1",
+                  "LEADER2"
+                ],
+                "completed_approvers": [
+                  "LEADER0"
+                ],
+                "node_apv_status": 1,
+                "node_apv_rel": 1,
+                "apv_update_time": 1715741759
+              },
+              {
+                "current_approvers": [
+                  "LEADER3",
+                  "LEADER4"
+                ],
+                "completed_approvers": [
+                  "LEADER5"
+                ],
+                "node_status": 1,
+                "node_apv_rel": 1,
+                "apv_update_time": 1715741759
+              }
+            ]
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    }
+  ]
+}

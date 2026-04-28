@@ -1,0 +1,1027 @@
+{
+  "domain": "externalpay",
+  "operations": [
+    {
+      "name": "get_bill_list",
+      "cli_action": "get-bill-list",
+      "summary": "获取对外收款记录",
+      "method": "POST",
+      "endpoint": "/cgi-bin/externalpay/get_bill_list",
+      "args": [
+        {
+          "name": "begin_time",
+          "flag": "--begin-time",
+          "type": "str",
+          "help": "收款记录开始时间戳，单位为秒",
+          "required": true
+        },
+        {
+          "name": "end_time",
+          "flag": "--end-time",
+          "type": "str",
+          "help": "收款记录结束时间戳，单位为秒",
+          "required": true
+        },
+        {
+          "name": "payee_userid",
+          "flag": "--payee-userid",
+          "type": "str",
+          "help": "企业收款成员userid，不填则为全部成员"
+        },
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "返回的最大记录数，整型，最大值1000"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "begin_time": {
+            "from_arg": "begin_time"
+          },
+          "end_time": {
+            "from_arg": "end_time"
+          },
+          "payee_userid": {
+            "from_arg": "payee_userid"
+          },
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom externalpay get-bill-list --begin-time <begin_time> --end-time <end_time> [--payee-userid <payee_userid>] [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "分页游标，在下次请求时填写以获取之后分页的记录，如果已经没有更多的数据则不返回该字段"
+            },
+            "bill_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "transaction_id": {
+                    "type": "string",
+                    "description": "交易单号"
+                  },
+                  "bill_type": {
+                    "type": "integer",
+                    "description": "交易类型： 0：收款记录 1：退款记录"
+                  },
+                  "trade_state": {
+                    "type": "integer",
+                    "description": "交易状态（退款记录不返回该字段）： 1：已完成 3：已完成有退款"
+                  },
+                  "pay_time": {
+                    "type": "integer",
+                    "description": "交易时间"
+                  },
+                  "out_trade_no": {
+                    "type": "string",
+                    "description": "商户单号。如果是退款记录，返回对应收款记录的商户单号"
+                  },
+                  "out_refund_no": {
+                    "type": "string",
+                    "description": "退款单号，退款记录返回该字段"
+                  },
+                  "external_userid": {
+                    "type": "string",
+                    "description": "付款人的userid"
+                  },
+                  "total_fee": {
+                    "type": "integer",
+                    "description": "收款总金额，单位为分"
+                  },
+                  "payee_userid": {
+                    "type": "string",
+                    "description": "企业内账号userid。退款记录的该字段为退款成员userid，收款记录的该字段为收款成员userid"
+                  },
+                  "payment_type": {
+                    "type": "integer",
+                    "description": "收款方式： 0：在聊天中收款 1：收款码收款 2：在直播间收款 3：用产品图册收款 14：转账 15：小程序（仅部分灰度企业可在小程序中接入对外收款账户进行收款）"
+                  },
+                  "mch_id": {
+                    "type": "string",
+                    "description": "收款商户号id"
+                  },
+                  "remark": {
+                    "type": "string",
+                    "description": "备注。退款记录的该字段为退款备注，收款记录的该字段为收款备注"
+                  },
+                  "commodity_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        },
+                        "amount": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "description",
+                        "amount"
+                      ]
+                    },
+                    "description": "商品信息详情列表,商品信息结构参考commodity。退款记录不返回该字段"
+                  },
+                  "total_refund_fee": {
+                    "type": "integer",
+                    "description": "退款总金额"
+                  },
+                  "refund_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "out_refund_no": {
+                          "type": "string",
+                          "description": "退款单号，退款记录返回该字段"
+                        },
+                        "refund_userid": {
+                          "type": "string"
+                        },
+                        "refund_comment": {
+                          "type": "string"
+                        },
+                        "refund_reqtime": {
+                          "type": "integer"
+                        },
+                        "refund_status": {
+                          "type": "integer"
+                        },
+                        "refund_fee": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "out_refund_no",
+                        "refund_userid",
+                        "refund_comment",
+                        "refund_reqtime",
+                        "refund_status",
+                        "refund_fee"
+                      ]
+                    },
+                    "description": "退款单据详情列表，退款单据详情参考refund。退款记录不返回该字段"
+                  },
+                  "contact_info": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "phone",
+                      "address"
+                    ],
+                    "description": "联系人信息，详情参考contact，如创建收款项目时设置为不需要联系地址，则该字段为空，第三方不可获取。退款记录不返回该字段"
+                  },
+                  "miniprogram_info": {
+                    "type": "object",
+                    "properties": {
+                      "appid": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "appid",
+                      "name"
+                    ],
+                    "description": "小程序信息，详情参考miniprogram。收款方式为小程序时返回该字段"
+                  }
+                },
+                "required": [
+                  "transaction_id",
+                  "bill_type",
+                  "trade_state",
+                  "pay_time",
+                  "out_trade_no",
+                  "out_refund_no",
+                  "external_userid",
+                  "total_fee",
+                  "payee_userid",
+                  "payment_type",
+                  "mch_id",
+                  "remark",
+                  "commodity_list",
+                  "total_refund_fee",
+                  "refund_list",
+                  "contact_info",
+                  "miniprogram_info"
+                ]
+              },
+              "description": "交易单详情列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "next_cursor",
+            "bill_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取对外收款记录",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93667",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/externalpay/get_bill_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "begin_time",
+            "required": true,
+            "description": "收款记录开始时间戳，单位为秒",
+            "type": null
+          },
+          {
+            "name": "end_time",
+            "required": true,
+            "description": "收款记录结束时间戳，单位为秒",
+            "type": null
+          },
+          {
+            "name": "payee_userid",
+            "required": false,
+            "description": "企业收款成员userid，不填则为全部成员",
+            "type": null
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "返回的最大记录数，整型，最大值1000",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "分页游标，在下次请求时填写以获取之后分页的记录，如果已经没有更多的数据则不返回该字段",
+            "type": null
+          },
+          {
+            "name": "bill_list",
+            "required": null,
+            "description": "交易单详情列表",
+            "type": null
+          },
+          {
+            "name": "transaction_id",
+            "required": null,
+            "description": "交易单号",
+            "type": null
+          },
+          {
+            "name": "bill_type",
+            "required": null,
+            "description": "交易类型： 0：收款记录 1：退款记录",
+            "type": null
+          },
+          {
+            "name": "trade_state",
+            "required": null,
+            "description": "交易状态（退款记录不返回该字段）： 1：已完成 3：已完成有退款",
+            "type": null
+          },
+          {
+            "name": "pay_time",
+            "required": null,
+            "description": "交易时间",
+            "type": null
+          },
+          {
+            "name": "out_trade_no",
+            "required": null,
+            "description": "商户单号。如果是退款记录，返回对应收款记录的商户单号",
+            "type": null
+          },
+          {
+            "name": "out_refund_no",
+            "required": null,
+            "description": "退款单号，退款记录返回该字段",
+            "type": null
+          },
+          {
+            "name": "external_userid",
+            "required": null,
+            "description": "付款人的userid",
+            "type": null
+          },
+          {
+            "name": "total_fee",
+            "required": null,
+            "description": "收款总金额，单位为分",
+            "type": null
+          },
+          {
+            "name": "payee_userid",
+            "required": null,
+            "description": "企业内账号userid。退款记录的该字段为退款成员userid，收款记录的该字段为收款成员userid",
+            "type": null
+          },
+          {
+            "name": "payment_type",
+            "required": null,
+            "description": "收款方式： 0：在聊天中收款 1：收款码收款 2：在直播间收款 3：用产品图册收款 14：转账 15：小程序（仅部分灰度企业可在小程序中接入对外收款账户进行收款）",
+            "type": null
+          },
+          {
+            "name": "mch_id",
+            "required": null,
+            "description": "收款商户号id",
+            "type": null
+          },
+          {
+            "name": "remark",
+            "required": null,
+            "description": "备注。退款记录的该字段为退款备注，收款记录的该字段为收款备注",
+            "type": null
+          },
+          {
+            "name": "commodity_list",
+            "required": null,
+            "description": "商品信息详情列表,商品信息结构参考commodity。退款记录不返回该字段",
+            "type": null
+          },
+          {
+            "name": "total_refund_fee",
+            "required": null,
+            "description": "退款总金额",
+            "type": null
+          },
+          {
+            "name": "refund_list",
+            "required": null,
+            "description": "退款单据详情列表，退款单据详情参考refund。退款记录不返回该字段",
+            "type": null
+          },
+          {
+            "name": "contact_info",
+            "required": null,
+            "description": "联系人信息，详情参考contact，如创建收款项目时设置为不需要联系地址，则该字段为空，第三方不可获取。退款记录不返回该字段",
+            "type": null
+          },
+          {
+            "name": "miniprogram_info",
+            "required": null,
+            "description": "小程序信息，详情参考miniprogram。收款方式为小程序时返回该字段",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"begin_time\":1605171726,\n   \"end_time\":1605172726,\n   \"payee_userid\":\"zhangshan\",\n   \"cursor\":\"CURSOR\",\n   \"limit\":10\n}",
+        "request_example_json": {
+          "begin_time": 1605171726,
+          "end_time": 1605172726,
+          "payee_userid": "zhangshan",
+          "cursor": "CURSOR",
+          "limit": 10
+        },
+        "response_example_text": "{\n\t\"errcode\":0,\n\t\"errmsg\":\"ok\",\n\t\"next_cursor\":\"CURSOR\",\n\t\"bill_list\":[\n\t\t{\n\t\t\t\"transaction_id\":\"xxxxx\",\n\t\t\t\"bill_type\":1,\n\t\t\t\"trade_state\":1,\n\t\t\t\"pay_time\":12345,\n\t\t\t\"out_trade_no\":\"xxxx\",\n\t\t\t\"out_refund_no\":\"xxxxx\",\n\t\t\t\"external_userid\":\"xxxx\",\n\t\t\t\"total_fee\":100,\n\t\t\t\"payee_userid\":\"zhangshan\",\n\t\t\t\"payment_type\":1,\n\t\t\t\"mch_id\":\"123454\",\n\t\t\t\"remark\":\"xxxx\",\n\t\t\t\"commodity_list\":[\n\t\t\t\t{\n\t\t\t\t\t\"description\":\"手机\",\n\t\t\t\t\t\"amount\":1\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"total_refund_fee\":100,\n\t\t\t\"refund_list\":[\n\t\t\t\t{\n\t\t\t\t\t\"out_refund_no\":\"xx\",\n\t\t\t\t\t\"refund_userid\":\"xxx\",\n\t\t\t\t\t\"refund_comment\":\"xxx\",\n\t\t\t\t\t\"refund_reqtime\":1605171790,\n\t\t\t\t\t\"refund_status\":1,\n\t\t\t\t\t\"refund_fee\":100\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"contact_info\":{\n\t\t\t\t\"name\":\"xxx\",\n\t\t\t\t\"phone\":\"xxx\",\n\t\t\t\t\"address\":\"xxx\"\n\t\t\t},\n\t\t\t\"miniprogram_info\":{\n\t\t\t\t\"appid\":\"xxx\",\n\t\t\t\t\"name\":\"xxx\"\n\t\t\t}\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "next_cursor": "CURSOR",
+          "bill_list": [
+            {
+              "transaction_id": "xxxxx",
+              "bill_type": 1,
+              "trade_state": 1,
+              "pay_time": 12345,
+              "out_trade_no": "xxxx",
+              "out_refund_no": "xxxxx",
+              "external_userid": "xxxx",
+              "total_fee": 100,
+              "payee_userid": "zhangshan",
+              "payment_type": 1,
+              "mch_id": "123454",
+              "remark": "xxxx",
+              "commodity_list": [
+                {
+                  "description": "手机",
+                  "amount": 1
+                }
+              ],
+              "total_refund_fee": 100,
+              "refund_list": [
+                {
+                  "out_refund_no": "xx",
+                  "refund_userid": "xxx",
+                  "refund_comment": "xxx",
+                  "refund_reqtime": 1605171790,
+                  "refund_status": 1,
+                  "refund_fee": 100
+                }
+              ],
+              "contact_info": {
+                "name": "xxx",
+                "phone": "xxx",
+                "address": "xxx"
+              },
+              "miniprogram_info": {
+                "appid": "xxx",
+                "name": "xxx"
+              }
+            }
+          ]
+        },
+        "notes": [
+          "收款记录的起止时间间隔不能超过1个月。\n会过滤收款人不在可见范围中的收款记录，因此返回的记录数可能会小于limit设置的最大记录数。\n如果没有获取到next_cursor，说明已经拉取完所有的数据。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "get_fund_flow",
+      "cli_action": "get-fund-flow",
+      "summary": "获取资金流水",
+      "method": "POST",
+      "endpoint": "/cgi-bin/externalpay/get_fund_flow",
+      "args": [
+        {
+          "name": "begin_time",
+          "flag": "--begin-time",
+          "type": "str",
+          "help": "资金流水记录开始时间",
+          "required": true
+        },
+        {
+          "name": "end_time",
+          "flag": "--end-time",
+          "type": "str",
+          "help": "资金流水记录结束时间",
+          "required": true
+        },
+        {
+          "name": "mch_id",
+          "flag": "--mch-id",
+          "type": "str",
+          "help": "商户号ID，若不填写则拉取所有商户号的资金流水"
+        },
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "返回的最大记录数，默认值100，最大不超过200"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "begin_time": {
+            "from_arg": "begin_time"
+          },
+          "end_time": {
+            "from_arg": "end_time"
+          },
+          "mch_id": {
+            "from_arg": "mch_id"
+          },
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom externalpay get-fund-flow --begin-time <begin_time> --end-time <end_time> [--mch-id <mch_id>] [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "分页游标，在下次请求时填写以获取之后分页的记录，如果已经没有更多的数据则不返回该字段"
+            },
+            "fund_flow_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "integer"
+                  },
+                  "request_no": {
+                    "type": "string"
+                  },
+                  "transaction_type": {
+                    "type": "integer"
+                  },
+                  "fund_flow_type": {
+                    "type": "integer"
+                  },
+                  "transaction_amount": {
+                    "type": "integer"
+                  },
+                  "account_balance": {
+                    "type": "integer"
+                  },
+                  "out_trade_no": {
+                    "type": "string"
+                  },
+                  "mch_id": {
+                    "type": "string"
+                  },
+                  "operator_userid": {
+                    "type": "string"
+                  },
+                  "group_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "group_name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "group_name"
+                      ]
+                    }
+                  },
+                  "remark": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "timestamp",
+                  "request_no",
+                  "transaction_type",
+                  "fund_flow_type",
+                  "transaction_amount",
+                  "account_balance",
+                  "out_trade_no",
+                  "mch_id",
+                  "operator_userid",
+                  "group_list",
+                  "remark"
+                ]
+              },
+              "description": "资金流水记录列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "next_cursor",
+            "fund_flow_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取资金流水",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98100",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/externalpay/get_fund_flow?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "begin_time",
+            "required": true,
+            "description": "资金流水记录开始时间",
+            "type": null
+          },
+          {
+            "name": "end_time",
+            "required": true,
+            "description": "资金流水记录结束时间",
+            "type": null
+          },
+          {
+            "name": "mch_id",
+            "required": false,
+            "description": "商户号ID，若不填写则拉取所有商户号的资金流水",
+            "type": null
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "返回的最大记录数，默认值100，最大不超过200",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "分页游标，在下次请求时填写以获取之后分页的记录，如果已经没有更多的数据则不返回该字段",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list",
+            "required": null,
+            "description": "资金流水记录列表",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_timestamp",
+            "required": null,
+            "description": "动账时间",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_request_no",
+            "required": null,
+            "description": "关联单号，即微信支付资金流水单号",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_transaction_type",
+            "required": null,
+            "description": "动账类型。1：退款，2：交易手续费，3：收款，4：提现，5：其他",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_fund_flow_type",
+            "required": null,
+            "description": "收支类型。1：收入，2：支出",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_transaction_amount",
+            "required": null,
+            "description": "动账金额，整型数据，单位：分",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_account_balance",
+            "required": null,
+            "description": "账户余额，整型数据，单位：分",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_out_trade_no",
+            "required": null,
+            "description": "商户单号，即业务凭证号",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_mch_id",
+            "required": null,
+            "description": "商户号ID",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_operator_userid",
+            "required": null,
+            "description": "操作人userid",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_group_list",
+            "required": null,
+            "description": "所属规则组列表",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_group_list_group_name",
+            "required": null,
+            "description": "规则组名称",
+            "type": null
+          },
+          {
+            "name": "fund_flow_list_remark",
+            "required": null,
+            "description": "备注",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"begin_time\":1605171726,\n   \"end_time\":1605172726,\n   \"mch_id\": \"1234\",\n   \"cursor\":\"CURSOR\",\n   \"limit\":10\n}",
+        "request_example_json": {
+          "begin_time": 1605171726,
+          "end_time": 1605172726,
+          "mch_id": "1234",
+          "cursor": "CURSOR",
+          "limit": 10
+        },
+        "response_example_text": "{\n\t\"errcode\":0,\n\t\"errmsg\":\"ok\",\n\t\"next_cursor\":\"CURSOR\",\n\t\"fund_flow_list\":[\n\t\t{\n\t\t\t\"timestamp\": 1605171726,\n\t\t\t\"request_no\": \"1234567890\",\n\t\t\t\"transaction_type\": 3,\n\t\t\t\"fund_flow_type\": 1,\n\t\t\t\"transaction_amount\": 20,\n\t\t\t\"account_balance\": 40,\n\t\t\t\"out_trade_no\": \"123456\",\n\t\t\t\"mch_id\": \"123456\",\n\t\t\t\"operator_userid\": \"ZhangSan\",\n\t\t\t\"group_list\":[\n\t\t\t\t{\n\t\t\t\t\t\"group_name\": \"Rule1\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"group_name\": \"Rule2\"\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"remark\": \"REMARK\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "next_cursor": "CURSOR",
+          "fund_flow_list": [
+            {
+              "timestamp": 1605171726,
+              "request_no": "1234567890",
+              "transaction_type": 3,
+              "fund_flow_type": 1,
+              "transaction_amount": 20,
+              "account_balance": 40,
+              "out_trade_no": "123456",
+              "mch_id": "123456",
+              "operator_userid": "ZhangSan",
+              "group_list": [
+                {
+                  "group_name": "Rule1"
+                },
+                {
+                  "group_name": "Rule2"
+                }
+              ],
+              "remark": "REMARK"
+            }
+          ]
+        },
+        "notes": [
+          "可以拉取不早于2022年12月1日的资金流水记录，资金流水记录最长保留3年。\n当日的资金流水会在次日上午11点后生成。\n资金流水的起止间隔不能超过31天。\n会过滤操作人不在应用可见范围中的资金流水，因此返回的记录数可能会小于limit设置的最大记录数。\n如果没有获取到next_cursor，说明已经拉取完所有的数据。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "getmerchant",
+      "cli_action": "getmerchant",
+      "summary": "收款商户号管理",
+      "method": "POST",
+      "endpoint": "/cgi-bin/externalpay/getmerchant",
+      "args": [
+        {
+          "name": "mch_id",
+          "flag": "--mch-id",
+          "type": "str",
+          "help": "微信支付商户号,不超过32字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "mch_id": {
+            "from_arg": "mch_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom externalpay getmerchant --mch-id <mch_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "bind_status": {
+              "type": "integer",
+              "description": "商户号绑定状态。 1:申请中 2:已绑定 3:已撤销"
+            },
+            "mch_id": {
+              "type": "string",
+              "description": "微信支付商户号,不超过32字节"
+            },
+            "merchant_name": {
+              "type": "string",
+              "description": "微信支付商户号全称，不超过50字节"
+            },
+            "allow_use_scope": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "partyid": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "tagid": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "required": [
+                "user",
+                "partyid",
+                "tagid"
+              ],
+              "description": "该商户号使用范围，仅当商户号已绑定时才返回"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "bind_status",
+            "mch_id",
+            "merchant_name",
+            "allow_use_scope"
+          ]
+        }
+      },
+      "doc": {
+        "title": "收款商户号管理",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93666",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/externalpay/getmerchant?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "mch_id",
+            "required": true,
+            "description": "微信支付商户号,不超过32字节",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "mch_id",
+            "required": null,
+            "description": "微信支付商户号,不超过32字节",
+            "type": null
+          },
+          {
+            "name": "merchant_name",
+            "required": null,
+            "description": "微信支付商户号全称，不超过50字节",
+            "type": null
+          },
+          {
+            "name": "bind_status",
+            "required": null,
+            "description": "商户号绑定状态。 1:申请中 2:已绑定 3:已撤销",
+            "type": null
+          },
+          {
+            "name": "allow_use_scope",
+            "required": null,
+            "description": "该商户号使用范围，仅当商户号已绑定时才返回",
+            "type": null
+          },
+          {
+            "name": "allow_use_scope_user",
+            "required": null,
+            "description": "使用范围内的企业用户id列表",
+            "type": null
+          },
+          {
+            "name": "allow_use_scope_partyid",
+            "required": null,
+            "description": "使用范围内的部门id列表",
+            "type": null
+          },
+          {
+            "name": "allow_use_scope_tagid",
+            "required": null,
+            "description": "使用范围内的标签id列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"mch_id\":\"12334\"\n}",
+        "request_example_json": {
+          "mch_id": "12334"
+        },
+        "response_example_text": "{\n   \"errcode\":0,\n   \"errmsg\":\"ok\",\n   \"bind_status\":0,\n   \"mch_id\":\"12334\",\n   \"merchant_name\":\"test\",\n   \"allow_use_scope\": {\n       \"user\": [\"zhangsan\",\"lisi\"],\n       \"partyid\": [1],\n\t   \"tagid\": [1,2,3]\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "bind_status": 0,
+          "mch_id": "12334",
+          "merchant_name": "test",
+          "allow_use_scope": {
+            "user": [
+              "zhangsan",
+              "lisi"
+            ],
+            "partyid": [
+              1
+            ],
+            "tagid": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "第三方应用暂不支持商户号管理"
+        ],
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping.",
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

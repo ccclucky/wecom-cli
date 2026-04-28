@@ -1,0 +1,557 @@
+{
+  "domain": "living",
+  "operations": [
+    {
+      "name": "delete_replay_data",
+      "cli_action": "delete-replay-data",
+      "summary": "删除直播回放",
+      "method": "POST",
+      "endpoint": "/cgi-bin/living/delete_replay_data",
+      "args": [
+        {
+          "name": "livingid",
+          "flag": "--livingid",
+          "type": "str",
+          "help": "直播id",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "livingid": {
+            "from_arg": "livingid"
+          }
+        }
+      },
+      "examples": [
+        "wecom living delete-replay-data --livingid <livingid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除直播回放",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93874",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/living/delete_replay_data?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "livingid",
+            "required": true,
+            "description": "直播id",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"livingid\": \"XXXXXXXXX\"\n}",
+        "request_example_json": {
+          "livingid": "XXXXXXXXX"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "get_living_info",
+      "cli_action": "get-living-info",
+      "summary": "获取直播详情",
+      "method": "GET",
+      "endpoint": "/cgi-bin/living/get_living_info",
+      "args": [
+        {
+          "name": "livingid",
+          "flag": "--livingid",
+          "type": "str",
+          "help": "直播ID",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "livingid": {
+            "from_arg": "livingid"
+          }
+        }
+      },
+      "examples": [
+        "wecom living get-living-info --livingid <livingid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "living_info": {
+              "type": "object",
+              "properties": {
+                "theme": {
+                  "type": "string"
+                },
+                "living_start": {
+                  "type": "integer"
+                },
+                "living_duration": {
+                  "type": "integer"
+                },
+                "status ": {
+                  "type": "integer"
+                },
+                "reserve_start": {
+                  "type": "integer"
+                },
+                "reserve_living_duration": {
+                  "type": "integer"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "anchor_userid": {
+                  "type": "string"
+                },
+                "main_department": {
+                  "type": "integer"
+                },
+                "viewer_num": {
+                  "type": "integer"
+                },
+                "comment_num": {
+                  "type": "integer"
+                },
+                "mic_num": {
+                  "type": "integer"
+                },
+                "open_replay": {
+                  "type": "integer"
+                },
+                "replay_status": {
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "integer"
+                },
+                "push_stream_url": {
+                  "type": "string"
+                },
+                "online_count": {
+                  "type": "integer"
+                },
+                "subscribe_count": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "theme",
+                "living_start",
+                "living_duration",
+                "status ",
+                "reserve_start",
+                "reserve_living_duration",
+                "description",
+                "anchor_userid",
+                "main_department",
+                "viewer_num",
+                "comment_num",
+                "mic_num",
+                "open_replay",
+                "replay_status",
+                "type",
+                "push_stream_url",
+                "online_count",
+                "subscribe_count"
+              ],
+              "description": "直播信息"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "living_info"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取直播详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93635",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/living/get_living_info?access_token=ACCESS_TOKEN&livingid=LIVINGID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "livingid",
+            "required": true,
+            "description": "直播ID",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "living_info",
+            "required": null,
+            "description": "直播信息",
+            "type": null
+          },
+          {
+            "name": "living_info_theme",
+            "required": null,
+            "description": "直播主题",
+            "type": null
+          },
+          {
+            "name": "living_info_living_start",
+            "required": null,
+            "description": "直播开始时间戳",
+            "type": null
+          },
+          {
+            "name": "living_info_living_duration",
+            "required": null,
+            "description": "直播时长，单位为秒",
+            "type": null
+          },
+          {
+            "name": "living_info_status",
+            "required": null,
+            "description": "直播的状态，0：预约中，1：直播中，2：已结束，3：已过期，4：已取消",
+            "type": null
+          },
+          {
+            "name": "living_info_reserve_start",
+            "required": null,
+            "description": "直播预约的开始时间戳",
+            "type": null
+          },
+          {
+            "name": "living_info_reserve_living_duration",
+            "required": null,
+            "description": "直播预约时长，单位为秒",
+            "type": null
+          },
+          {
+            "name": "living_info_description",
+            "required": null,
+            "description": "直播的描述，最多支持100个汉字",
+            "type": null
+          },
+          {
+            "name": "living_info_anchor_userid",
+            "required": null,
+            "description": "主播的userid",
+            "type": null
+          },
+          {
+            "name": "living_info_main_department",
+            "required": null,
+            "description": "主播所在主部门id",
+            "type": null
+          },
+          {
+            "name": "living_info_viewer_num",
+            "required": null,
+            "description": "观看直播总人数",
+            "type": null
+          },
+          {
+            "name": "living_info_comment_num",
+            "required": null,
+            "description": "评论数",
+            "type": null
+          },
+          {
+            "name": "living_info_mic_num",
+            "required": null,
+            "description": "连麦发言人数",
+            "type": null
+          },
+          {
+            "name": "living_info_open_replay",
+            "required": null,
+            "description": "是否开启回放，1表示开启，0表示关闭",
+            "type": null
+          },
+          {
+            "name": "living_info_replay_status",
+            "required": null,
+            "description": "open_replay为1时才返回该字段。0表示生成成功，1表示生成中，2表示回放已删除，3表示生成失败",
+            "type": null
+          },
+          {
+            "name": "living_info_type",
+            "required": null,
+            "description": "直播的类型，0：通用直播，1：小班课，2：大班课，3：企业培训，4：活动直播",
+            "type": null
+          },
+          {
+            "name": "living_info_push_stream_url",
+            "required": null,
+            "description": "推流地址，仅直播类型为活动直播并且直播状态是待开播返回该字段",
+            "type": null
+          },
+          {
+            "name": "living_info_online_count",
+            "required": null,
+            "description": "当前在线观看人数",
+            "type": null
+          },
+          {
+            "name": "living_info_subscribe_count",
+            "required": null,
+            "description": "直播预约人数",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"living_info\":{\n\t\t\"theme\": \"直角三角形讲解\",\n\t\t\"living_start\": 1586405229,\n\t\t\"living_duration\": 1800,\n\t\t\"status \": 3,\n\t\t\"reserve_start\": 1586405239,\n\t\t\"reserve_living_duration\": 1600,\n\t\t\"description\": \"小学数学精选课程\",\n\t\t\"anchor_userid\": \"zhangsan\",\n\t\t\"main_department\": 1,\n\t\t\"viewer_num\": 100,\n\t\t\"comment_num\": 110,\n\t\t\"mic_num\": 120,\n\t\t\"open_replay\": 1,\n\t\t\"replay_status\": 2,\n\t\t\"type\": 0,\n\t\t\"push_stream_url\": \"https://www.qq.test.com\",\n\t\t\"online_count\": 1,\n\t\t\"subscribe_count\": 1\n\t}\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "living_info": {
+            "theme": "直角三角形讲解",
+            "living_start": 1586405229,
+            "living_duration": 1800,
+            "status ": 3,
+            "reserve_start": 1586405239,
+            "reserve_living_duration": 1600,
+            "description": "小学数学精选课程",
+            "anchor_userid": "zhangsan",
+            "main_department": 1,
+            "viewer_num": 100,
+            "comment_num": 110,
+            "mic_num": 120,
+            "open_replay": 1,
+            "replay_status": 2,
+            "type": 0,
+            "push_stream_url": "https://www.qq.test.com",
+            "online_count": 1,
+            "subscribe_count": 1
+          }
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "get_user_all_livingid",
+      "cli_action": "get-user-all-livingid",
+      "summary": "获取老师直播ID列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/living/get_user_all_livingid",
+      "args": [
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "企业成员的userid",
+          "required": true
+        },
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "上一次调用时返回的next_cursor，第一次拉取可以不填"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "每次拉取的数据量，默认值和最大值都为100"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "userid": {
+            "from_arg": "userid"
+          },
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom living get-user-all-livingid --userid <userid> [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "当前数据最后一个key值，如果下次调用带上该值则从该key值往后拉，用于实现分页拉取，返回空字符串代表已经是最后一页"
+            },
+            "livingid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "直播ID列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "next_cursor",
+            "livingid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取老师直播ID列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93739",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/living/get_user_all_livingid?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "企业成员的userid",
+            "type": null
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "上一次调用时返回的next_cursor，第一次拉取可以不填",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "每次拉取的数据量，默认值和最大值都为100",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "当前数据最后一个key值，如果下次调用带上该值则从该key值往后拉，用于实现分页拉取，返回空字符串代表已经是最后一页",
+            "type": null
+          },
+          {
+            "name": "livingid_list",
+            "required": null,
+            "description": "直播ID列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"userid\": \"USERID\",\n\t\"cursor\": \"NEXT_KEY\",\n\t\"limit\": 20\n}",
+        "request_example_json": {
+          "userid": "USERID",
+          "cursor": "NEXT_KEY",
+          "limit": 20
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"next_cursor\": \"next_cursor\",\n   \"livingid_list\":[\n\t\t\"livingid1\",\n\t\t\"livingid2\"\n   ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "next_cursor": "next_cursor",
+          "livingid_list": [
+            "livingid1",
+            "livingid2"
+          ]
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    }
+  ]
+}

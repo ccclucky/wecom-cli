@@ -89,7 +89,13 @@
             "description": "二维码链接，有效期7天",
             "type": null
           }
-        ]
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"join_qrcode\": \"https://work.weixin.qq.com/wework_admin/genqrcode?action=join&vcode=3db1fab03118ae2aa1544cb9abe84&r=hb_share_api_mjoin&qr_size=3\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "join_qrcode": "https://work.weixin.qq.com/wework_admin/genqrcode?action=join&vcode=3db1fab03118ae2aa1544cb9abe84&r=hb_share_api_mjoin&qr_size=3"
+        }
       }
     },
     {
@@ -221,13 +227,13 @@
             "type": null
           },
           {
-            "name": "userid_list.open_userid",
+            "name": "userid_list_open_userid",
             "required": null,
             "description": "转换成功的open_userid",
             "type": null
           },
           {
-            "name": "userid_list.userid",
+            "name": "userid_list_userid",
             "required": null,
             "description": "转换成功的open_userid对应的userid",
             "type": null
@@ -264,6 +270,280 @@
         "notes": [
           "需要使用自建应用的access_token\n成员需要同时在access_token和source_agentid所对应应用的可见范围内",
           "需要使用自建应用的access_token\n客户的跟进人，或者用户所在客户群的群主，需要同时在access_token和source_agentid所对应应用的可见范围内"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "getapprovaldata",
+      "cli_action": "getapprovaldata",
+      "summary": "获取审批数据（旧）",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corp/getapprovaldata",
+      "args": [
+        {
+          "name": "starttime",
+          "flag": "--starttime",
+          "type": "str",
+          "help": "获取审批记录的开始时间。Unix时间戳",
+          "required": true
+        },
+        {
+          "name": "endtime",
+          "flag": "--endtime",
+          "type": "str",
+          "help": "获取审批记录的结束时间。Unix时间戳",
+          "required": true
+        },
+        {
+          "name": "next_spnum",
+          "flag": "--next-spnum",
+          "type": "str",
+          "help": "第一个拉取的审批单号，不填从该时间段的第一个审批单拉取"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "starttime": {
+            "from_arg": "starttime"
+          },
+          "endtime": {
+            "from_arg": "endtime"
+          },
+          "next_spnum": {
+            "from_arg": "next_spnum"
+          }
+        }
+      },
+      "examples": [
+        "wecom corp getapprovaldata --starttime <starttime> --endtime <endtime> [--next-spnum <next_spnum>]"
+      ],
+      "doc": {
+        "title": "获取审批数据（旧）",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91530",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corp/getapprovaldata?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。必须使用审批应用的secret获取，获取方式参考：文档-获取access_token",
+            "type": null
+          },
+          {
+            "name": "starttime",
+            "required": true,
+            "description": "获取审批记录的开始时间。Unix时间戳",
+            "type": null
+          },
+          {
+            "name": "endtime",
+            "required": true,
+            "description": "获取审批记录的结束时间。Unix时间戳",
+            "type": null
+          },
+          {
+            "name": "next_spnum",
+            "required": false,
+            "description": "第一个拉取的审批单号，不填从该时间段的第一个审批单拉取",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "count",
+            "required": null,
+            "description": "拉取的审批单个数，最大值为100，当total参数大于100时，可运用next_spnum参数进行多次拉取",
+            "type": null
+          },
+          {
+            "name": "total",
+            "required": null,
+            "description": "时间段内的总审批单个数",
+            "type": null
+          },
+          {
+            "name": "next_spnum",
+            "required": null,
+            "description": "拉取列表的最后一个审批单号",
+            "type": null
+          },
+          {
+            "name": "spname",
+            "required": null,
+            "description": "审批名称(请假，报销，自定义审批名称)",
+            "type": null
+          },
+          {
+            "name": "apply_name",
+            "required": null,
+            "description": "申请人姓名",
+            "type": null
+          },
+          {
+            "name": "apply_org",
+            "required": null,
+            "description": "申请人部门",
+            "type": null
+          },
+          {
+            "name": "approval_name",
+            "required": null,
+            "description": "审批人姓名",
+            "type": null
+          },
+          {
+            "name": "notify_name",
+            "required": null,
+            "description": "抄送人姓名",
+            "type": null
+          },
+          {
+            "name": "sp_status",
+            "required": null,
+            "description": "审批状态：1审批中；2 已通过；3已驳回；4已取消；6通过后撤销；10已支付",
+            "type": null
+          },
+          {
+            "name": "sp_num",
+            "required": null,
+            "description": "审批单号",
+            "type": null
+          },
+          {
+            "name": "apply_time",
+            "required": null,
+            "description": "审批单提交时间",
+            "type": null
+          },
+          {
+            "name": "apply_user_id",
+            "required": null,
+            "description": "审批单提交者的userid",
+            "type": null
+          },
+          {
+            "name": "leave",
+            "required": null,
+            "description": "请假类型(只有请假模板审批记录有此数据项)",
+            "type": null
+          },
+          {
+            "name": "timeunit",
+            "required": null,
+            "description": "请假时间单位：0半天；1小时",
+            "type": null
+          },
+          {
+            "name": "leave_type",
+            "required": null,
+            "description": "请假类型：1年假；2事假；3病假；4调休假；5婚假；6产假；7陪产假；8其他",
+            "type": null
+          },
+          {
+            "name": "start_time",
+            "required": null,
+            "description": "请假开始时间，unix时间",
+            "type": null
+          },
+          {
+            "name": "end_time",
+            "required": null,
+            "description": "请假结束时间，unix时间",
+            "type": null
+          },
+          {
+            "name": "duration",
+            "required": null,
+            "description": "请假时长，单位小时",
+            "type": null
+          },
+          {
+            "name": "reason",
+            "required": null,
+            "description": "请假事由",
+            "type": null
+          },
+          {
+            "name": "expense",
+            "required": null,
+            "description": "报销类型（只有报销模板的审批记录有此数据项）",
+            "type": null
+          },
+          {
+            "name": "expense_type",
+            "required": null,
+            "description": "报销类型：1差旅费；2交通费；3招待费；4其他报销",
+            "type": null
+          },
+          {
+            "name": "reason_1",
+            "required": null,
+            "description": "报销事由",
+            "type": null
+          },
+          {
+            "name": "item",
+            "required": null,
+            "description": "报销明细 (历史单据字段，新申请单据不再提供)",
+            "type": null
+          },
+          {
+            "name": "expenseitem_type",
+            "required": null,
+            "description": "费用类型：1飞机票；2火车票；3的士费；4住宿费；5餐饮费；6礼品费；7活动费；8通讯费；9补助；10其他 (历史单据字段，新申请单据不再提供)",
+            "type": null
+          },
+          {
+            "name": "time",
+            "required": null,
+            "description": "发生时间，unix时间 (历史单据字段，新申请单据不再提供)",
+            "type": null
+          },
+          {
+            "name": "sums",
+            "required": null,
+            "description": "费用金额，单位元 (历史单据字段，新申请单据不再提供)",
+            "type": null
+          },
+          {
+            "name": "reason_2",
+            "required": null,
+            "description": "明细事由 (历史单据字段，新申请单据不再提供)",
+            "type": null
+          },
+          {
+            "name": "comm",
+            "required": null,
+            "description": "审批模板信息",
+            "type": null
+          },
+          {
+            "name": "apply_data",
+            "required": null,
+            "description": "审批申请的单据数据，请参见下方返回数据注解2；",
+            "type": null
+          },
+          {
+            "name": "mediaids",
+            "required": null,
+            "description": "审批的附件media_id，可使用media/get获取附件",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"starttime\":  1492617600,\n   \"endtime\":    1492790400,\n   \"next_spnum\": 201704200003\n}",
+        "request_example_json": {
+          "starttime": 1492617600,
+          "endtime": 1492790400,
+          "next_spnum": 201704200003
+        },
+        "response_example_text": "{\n    \"errcode\":0,\n    \"errmsg\":\"ok\",\n    \"count\":3,\n    \"total\":5,\n    \"next_spnum\":201704240001,\n    \"data\":[\n        {\n            \"spname\":\"报销\",\n            \"apply_name\":\"报销测试\",\n            \"apply_org\":\"报销测试企业\",\n            \"approval_name\":[\n                \"审批人测试\"\n            ],\n            \"notify_name\":[\n                    \"抄送人测试\"\n            ],\n            \"sp_status\":1,\n            \"sp_num\":201704200001,\n            \"mediaids\":[\"WWCISP_G8PYgRaOVHjXWUWFqchpBqqqUpGj0OyR9z6WTwhnMZGCPHxyviVstiv_2fTG8YOJq8L8zJT2T2OvTebANV-2MQ\"],\n            \"apply_time\":1499153693,\n            \"apply_user_id\":\"testuser\",\n            \"expense\":{\n                \"expense_type\":1,\n                \"reason\":\"\",\n                \"item\":[\n                    {\n                        \"expenseitem_type\":6,\n                        \"time\":1492617600,\n                        \"sums\":9900,\n                        \"reason\":\"\"\n                    }\n                ]\n            }，\n            \"comm\":{\n                \"apply_data\":\"{\\\"item-1492610773696\\\":{\\\"title\\\":\\\"abc\\\",\\\"type\\\":\\\"text\\\",\\\"value\\\":\\\"\\\"}}\"\n            }\n        },\n        {\n            \"spname\":\"请假\",\n            \"apply_name\":\"请假测试\",\n            \"apply_org\":\"请假测试企业\",\n            \"approval_name\":[\n                \"审批人测试\"\n            ],\n            \"notify_name\":[\n                    \"抄送人测试\"\n            ],\n            \"sp_status\":1,\n            \"sp_num\":201704200004,\n            \"apply_time\":1499153693,\n            \"apply_user_id\":\"testuser\",\n            \"leave\":{\n                \"timeunit\":0,\n                \"leave_type\":4,\n                \"start_time\":1492099200,\n                \"end_time\":1492790400,\n                \"duration\":144,\n                \"reason\":\"\"\n            }，\n            \"comm\":{\n                \"apply_data\":\"{\\\"item-1492610773696\\\":{\\\"title\\\":\\\"abc\\\",\\\"type\\\":\\\"text\\\",\\\"value\\\":\\\"\\\"}}\"\n            }\n        },\n        {\n            \"spname\":\"自定义审批\",\n            \"apply_name\":\"自定义\",\n            \"apply_org\":\"自定义测试企业\",\n            \"approval_name\":[\n                \"自定义审批人\"\n            ],\n            \"notify_name\":[\n                    \"自定义抄送人\"\n            ],\n            \"sp_status\":1,\n            \"sp_num\":201704240001,\n            \"apply_time\":1499153693,\n            \"apply_user_id\":\"testuser\",\n            \"comm\":{\n                \"apply_data\":\"{\\\"item-1492610773696\\\":{\\\"title\\\":\\\"abc\\\",\\\"type\\\":\\\"text\\\",\\\"value\\\":\\\"\\\"}}\"\n            }\n        }\n    ]\n}",
+        "notes": [
+          "1. 获取审批记录请求参数endtime需要大于startime， 同时起始时间跨度不要超过30天；\n2. 一次请求返回的审批记录上限是100条，超过100条记录请使用next_spnum进行分页拉取。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
         ]
       }
     }

@@ -13,7 +13,8 @@
           "flag": "--department-id",
           "type": "int",
           "default": 1,
-          "help": "部门 ID"
+          "help": "部门 ID",
+          "required": true
         },
         {
           "name": "fetch_child",
@@ -177,6 +178,9 @@
         ],
         "notes": [
           "如需获取该部门及其子部门的所有成员，需先获取该部门下的子部门，然后再获取子部门下的部门成员，逐层递归获取。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
         ]
       }
     }

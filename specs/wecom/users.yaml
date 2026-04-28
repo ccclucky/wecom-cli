@@ -163,7 +163,12 @@
         ],
         "permissions": [
           "仅通讯录同步助手或第三方通讯录应用可调用。\n若是绑定了腾讯企业邮，则会同时删除邮箱账号。"
-        ]
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"deleted\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "deleted"
+        }
       }
     },
     {
@@ -2806,6 +2811,92 @@
           "如果创建时『企业邮箱』为系统默认分配的，则仅允许修改一次，若创建时填入了合规的『企业邮箱』，则无法修改",
           "biz_mail_alias、biz_mail与更新其他字段的操作不具备原子性。可能存在接口返回失败，其他字段更新失败但企业邮箱或企业邮箱别名更新成功或者企业邮箱及企业邮箱别名更新成功但其他字段失败的情况",
           "注意，每个部门下的部门、成员总数不能超过3万个。"
+        ]
+      }
+    },
+    {
+      "name": "getuserinfo",
+      "cli_action": "getuserinfo",
+      "summary": "Harmony应用",
+      "method": "GET",
+      "endpoint": "/cgi-bin/user/getuserinfo",
+      "args": [
+        {
+          "name": "appId",
+          "flag": "--appId",
+          "type": "str",
+          "help": "企业唯一标识。创建企业后显示在，我的企业 CorpID字段",
+          "required": true
+        },
+        {
+          "name": "agentId",
+          "flag": "--agentId",
+          "type": "str",
+          "help": "应用唯一标识。显示在具体应用下的 AgentId字段",
+          "required": true
+        },
+        {
+          "name": "scopes",
+          "flag": "--scopes",
+          "type": "str",
+          "help": "授权域，现在只支持snsapi_base",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "appId": {
+            "from_arg": "appId"
+          },
+          "agentId": {
+            "from_arg": "agentId"
+          },
+          "scopes": {
+            "from_arg": "scopes"
+          }
+        }
+      },
+      "examples": [
+        "wecom users getuserinfo --appId <appId> --agentId <agentId> --scopes <scopes>"
+      ],
+      "doc": {
+        "title": "Harmony应用",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101021",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=ACCESS_TOKEN&code=CODE",
+        "request_params": [
+          {
+            "name": "appId",
+            "required": true,
+            "description": "企业唯一标识。创建企业后显示在，我的企业 CorpID字段",
+            "type": null
+          },
+          {
+            "name": "agentId",
+            "required": true,
+            "description": "应用唯一标识。显示在具体应用下的 AgentId字段",
+            "type": null
+          },
+          {
+            "name": "scopes",
+            "required": true,
+            "description": "授权域，现在只支持snsapi_base",
+            "type": null
+          }
+        ],
+        "request_example_text": "\"dependencies\": {\n    \"@tencent/wecom_open_sdk\" : \"file:lib_wwapi.har\"\n}",
+        "request_example_json": {
+          "@tencent/wecom_open_sdk": "file:lib_wwapi.har"
+        },
+        "permissions": [
+          "出错返回示例："
+        ],
+        "notes": [
+          "接入说明：\n任何需要调用企业微信API的应用，都需要先在企业微信管理后台创建一个应用，设置完成后，即可使用对应的功能。\n不允许跨企业使用，即仅支持企业自己的app使用。",
+          "企业微信分享的设置，复用企业微信授权登录的设置，设置以后登录、分享任何一个都可以使用。",
+          "SDK名称：企业微信登录/分享SDK\n主要功能：通过企业微信登录/分享SDK，企业可在自建的app引入sdk，从而可使用企业微信账号登录app，并且在app中分享消息到企业微信。\n使用说明：详见本接入指南\n开发者：深圳市腾讯计算机系统有限公司\n隐私政策：请接入企业微信登录/分享 SDK的开发者，认真阅读《企业微信登录/分享SDK个人信息保护规则》，并确保对企业微信登录/分享SDK的接入使用情况符合上述规则的相关要求。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
         ]
       }
     }

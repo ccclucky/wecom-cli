@@ -1,0 +1,1545 @@
+{
+  "domain": "miniapppay",
+  "operations": [
+    {
+      "name": "close_order",
+      "cli_action": "close-order",
+      "summary": "关闭订单",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniapppay/close_order",
+      "args": [
+        {
+          "name": "商户号",
+          "flag": "--商户号",
+          "type": "str",
+          "help": "二级商户号，由企业微信生成并下发。",
+          "required": true
+        },
+        {
+          "name": "商户订单号",
+          "flag": "--商户订单号",
+          "type": "str",
+          "help": "商户系统内部订单号，只能是数字、大小 写字母_-*且在同一个商户号下唯一。",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "商户号": {
+            "from_arg": "商户号"
+          },
+          "商户订单号": {
+            "from_arg": "商户订单号"
+          }
+        }
+      },
+      "examples": [
+        "wecom miniapppay close-order --商户号 <商户号> --商户订单号 <商户订单号>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "关闭订单",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97324",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniapppay/close_order?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "商户号",
+            "required": true,
+            "description": "二级商户号，由企业微信生成并下发。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户订单号",
+            "required": true,
+            "description": "商户系统内部订单号，只能是数字、大小 写字母_-*且在同一个商户号下唯一。",
+            "type": "string[6,32]"
+          }
+        ],
+        "request_example_text": "{\n  \"mchid\" : \"xxx\",\n  \"out_trade_no\" : \"xxx\"\n}",
+        "request_example_json": {
+          "mchid": "xxx",
+          "out_trade_no": "xxx"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "create_order",
+      "cli_action": "create-order",
+      "summary": "小程序下单",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniapppay/create_order",
+      "args": [
+        {
+          "name": "应用ID",
+          "flag": "--应用ID",
+          "type": "str",
+          "help": "二级商户申请的公众号或移动应用appid。",
+          "required": true
+        },
+        {
+          "name": "商户号",
+          "flag": "--商户号",
+          "type": "str",
+          "help": "二级商户号，由企业微信生成并下发。",
+          "required": true
+        },
+        {
+          "name": "商户订单号",
+          "flag": "--商户订单号",
+          "type": "str",
+          "help": "商户系统内部订单号，只能是数字、大小写字母、_-|* 且在同一个商户号下唯一。",
+          "required": true
+        },
+        {
+          "name": "商品描述",
+          "flag": "--商品描述",
+          "type": "str",
+          "help": "商品描述",
+          "required": true
+        },
+        {
+          "name": "下单场景key",
+          "flag": "--下单场景key",
+          "type": "str",
+          "help": "用来统计企微成员发出小程序的交易业绩，可从小程序URL获取。统计结果将在对外收款-成员业绩中展示。若不传入该项，则不做统计。"
+        },
+        {
+          "name": "订单总金额",
+          "flag": "--订单总金额",
+          "type": "int",
+          "help": "订单总金额，单位为分。",
+          "required": true
+        },
+        {
+          "name": "货币类型",
+          "flag": "--货币类型",
+          "type": "str",
+          "help": "CNY：人民币，境内商户号仅支持人民币。",
+          "required": true
+        },
+        {
+          "name": "支付者标识",
+          "flag": "--支付者标识",
+          "type": "str",
+          "help": "用户在子商户appid下的唯一标识。",
+          "required": true
+        },
+        {
+          "name": "交易结束时间",
+          "flag": "--交易结束时间",
+          "type": "str",
+          "help": "订单失效时间，遵循rfc3339标准，格式为 yyyy-MM-DDTHH:mm:ss+TIMEZONE"
+        },
+        {
+          "name": "附加数据",
+          "flag": "--附加数据",
+          "type": "str",
+          "help": "附加数据，在查单和支付通知中原样返回"
+        },
+        {
+          "name": "订单优惠标记",
+          "flag": "--订单优惠标记",
+          "type": "str",
+          "help": "订单优惠标记"
+        },
+        {
+          "name": "订单原价",
+          "flag": "--订单原价",
+          "type": "int",
+          "help": "1、商户侧一张小票订单可能被分多次支付，订单原价用于记录整张小票的交易金额。 2、当订单原价与支付金额不相等，则不享受优惠。 3、该字段主要用于防止同一张小票分多次支付，以享受多次优惠的情况，正常支付订单不必上传此参数。"
+        },
+        {
+          "name": "商品小票ID",
+          "flag": "--商品小票ID",
+          "type": "str",
+          "help": "商家小票ID"
+        },
+        {
+          "name": "商户侧商品编码",
+          "flag": "--商户侧商品编码",
+          "type": "str",
+          "help": "由半角的大小写字母、数字、中划线、下划线中的一种或几种组成。",
+          "required": true
+        },
+        {
+          "name": "微信支付商品编码",
+          "flag": "--微信支付商品编码",
+          "type": "str",
+          "help": "微信支付定义的统一商品编号（没有可不传）"
+        },
+        {
+          "name": "商品名称",
+          "flag": "--商品名称",
+          "type": "str",
+          "help": "商品的实际名称"
+        },
+        {
+          "name": "商品数量",
+          "flag": "--商品数量",
+          "type": "int",
+          "help": "用户购买的数量",
+          "required": true
+        },
+        {
+          "name": "商品单价",
+          "flag": "--商品单价",
+          "type": "int",
+          "help": "商品单价，单位为分",
+          "required": true
+        },
+        {
+          "name": "用户终端IP",
+          "flag": "--用户终端IP",
+          "type": "str",
+          "help": "用户的客户端IP，支持IPv4和IPv6两种格式的IP地址。",
+          "required": true
+        },
+        {
+          "name": "商户端设备号",
+          "flag": "--商户端设备号",
+          "type": "str",
+          "help": "商户端设备号（门店号或收银设备ID）。"
+        },
+        {
+          "name": "门店编号",
+          "flag": "--门店编号",
+          "type": "str",
+          "help": "商户侧门店编号",
+          "required": true
+        },
+        {
+          "name": "门店名称",
+          "flag": "--门店名称",
+          "type": "str",
+          "help": "商户侧门店名称"
+        },
+        {
+          "name": "地区编码",
+          "flag": "--地区编码",
+          "type": "str",
+          "help": "地区编码，详细请见省市区编号对照表。"
+        },
+        {
+          "name": "详细地址",
+          "flag": "--详细地址",
+          "type": "str",
+          "help": "详细的商户门店地址"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "应用ID": {
+            "from_arg": "应用ID"
+          },
+          "商户号": {
+            "from_arg": "商户号"
+          },
+          "商户订单号": {
+            "from_arg": "商户订单号"
+          },
+          "商品描述": {
+            "from_arg": "商品描述"
+          },
+          "下单场景key": {
+            "from_arg": "下单场景key"
+          },
+          "订单总金额": {
+            "from_arg": "订单总金额"
+          },
+          "货币类型": {
+            "from_arg": "货币类型"
+          },
+          "支付者标识": {
+            "from_arg": "支付者标识"
+          },
+          "交易结束时间": {
+            "from_arg": "交易结束时间"
+          },
+          "附加数据": {
+            "from_arg": "附加数据"
+          },
+          "订单优惠标记": {
+            "from_arg": "订单优惠标记"
+          },
+          "订单原价": {
+            "from_arg": "订单原价"
+          },
+          "商品小票ID": {
+            "from_arg": "商品小票ID"
+          },
+          "商户侧商品编码": {
+            "from_arg": "商户侧商品编码"
+          },
+          "微信支付商品编码": {
+            "from_arg": "微信支付商品编码"
+          },
+          "商品名称": {
+            "from_arg": "商品名称"
+          },
+          "商品数量": {
+            "from_arg": "商品数量"
+          },
+          "商品单价": {
+            "from_arg": "商品单价"
+          },
+          "用户终端IP": {
+            "from_arg": "用户终端IP"
+          },
+          "商户端设备号": {
+            "from_arg": "商户端设备号"
+          },
+          "门店编号": {
+            "from_arg": "门店编号"
+          },
+          "门店名称": {
+            "from_arg": "门店名称"
+          },
+          "地区编码": {
+            "from_arg": "地区编码"
+          },
+          "详细地址": {
+            "from_arg": "详细地址"
+          }
+        }
+      },
+      "examples": [
+        "wecom miniapppay create-order --应用ID <应用ID> --商户号 <商户号> --商户订单号 <商户订单号> --商品描述 <商品描述> [--下单场景key <下单场景key>] --订单总金额 <订单总金额> --货币类型 <货币类型> --支付者标识 <支付者标识> [--交易结束时间 <交易结束时间>] [--附加数据 <附加数据>] [--订单优惠标记 <订单优惠标记>] [--订单原价 <订单原价>] [--商品小票ID <商品小票ID>] --商户侧商品编码 <商户侧商品编码> [--微信支付商品编码 <微信支付商品编码>] [--商品名称 <商品名称>] --商品数量 <商品数量> --商品单价 <商品单价> --用户终端IP <用户终端IP> [--商户端设备号 <商户端设备号>] --门店编号 <门店编号> [--门店名称 <门店名称>] [--地区编码 <地区编码>] [--详细地址 <详细地址>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "prepay_id": {
+              "type": "string"
+            },
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "prepay_id",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "小程序下单",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97322",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniapppay/create_order?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "应用ID",
+            "required": true,
+            "description": "二级商户申请的公众号或移动应用appid。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户号",
+            "required": true,
+            "description": "二级商户号，由企业微信生成并下发。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户订单号",
+            "required": true,
+            "description": "商户系统内部订单号，只能是数字、大小写字母、_-|* 且在同一个商户号下唯一。",
+            "type": "string[6,32]"
+          },
+          {
+            "name": "商品描述",
+            "required": true,
+            "description": "商品描述",
+            "type": "string[1,127]"
+          },
+          {
+            "name": "下单场景key",
+            "required": false,
+            "description": "用来统计企微成员发出小程序的交易业绩，可从小程序URL获取。统计结果将在对外收款-成员业绩中展示。若不传入该项，则不做统计。",
+            "type": "string[1,256]"
+          },
+          {
+            "name": "订单总金额",
+            "required": true,
+            "description": "订单总金额，单位为分。",
+            "type": "int"
+          },
+          {
+            "name": "货币类型",
+            "required": true,
+            "description": "CNY：人民币，境内商户号仅支持人民币。",
+            "type": "string[1,16]"
+          },
+          {
+            "name": "支付者标识",
+            "required": true,
+            "description": "用户在子商户appid下的唯一标识。",
+            "type": "string[1,128]"
+          },
+          {
+            "name": "交易结束时间",
+            "required": false,
+            "description": "订单失效时间，遵循rfc3339标准，格式为 yyyy-MM-DDTHH:mm:ss+TIMEZONE",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "附加数据",
+            "required": false,
+            "description": "附加数据，在查单和支付通知中原样返回",
+            "type": "string[1,128]"
+          },
+          {
+            "name": "订单优惠标记",
+            "required": false,
+            "description": "订单优惠标记",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "订单原价",
+            "required": false,
+            "description": "1、商户侧一张小票订单可能被分多次支付，订单原价用于记录整张小票的交易金额。 2、当订单原价与支付金额不相等，则不享受优惠。 3、该字段主要用于防止同一张小票分多次支付，以享受多次优惠的情况，正常支付订单不必上传此参数。",
+            "type": "int"
+          },
+          {
+            "name": "商品小票ID",
+            "required": false,
+            "description": "商家小票ID",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户侧商品编码",
+            "required": true,
+            "description": "由半角的大小写字母、数字、中划线、下划线中的一种或几种组成。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "微信支付商品编码",
+            "required": false,
+            "description": "微信支付定义的统一商品编号（没有可不传）",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商品名称",
+            "required": false,
+            "description": "商品的实际名称",
+            "type": "string[1,256]"
+          },
+          {
+            "name": "商品数量",
+            "required": true,
+            "description": "用户购买的数量",
+            "type": "int"
+          },
+          {
+            "name": "商品单价",
+            "required": true,
+            "description": "商品单价，单位为分",
+            "type": "int"
+          },
+          {
+            "name": "用户终端IP",
+            "required": true,
+            "description": "用户的客户端IP，支持IPv4和IPv6两种格式的IP地址。",
+            "type": "string[1,45]"
+          },
+          {
+            "name": "商户端设备号",
+            "required": false,
+            "description": "商户端设备号（门店号或收银设备ID）。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "门店编号",
+            "required": true,
+            "description": "商户侧门店编号",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "门店名称",
+            "required": false,
+            "description": "商户侧门店名称",
+            "type": "string[1,256]"
+          },
+          {
+            "name": "地区编码",
+            "required": false,
+            "description": "地区编码，详细请见省市区编号对照表。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "详细地址",
+            "required": false,
+            "description": "详细的商户门店地址",
+            "type": "string[1,512]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "预支付交易会话标识",
+            "required": null,
+            "description": "预支付交易会话标识。用于后续接口调用中使用，该值有效期为2小时",
+            "type": "string[1,64]"
+          }
+        ],
+        "request_example_text": "{\n\t\"appid\": \"xx\",\n\t\"mchid\": \"xx\",\n\t\"out_trade_no\": \"xxxx\",\n\t\"description\": \"xxxxx\",\n\t\"scenekey\": \"xxxx\",\n\t\"amount\": {\n\t\t\"total\": 100,\n\t\t\"currency\": \"CNY\"\n\t},\n\t\"payer\": {\n\t\t\"openid\": \"xxx\"\n\t},\n\t\"time_expire\": \"2015-05-20T13:29:35+08:00\",\n\t\"attach\": \"xxxxx\",\n\t\"goods_tag\": \"xxxxxxx\",\n\t\"scene_info\": {\n\t\t\"payer_client_ip\": \"127.0.0.1\",\n\t\t\"device_id\": \"xxxxxxx\",\n\t\t\"store_info\": {\n\t\t\t\"id\": \"xxxx\",\n\t\t\t\"name\": \"xxxx\",\n\t\t\t\"area_code\": \"xxxx\",\n\t\t\t\"address\": \"xxxxx\"\n\t\t}\n\t},\n\t\"detail\": {\n\t\t\"cost_price\": 123,\n\t\t\"invoice_id\": \"asdfasdfasdf\",\n\t\t\"goods_detail\": [{\n\t\t\t\"merchant_goods_id\": \"xxxx\",\n\t\t\t\"wechatpay_goods_id\": \"xxxx\",\n\t\t\t\"goods_name\": \"iPhoneX 256G\",\n\t\t\t\"quantity\": 1,\n\t\t\t\"unit_price\": 828800\n\t\t}]\n\t}\n}",
+        "request_example_json": {
+          "appid": "xx",
+          "mchid": "xx",
+          "out_trade_no": "xxxx",
+          "description": "xxxxx",
+          "scenekey": "xxxx",
+          "amount": {
+            "total": 100,
+            "currency": "CNY"
+          },
+          "payer": {
+            "openid": "xxx"
+          },
+          "time_expire": "2015-05-20T13:29:35+08:00",
+          "attach": "xxxxx",
+          "goods_tag": "xxxxxxx",
+          "scene_info": {
+            "payer_client_ip": "127.0.0.1",
+            "device_id": "xxxxxxx",
+            "store_info": {
+              "id": "xxxx",
+              "name": "xxxx",
+              "area_code": "xxxx",
+              "address": "xxxxx"
+            }
+          },
+          "detail": {
+            "cost_price": 123,
+            "invoice_id": "asdfasdfasdf",
+            "goods_detail": [
+              {
+                "merchant_goods_id": "xxxx",
+                "wechatpay_goods_id": "xxxx",
+                "goods_name": "iPhoneX 256G",
+                "quantity": 1,
+                "unit_price": 828800
+              }
+            ]
+          }
+        },
+        "response_example_text": "{\n\t\"prepay_id\": \"xxxxxx\",\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "prepay_id": "xxxxxx",
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "get_applyment_status",
+      "cli_action": "get-applyment-status",
+      "summary": "查询申请单状态",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniapppay/get_applyment_status",
+      "args": [
+        {
+          "name": "out_request_no",
+          "flag": "--out-request-no",
+          "type": "str",
+          "help": "业务申请编号，长度限制为1~32个字符，在提交创建对外收款账户的申请单中提交",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "out_request_no": {
+            "from_arg": "out_request_no"
+          }
+        }
+      },
+      "examples": [
+        "wecom miniapppay get-applyment-status --out-request-no <out_request_no>"
+      ],
+      "doc": {
+        "title": "查询申请单状态",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98974",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniapppay/get_applyment_status?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "out_request_no",
+            "required": true,
+            "description": "业务申请编号，长度限制为1~32个字符，在提交创建对外收款账户的申请单中提交",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"out_request_no\":\"xxxxx\"\n}",
+        "request_example_json": {
+          "out_request_no": "xxxxx"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情",
+          "请求包体："
+        ],
+        "notes": [
+          "通过这个接口查询已提交的申请单状态，只能使用该应用本身提交的申请单号\n使用提交创建对外收款账户的申请单接口中填写的out_request_no来查询"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "get_order",
+      "cli_action": "get-order",
+      "summary": "查询订单",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniapppay/get_order",
+      "args": [
+        {
+          "name": "商户号",
+          "flag": "--商户号",
+          "type": "str",
+          "help": "二级商户号，由企业微信生成并下发。",
+          "required": true
+        },
+        {
+          "name": "商户订单号",
+          "flag": "--商户订单号",
+          "type": "str",
+          "help": "商户系统内部订单号，只能是数字、大小 写字母_-*且在同一个商户号下唯一。",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "商户号": {
+            "from_arg": "商户号"
+          },
+          "商户订单号": {
+            "from_arg": "商户订单号"
+          }
+        }
+      },
+      "examples": [
+        "wecom miniapppay get-order --商户号 <商户号> --商户订单号 <商户订单号>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "mchid": {
+              "type": "string"
+            },
+            "out_trade_no": {
+              "type": "string"
+            },
+            "trade_state": {
+              "type": "string"
+            },
+            "trade_state_desc": {
+              "type": "string"
+            },
+            "payer": {
+              "type": "object",
+              "properties": {
+                "openid": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "openid"
+              ]
+            },
+            "transaction_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "mchid",
+            "out_trade_no",
+            "trade_state",
+            "trade_state_desc",
+            "payer",
+            "transaction_id"
+          ]
+        }
+      },
+      "doc": {
+        "title": "查询订单",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97323",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniapppay/get_order?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "商户号",
+            "required": true,
+            "description": "二级商户号，由企业微信生成并下发。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户订单号",
+            "required": true,
+            "description": "商户系统内部订单号，只能是数字、大小 写字母_-*且在同一个商户号下唯一。",
+            "type": "string[6,32]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "商户号",
+            "required": true,
+            "description": "二级商户号，由企业微信生成并下发。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户订单号",
+            "required": true,
+            "description": "商户系统内部订单号，只能是数字、大小 写字母_-*且在同一个商户号下唯一。",
+            "type": "string[6,32]"
+          },
+          {
+            "name": "交易类型",
+            "required": false,
+            "description": "交易类型，枚举值： JSAPI：公众号支付 NATIVE：扫码支付 APP：APP支付 MICROPAY：付款码支付 MWEB：H5支付 FACEPAY：刷脸支付 示例值：MICROPAY",
+            "type": "string[1,16]"
+          },
+          {
+            "name": "交易状态",
+            "required": true,
+            "description": "交易状态，枚举值： SUCCESS：支付成功 REFUND：转入退款 NOTPAY：未支付 CLOSED：已关闭 REVOKED：已撤销（付款码支付 USERPAYING：用户支付中（付款码支付） PAYERROR：支付失败(其他原因，如银行返回失败) ACCEPT：已接收，等待扣款 示例值：SUCCESS",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "交易状态描述",
+            "required": true,
+            "description": "示例值：支付失败，请重新下单支付",
+            "type": "string[1,256]"
+          },
+          {
+            "name": "支付者标识",
+            "required": true,
+            "description": "用户在子商户appid下的唯一标识。",
+            "type": "string[1,128]"
+          },
+          {
+            "name": "微信支付订单号",
+            "required": true,
+            "description": "微信支付系统生成的订单号",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "付款银行",
+            "required": false,
+            "description": "银行类型，采用字符串类型的银行标识。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "附加数据",
+            "required": false,
+            "description": "附加数据，在查询API和支付通知中原样返回，可作为自定义参数使用，实际情况下只有支付完成状态才会返回该字段。",
+            "type": "string[1,128]"
+          },
+          {
+            "name": "支付完成时间",
+            "required": false,
+            "description": "支付完成时间，遵循rfc3339标准格式，格式为yyyy-MM-DDTHH:mm:ss+TIMEZONE",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "订单总金额",
+            "required": false,
+            "description": "订单总金额，单位为分",
+            "type": "int"
+          },
+          {
+            "name": "用户支付金额",
+            "required": false,
+            "description": "用户支付金额，单位为分",
+            "type": "int"
+          },
+          {
+            "name": "货币类型",
+            "required": false,
+            "description": "境内商户号仅支持人民币 CNY",
+            "type": "string[1,16]"
+          },
+          {
+            "name": "用户支付币种",
+            "required": false,
+            "description": "用户支付币种",
+            "type": "string[1,16]"
+          },
+          {
+            "name": "商户端设备号",
+            "required": false,
+            "description": "商户端设备号（发起扣款请求的商户服务器设备号）。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商品小票ID",
+            "required": false,
+            "description": "商家小票ID",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "优惠名称",
+            "required": false,
+            "description": "优惠名称",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "优惠范围",
+            "required": false,
+            "description": "GLOBAL：全场代金券 SINGLE：单品优惠",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "优惠类型",
+            "required": false,
+            "description": "CASH：充值型代金券 NOCASH：免充值型代金券 示例值：CASH",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "优惠券面额",
+            "required": true,
+            "description": "优惠券面额",
+            "type": "int"
+          },
+          {
+            "name": "活动ID",
+            "required": false,
+            "description": "活动ID",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "微信出资",
+            "required": false,
+            "description": "微信出资，单位为分",
+            "type": "int"
+          },
+          {
+            "name": "商户出资",
+            "required": false,
+            "description": "商户出资，单位为分",
+            "type": "int"
+          },
+          {
+            "name": "其他出资",
+            "required": false,
+            "description": "其他出资，单位为分",
+            "type": "int"
+          },
+          {
+            "name": "优惠币种",
+            "required": false,
+            "description": "CNY：人民币，境内商户号仅支持人民币。",
+            "type": "string[1,16]"
+          },
+          {
+            "name": "商品编码",
+            "required": true,
+            "description": "商品编码",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商品数量",
+            "required": true,
+            "description": "用户购买的数量",
+            "type": "int"
+          },
+          {
+            "name": "商品单价",
+            "required": true,
+            "description": "商品单价，单位为分",
+            "type": "int"
+          },
+          {
+            "name": "商品优惠金额",
+            "required": true,
+            "description": "商品优惠金额",
+            "type": "int"
+          },
+          {
+            "name": "商品备注",
+            "required": false,
+            "description": "商品备注信息",
+            "type": "string[1,128]"
+          }
+        ],
+        "request_example_text": "{\n  \"mchid\" : \"xxx\",\n  \"out_trade_no\" : \"xxx\"\n}",
+        "request_example_json": {
+          "mchid": "xxx",
+          "out_trade_no": "xxx"
+        },
+        "response_example_text": "{\n    \"mchid\": \"xxx\",\n    \"out_trade_no\": \"xxxx\",\n    \"trade_state\": \"xxx\",\n    \"trade_state_desc\": \"xxx\",\n    \"payer\": {\n        \"openid\": \"xxxxxx\"\n    },\n    \"transaction_id\": \"xxxxxxxx\"\n}",
+        "response_example_json": {
+          "mchid": "xxx",
+          "out_trade_no": "xxxx",
+          "trade_state": "xxx",
+          "trade_state_desc": "xxx",
+          "payer": {
+            "openid": "xxxxxx"
+          },
+          "transaction_id": "xxxxxxxx"
+        }
+      }
+    },
+    {
+      "name": "get_refund_detail",
+      "cli_action": "get-refund-detail",
+      "summary": "查询退款",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniapppay/get_refund_detail",
+      "args": [
+        {
+          "name": "商户号",
+          "flag": "--商户号",
+          "type": "str",
+          "help": "企业微信分配的商户号。 示例值：1900000109",
+          "required": true
+        },
+        {
+          "name": "商户退款单号",
+          "flag": "--商户退款单号",
+          "type": "str",
+          "help": "商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@，同一退款单号多次请求只退一笔。 示例值：1217752501201407033233368018",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "商户号": {
+            "from_arg": "商户号"
+          },
+          "商户退款单号": {
+            "from_arg": "商户退款单号"
+          }
+        }
+      },
+      "examples": [
+        "wecom miniapppay get-refund-detail --商户号 <商户号> --商户退款单号 <商户退款单号>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "out_refund_no": {
+              "type": "string"
+            },
+            "out_trade_no": {
+              "type": "string"
+            },
+            "channel": {
+              "type": "string"
+            },
+            "user_received_account": {
+              "type": "string"
+            },
+            "success_time": {
+              "type": "string"
+            },
+            "create_time": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "object",
+              "properties": {
+                "refund": {
+                  "type": "integer"
+                },
+                "payer_refund": {
+                  "type": "integer"
+                },
+                "discount_refund": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "refund",
+                "payer_refund",
+                "discount_refund",
+                "currency"
+              ]
+            },
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "out_refund_no",
+            "out_trade_no",
+            "channel",
+            "user_received_account",
+            "success_time",
+            "create_time",
+            "status",
+            "amount",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "查询退款",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97352",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniapppay/get_refund_detail?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "商户号",
+            "required": true,
+            "description": "企业微信分配的商户号。 示例值：1900000109",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户退款单号",
+            "required": true,
+            "description": "商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@，同一退款单号多次请求只退一笔。 示例值：1217752501201407033233368018",
+            "type": "string[1,64]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "微信退款单号",
+            "required": true,
+            "description": "微信支付退款订单号。 示例值：1217752501201407033233368018",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户退款单号",
+            "required": true,
+            "description": "商户系统内部的退款单号，商户系统内部唯一，同一退款单号多次请求只退一笔。 示例值：1217752501201407033233368018",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "微信订单号",
+            "required": true,
+            "description": "微信支付交易订单号。 示例值： 1217752501201407033233368018",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户订单号",
+            "required": true,
+            "description": "返回的原交易订单号。 示例值： 1217752501201407033233368018",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "退款渠道",
+            "required": false,
+            "description": "ORIGINAL：原路退款 BALANCE：退回到余额 OTHER_BALANCE：原账户异常退到其他余额账户 OTHER_BANKCARD：原银行卡异常退到其他银行卡 示例值： ORIGINAL",
+            "type": "string[1,16]"
+          },
+          {
+            "name": "退款入账账户",
+            "required": false,
+            "description": "取当前退款单的退款入账方。 退回银行卡：{银行名称}{卡类型}{卡尾号} 退回支付用户零钱：支付用户零钱 退还商户：商户基本账户、商户结算银行账户 退回支付用户零钱通：支付用户零钱通 示例值： 招商银行信用卡0403",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "退款成功时间",
+            "required": false,
+            "description": "退款成功时间，退款状态status为SUCCESS（退款成功）时，返回该字段。遵循rfc3339标准格式，格式为yyyy-MM-DDTHH:mm:ss+TIMEZONE，yyyy-MM-DD表示年月日，T出现在字符串中，表示time元素的开头，HH:mm:ss表示时分秒，TIMEZONE表示时区（+08:00表示东八区时间，领先UTC 8小时，即北京时间）。例如：2015-05-20T13:29:35+08:00表示，北京时间2015年5月20日13点29分35秒。 示例值： 2018-06-08T10:34:56+08:00",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "退款创建时间",
+            "required": false,
+            "description": "1、退款受理时间，遵循rfc3339标准格式，格式为yyyy-MM-DDTHH:mm:ss+TIMEZONE，yyyy-MM-DD表示年月日，T出现在字符串中，表示time元素的开头，HH:mm:ss表示时分秒，TIMEZONE表示时区（+08:00表示东八区时间，领先UTC 8小时，即北京时间）。例如：2015-05-20T13:29:35+08:00表示，北京时间2015年5月20日13点29分35秒。 2、当退款状态为退款成功时返回此字段。 示例值：2018-06-08T10:34:56+08:00",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "退款状态",
+            "required": true,
+            "description": "退款状态，枚举值： SUCCESS：退款成功 CLOSE：退款关闭 PROCESSING：退款处理中 ABNORMAL：退款异常，退款到银行发现用户的卡作废或者冻结了，导致原路退款银行卡失败 示例值：SUCCESS",
+            "type": "string[1,16]"
+          },
+          {
+            "name": "退款金额信息",
+            "required": true,
+            "description": "订单退款金额信息，详见Amount。",
+            "type": "object"
+          },
+          {
+            "name": "营销详情",
+            "required": false,
+            "description": "优惠退款信息，discount_refund>0时，返回该字段，详见 PromotionDetail",
+            "type": "array"
+          }
+        ],
+        "request_example_text": "{\n  \"mchid\" : \"xxx\",\n  \"out_refund_no\" : \"xxx\"\n}",
+        "request_example_json": {
+          "mchid": "xxx",
+          "out_refund_no": "xxx"
+        },
+        "response_example_text": "{\n\t\"out_refund_no\": \"1217752501201407033233368018\",\n\t\"out_trade_no\": \"1217752501201407033233368018\",\n\t\"channel\": \"ORIGINAL\",\n\t\"user_received_account\": \"招商银行信用卡0403\",\n\t\"success_time\": \"2018-06-08T10:34:56+08:00\",\n\t\"create_time\": \"2018-06-08T10:34:56+08:00\",\n\t\"status\": \"SUCCESS\",\n\t\"amount\": {\n\t\t\"refund\": 888,\n\t\t\"payer_refund\": 888,\n\t\t\"discount_refund\": 888,\n\t\t\"currency\": \"CNY\"\n\t},\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "out_refund_no": "1217752501201407033233368018",
+          "out_trade_no": "1217752501201407033233368018",
+          "channel": "ORIGINAL",
+          "user_received_account": "招商银行信用卡0403",
+          "success_time": "2018-06-08T10:34:56+08:00",
+          "create_time": "2018-06-08T10:34:56+08:00",
+          "status": "SUCCESS",
+          "amount": {
+            "refund": 888,
+            "payer_refund": 888,
+            "discount_refund": 888,
+            "currency": "CNY"
+          },
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "get_sign",
+      "cli_action": "get-sign",
+      "summary": "获取支付签名",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniapppay/get_sign",
+      "args": [
+        {
+          "name": "应用ID",
+          "flag": "--应用ID",
+          "type": "str",
+          "help": "二级商户申请的公众号或移动应用appid。",
+          "required": true
+        },
+        {
+          "name": "预支付交易会话标识",
+          "flag": "--预支付交易会话标识",
+          "type": "str",
+          "help": "小程序下单接口返回的prepay_id参数值.仅支持下单两小时内的prepay_id",
+          "required": true
+        },
+        {
+          "name": "签名方式",
+          "flag": "--签名方式",
+          "type": "str",
+          "help": "签名类型，默认为RSA，仅支持RSA。"
+        },
+        {
+          "name": "随机字符串",
+          "flag": "--随机字符串",
+          "type": "str",
+          "help": "随机字符串，不长于32位，内容仅支持数字、大小写字母。",
+          "required": true
+        },
+        {
+          "name": "时间戳",
+          "flag": "--时间戳",
+          "type": "int",
+          "help": "当前的秒级时间戳",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "应用ID": {
+            "from_arg": "应用ID"
+          },
+          "预支付交易会话标识": {
+            "from_arg": "预支付交易会话标识"
+          },
+          "签名方式": {
+            "from_arg": "签名方式"
+          },
+          "随机字符串": {
+            "from_arg": "随机字符串"
+          },
+          "时间戳": {
+            "from_arg": "时间戳"
+          }
+        }
+      },
+      "examples": [
+        "wecom miniapppay get-sign --应用ID <应用ID> --预支付交易会话标识 <预支付交易会话标识> [--签名方式 <签名方式>] --随机字符串 <随机字符串> --时间戳 <时间戳>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "pay_sign": {
+              "type": "string"
+            },
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "pay_sign",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取支付签名",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98130",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniapppay/get_sign?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "应用ID",
+            "required": true,
+            "description": "二级商户申请的公众号或移动应用appid。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "预支付交易会话标识",
+            "required": true,
+            "description": "小程序下单接口返回的prepay_id参数值.仅支持下单两小时内的prepay_id",
+            "type": "string[1,128]"
+          },
+          {
+            "name": "签名方式",
+            "required": false,
+            "description": "签名类型，默认为RSA，仅支持RSA。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "随机字符串",
+            "required": true,
+            "description": "随机字符串，不长于32位，内容仅支持数字、大小写字母。",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "时间戳",
+            "required": true,
+            "description": "当前的秒级时间戳",
+            "type": "int"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "签名值",
+            "required": null,
+            "description": "签名，使用字段appid、timestamp、nonce、prepay_id计算得出的签名值",
+            "type": "string[1,512]"
+          }
+        ],
+        "request_example_text": "{\n\t\"appid\": \"wx1cce664e7cdcf31a\",\n\t\"prepay_id\": \"wx111925097328382762a266f5cefb640000\",\n\t\"sign_type\": \"RSA\",\n\t\"nonce\": \"fqDdjLywAmNDZleCWfPsfhlInxnwnOLK\",\n\t\"timestamp\": 1675219608\n}",
+        "request_example_json": {
+          "appid": "wx1cce664e7cdcf31a",
+          "prepay_id": "wx111925097328382762a266f5cefb640000",
+          "sign_type": "RSA",
+          "nonce": "fqDdjLywAmNDZleCWfPsfhlInxnwnOLK",
+          "timestamp": 1675219608
+        },
+        "response_example_text": "{\n\t\"pay_sign\": \"mHIpSqqf1EnBHAOZ5EE3CJRmgHeRcEsfHg0zhOWs+recA6LrHiHZwWT1M6/+ZvzztOkwjnnx8We4n/xX0mNWM5A6eUQYXE9CEgQKVKPIHVXmsheJqPUIiOXXoRaFY7byLzjkQXcGrNG9iDXdhzwCFeQSNXs072uN+2QRoA+mk0pBiY/uPdFXPBPx8nd5FJshrsnzEGmS+nLbyOfJjTH7SkJPCHuxaDPsf24LD5HRT8bjxMzt/92PZY07NQIQhgcCSqpm758xvEnw43iMNsR2ieUNjwkWyQo+SHvDxr2jn/zmT6JmWhtF+ull+jdptfoRPm/oZsPoqGZfHpc2VSrzMA==\",\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "pay_sign": "mHIpSqqf1EnBHAOZ5EE3CJRmgHeRcEsfHg0zhOWs+recA6LrHiHZwWT1M6/+ZvzztOkwjnnx8We4n/xX0mNWM5A6eUQYXE9CEgQKVKPIHVXmsheJqPUIiOXXoRaFY7byLzjkQXcGrNG9iDXdhzwCFeQSNXs072uN+2QRoA+mk0pBiY/uPdFXPBPx8nd5FJshrsnzEGmS+nLbyOfJjTH7SkJPCHuxaDPsf24LD5HRT8bjxMzt/92PZY07NQIQhgcCSqpm758xvEnw43iMNsR2ieUNjwkWyQo+SHvDxr2jn/zmT6JmWhtF+ull+jdptfoRPm/oZsPoqGZfHpc2VSrzMA==",
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "refund",
+      "cli_action": "refund",
+      "summary": "申请退款",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniapppay/refund",
+      "args": [
+        {
+          "name": "商户号",
+          "flag": "--商户号",
+          "type": "str",
+          "help": "企业微信分配商户号。 示例值： 1900000109",
+          "required": true
+        },
+        {
+          "name": "商户APPID",
+          "flag": "--商户APPID",
+          "type": "str",
+          "help": "小程序appid。 示例值：wx8888888888888888",
+          "required": true
+        },
+        {
+          "name": "商户订单号",
+          "flag": "--商户订单号",
+          "type": "str",
+          "help": "原支付交易对应的商户订单号。 示例值：1217752501201407033233368018",
+          "required": true
+        },
+        {
+          "name": "商户退款单号",
+          "flag": "--商户退款单号",
+          "type": "str",
+          "help": "商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@，同一退款单号多次请求只退一笔。 示例值：1217752501201407033233368018",
+          "required": true
+        },
+        {
+          "name": "退款原因",
+          "flag": "--退款原因",
+          "type": "str",
+          "help": "若商户传入，会在下发给用户的退款消息中体现退款原因。 注意：若订单退款金额≤1元，且属于部分退款，则不会在退款消息中体现退款原因 示例值：商品已售完"
+        },
+        {
+          "name": "订单金额",
+          "flag": "--订单金额",
+          "type": "str",
+          "help": "订单金额信息，详见Amount。",
+          "required": true
+        },
+        {
+          "name": "资金账户",
+          "flag": "--资金账户",
+          "type": "str",
+          "help": "若订单处于待分账状态，填写该字段后，退款时直接从二级商户余额中退款。 AVAILABLE：可用余额"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "商户号": {
+            "from_arg": "商户号"
+          },
+          "商户APPID": {
+            "from_arg": "商户APPID"
+          },
+          "商户订单号": {
+            "from_arg": "商户订单号"
+          },
+          "商户退款单号": {
+            "from_arg": "商户退款单号"
+          },
+          "退款原因": {
+            "from_arg": "退款原因"
+          },
+          "订单金额": {
+            "from_arg": "订单金额"
+          },
+          "资金账户": {
+            "from_arg": "资金账户"
+          }
+        }
+      },
+      "examples": [
+        "wecom miniapppay refund --商户号 <商户号> --商户APPID <商户APPID> --商户订单号 <商户订单号> --商户退款单号 <商户退款单号> [--退款原因 <退款原因>] --订单金额 <订单金额> [--资金账户 <资金账户>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "out_refund_no": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "object",
+              "properties": {
+                "refund": {
+                  "type": "integer"
+                },
+                "currency": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "refund",
+                "currency"
+              ]
+            },
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "out_refund_no",
+            "amount",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "申请退款",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97333",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniapppay/refund?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "商户号",
+            "required": true,
+            "description": "企业微信分配商户号。 示例值： 1900000109",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户APPID",
+            "required": true,
+            "description": "小程序appid。 示例值：wx8888888888888888",
+            "type": "string[1,32]"
+          },
+          {
+            "name": "商户订单号",
+            "required": true,
+            "description": "原支付交易对应的商户订单号。 示例值：1217752501201407033233368018",
+            "type": "string[6,32]"
+          },
+          {
+            "name": "商户退款单号",
+            "required": true,
+            "description": "商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@，同一退款单号多次请求只退一笔。 示例值：1217752501201407033233368018",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "退款原因",
+            "required": false,
+            "description": "若商户传入，会在下发给用户的退款消息中体现退款原因。 注意：若订单退款金额≤1元，且属于部分退款，则不会在退款消息中体现退款原因 示例值：商品已售完",
+            "type": "string[1,80]"
+          },
+          {
+            "name": "订单金额",
+            "required": true,
+            "description": "订单金额信息，详见Amount。",
+            "type": "object"
+          },
+          {
+            "name": "资金账户",
+            "required": false,
+            "description": "若订单处于待分账状态，填写该字段后，退款时直接从二级商户余额中退款。 AVAILABLE：可用余额",
+            "type": "string[1,32]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "商户退款单号",
+            "required": false,
+            "description": "商户系统内部的退款单号，商户系统内部唯一，同一退款单号多次请求只退一笔。 示例值：1217752501201407033233368018",
+            "type": "string[1,64]"
+          },
+          {
+            "name": "订单金额",
+            "required": false,
+            "description": "订单金额信息，详见Amount。",
+            "type": "object"
+          },
+          {
+            "name": "优惠退款详情",
+            "required": false,
+            "description": "优惠退款功能信息，discount_refund>0时，返回该字段，详见 PromotionDetail",
+            "type": "array"
+          }
+        ],
+        "request_example_text": "{\n\t\"mchid\": \"1900000109\",\n\t\"appid\": \"wx8888888888888888\",\n\t\"out_trade_no\": \"1217752501201407033233368018\",\n\t\"out_refund_no\": \"1217752501201407033233368018\",\n\t\"reason\": \"商品已售完\",\n\t\"funds_account\":\"AVAILABLE\",\n\t\"amount\": {\n\t\t\"refund\": 888,\n\t\t\"total\": 888,\n\t\t\"currency\": \"CNY\"\n\t}\n}",
+        "request_example_json": {
+          "mchid": "1900000109",
+          "appid": "wx8888888888888888",
+          "out_trade_no": "1217752501201407033233368018",
+          "out_refund_no": "1217752501201407033233368018",
+          "reason": "商品已售完",
+          "funds_account": "AVAILABLE",
+          "amount": {
+            "refund": 888,
+            "total": 888,
+            "currency": "CNY"
+          }
+        },
+        "response_example_text": "{\n\t\"out_refund_no\": \"1217752501201407033233368018\",\n\t\"amount\": {\n\t\t\"refund\": 888,\n\t\t\"currency\": \"CNY\"\n\t},\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "out_refund_no": "1217752501201407033233368018",
+          "amount": {
+            "refund": 888,
+            "currency": "CNY"
+          },
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "notes": [
+          "1. 交易时间超过一年的订单无法提交退款。\n2. 企业微信退款支持单笔交易分多次退款，多次退款需要提交原支付订单的商户订单号和设置不同的退款单号。申请退款总金额不能超过订单金额。 一笔退款失败后重新提交，请不要更换退款单号，请使用原商户退款单号。\n3. 请求频率限制：150qps，即每秒钟正常的申请退款请求次数不超过150次，单笔订单请求频率限制：1qpm，即单笔订单每分钟申请退款请求次数不超过1次。\n4. 每个支付订单的部分退款次数不能超过50次。\n5. 申请退款接口的返回仅代表业务的受理情况，具体退款是否成功，需要通过退款查询接口获取结果。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "upload_image",
+      "cli_action": "upload-image",
+      "summary": "提交图片",
+      "method": "POST",
+      "endpoint": "/cgi-bin/miniapppay/upload_image",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom miniapppay upload-image"
+      ],
+      "doc": {
+        "title": "提交图片",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98972",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/miniapppay/upload_image?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          }
+        ],
+        "request_example_text": "---------------------------acebdf13572468\nContent-Disposition: form-data; name=\"fieldNameHere\"; filename=\"20180103195745.png\"\nContent-Type: image/png\nContent-Length: 220\n\n<@INCLUDE *C:\\Users\\abelzhu\\Pictures\\企业微信截图_20180103195745.png*@>\n---------------------------acebdf13572468--",
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "上传图片得到图片ID，该ID30天后过期\n返回的图片ID用于提交创建对外收款账户的申请单中填写图片相关字段\n图片按应用隔离，无法使用其他应用提交的图片ID\n只支持JPG/JPEG、PNG、BMP格式的图片\n请注意，对于从本接口上传的图片，当所有用到这张图片的申请单全部完成流程后，这张图片的图片id将会立即失效",
+          "以下条件满足其一，则图片ID失效"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

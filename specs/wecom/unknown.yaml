@@ -1,0 +1,175 @@
+{
+  "domain": "unknown",
+  "operations": [
+    {
+      "name": "cgi_bin_get_jsapi_ticket",
+      "cli_action": "cgi-bin-get-jsapi-ticket",
+      "summary": "接口代码参考示例",
+      "method": "GET",
+      "endpoint": "/cgi-bin/get_jsapi_ticket",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom unknown cgi-bin-get-jsapi-ticket"
+      ],
+      "doc": {
+        "title": "接口代码参考示例",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90469",
+        "request_example_text": "public function getAccessToken($corpid,$secret) {      \n        //TODO: access_token 应该全局存储与更新，以下代码以写入到文件中做示例                      \n\t\t//TODO: 每个应用的access_token应独立存储，此处用secret作为区分应用的标识\n        $path = \"../cache/$secret.php\";\n        $data = json_decode(get_php_file($path));\n        \n        if($data->expire_time < time()) {                \n            $url = \"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=$corpid&corpsecret=$secret\";                      \n            $res = json_decode(http_get($url)[\"content\"]);\n\n            $access_token = $res->access_token;\n            \n            if($access_token) {\n                $data->expire_time = time() + 7000;\n                $data->access_token = $access_token;        \n                set_php_file($path, json_encode($data));\n            }\n        } else {\n            $access_token = $data->access_token;\n        }\n        return $access_token;    \n    }",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证， 企业内部开发，获取方式参考“获取 access_token” 第三方应用开发，获取方式参考“获取企业凭证”",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "应用的调用接口凭证， 企业内部开发，获取方式参考“获取 access_token” 第三方应用开发，获取方式参考“获取企业凭证”",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"ticket\": \"bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA\",\n  \"expires_in\": 7200\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "ticket": "bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA",
+          "expires_in": 7200
+        }
+      },
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "ticket": {
+              "type": "string"
+            },
+            "expires_in": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "ticket",
+            "expires_in"
+          ]
+        }
+      }
+    },
+    {
+      "name": "cgi_bin_get_launch_code",
+      "cli_action": "cgi-bin-get-launch-code",
+      "summary": "打开个人聊天窗口schema",
+      "method": "POST",
+      "endpoint": "/cgi-bin/get_launch_code",
+      "args": [
+        {
+          "name": "launch_code",
+          "flag": "--launch-code",
+          "type": "str",
+          "help": "唤起页面的code，可通过获取唤起企业微信code接口获取",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "launch_code": {
+            "from_arg": "launch_code"
+          }
+        }
+      },
+      "examples": [
+        "wecom unknown cgi-bin-get-launch-code --launch-code <launch_code>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "launch_code": {
+              "type": "string",
+              "description": "唤起页面的code，5分钟内有效，只能消费一次。用于URI scheme 客户端协议的launch_code参数"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "launch_code"
+          ]
+        }
+      },
+      "doc": {
+        "title": "打开个人聊天窗口schema",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94345",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/get_launch_code?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "launch_code",
+            "required": true,
+            "description": "唤起页面的code，可通过获取唤起企业微信code接口获取",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "launch_code",
+            "required": null,
+            "description": "唤起页面的code，5分钟内有效，只能消费一次。用于URI scheme 客户端协议的launch_code参数",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"operator_userid\":\"zhangshan\",\n   \"single_chat\":{\n\t\t\"userid\":\"lisi\"\n\t}\n}",
+        "request_example_json": {
+          "operator_userid": "zhangshan",
+          "single_chat": {
+            "userid": "lisi"
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n\t\"launch_code\":\"xxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "launch_code": "xxxx"
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    }
+  ]
+}

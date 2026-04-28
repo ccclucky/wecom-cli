@@ -1,0 +1,5714 @@
+{
+  "domain": "school",
+  "operations": [
+    {
+      "name": "agent_get_allow_scope",
+      "cli_action": "agent-get-allow-scope",
+      "summary": "获取可使用的家长范围",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/agent/get_allow_scope",
+      "args": [
+        {
+          "name": "agentid",
+          "flag": "--agentid",
+          "type": "str",
+          "help": "应用id",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "agentid": {
+            "from_arg": "agentid"
+          }
+        }
+      },
+      "examples": [
+        "wecom school agent-get-allow-scope --agentid <agentid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "出错返回码，为0表示成功，非0表示调用失败"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "返回码提示语"
+            },
+            "allow_scope": {
+              "type": "object",
+              "properties": {
+                "students": {
+                  "type": "object",
+                  "properties": {
+                    "userid": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "userid"
+                  ]
+                },
+                "departments": {
+                  "type": "object",
+                  "properties": {
+                    "partyid": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "required": [
+                    "partyid"
+                  ]
+                }
+              },
+              "required": [
+                "students",
+                "departments"
+              ],
+              "description": "可在微信「学校通知-学校应用」使用该应用的家长范围"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "allow_scope"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取可使用的家长范围",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94895",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/agent/get_allow_scope?access_token=ACCESS_TOKEN&agentid=AGENTID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "agentid",
+            "required": true,
+            "description": "应用id",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "出错返回码，为0表示成功，非0表示调用失败",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "返回码提示语",
+            "type": null
+          },
+          {
+            "name": "allow_scope",
+            "required": null,
+            "description": "可在微信「学校通知-学校应用」使用该应用的家长范围",
+            "type": null
+          },
+          {
+            "name": "allow_scope_students_userid",
+            "required": null,
+            "description": "家长可在微信「学校通知-学校应用」使用该应用的学生列表",
+            "type": null
+          },
+          {
+            "name": "allow_scope_departments_partyid",
+            "required": null,
+            "description": "家长可在微信「学校通知-学校应用」使用该应用的部门列表",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"allow_scope\": {\n       \"students\": {\n             \"userid\": [\"student1\", \"student2\"]\n       },\n\t   \"departments\": {\n             \"partyid\": [1, 2]\n\t   }\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "allow_scope": {
+            "students": {
+              "userid": [
+                "student1",
+                "student2"
+              ]
+            },
+            "departments": {
+              "partyid": [
+                1,
+                2
+              ]
+            }
+          }
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "department_create",
+      "cli_action": "department-create",
+      "summary": "创建部门",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/department/create",
+      "args": [
+        {
+          "name": "name",
+          "flag": "--name",
+          "type": "str",
+          "help": "部门名称。长度限制为1~32个字符，字符不能包括-:*?\"<>/，*，当设置了入学年份和标准年级时，该参数将被忽略"
+        },
+        {
+          "name": "parentid",
+          "flag": "--parentid",
+          "type": "str",
+          "help": "父部门id，32位整型",
+          "required": true
+        },
+        {
+          "name": "id",
+          "flag": "--id",
+          "type": "str",
+          "help": "部门id，32位整型，指定时必须大于1。若不填该参数，将自动生成id"
+        },
+        {
+          "name": "type",
+          "flag": "--type",
+          "type": "str",
+          "help": "部门类型，32位整型，1表示班级，2表示年级，3表示学段，4表示校区",
+          "required": true
+        },
+        {
+          "name": "standard_grade",
+          "flag": "--standard-grade",
+          "type": "str",
+          "help": "标准年级，32位整型，参数值含义详见标准年级对照表，仅当部门类型为年级（2）时生效"
+        },
+        {
+          "name": "register_year",
+          "flag": "--register-year",
+          "type": "str",
+          "help": "入学年份，32位整型，格式为YYYY，输入范围为1970～2100，仅当部门类型为年级（2）时生效，如果在创建标准年级时不填此参数，则由系统自动计算出入学年份"
+        },
+        {
+          "name": "order",
+          "flag": "--order",
+          "type": "str",
+          "help": "在父部门中的次序值。order值大的排序靠前。有效的值范围是[0, 2^32)"
+        },
+        {
+          "name": "department_admins",
+          "flag": "--department-admins",
+          "type": "str",
+          "help": "部门管理员列表"
+        },
+        {
+          "name": "department_admins_userid",
+          "flag": "--department-admins-userid",
+          "type": "str",
+          "help": "对应管理端的账号，企业内必须唯一。不区分大小写，长度为1~64个字节",
+          "required": true
+        },
+        {
+          "name": "department_admins_type",
+          "flag": "--department-admins-type",
+          "type": "str",
+          "help": "部门管理员类型， 1表示校区负责人，2表示年级负责人，3表示班主任，4表示任课老师，5表示学段负责人",
+          "required": true
+        },
+        {
+          "name": "department_admins_subject",
+          "flag": "--department-admins-subject",
+          "type": "str",
+          "help": "教师的科目，仅班主任和任课老师可以设置，科目的最多15个字符，仅支持设置一个科目"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "name": {
+            "from_arg": "name"
+          },
+          "parentid": {
+            "from_arg": "parentid"
+          },
+          "id": {
+            "from_arg": "id"
+          },
+          "type": {
+            "from_arg": "type"
+          },
+          "standard_grade": {
+            "from_arg": "standard_grade"
+          },
+          "register_year": {
+            "from_arg": "register_year"
+          },
+          "order": {
+            "from_arg": "order"
+          },
+          "department_admins": {
+            "from_arg": "department_admins"
+          },
+          "department_admins_userid": {
+            "from_arg": "department_admins_userid"
+          },
+          "department_admins_type": {
+            "from_arg": "department_admins_type"
+          },
+          "department_admins_subject": {
+            "from_arg": "department_admins_subject"
+          }
+        }
+      },
+      "examples": [
+        "wecom school department-create [--name <name>] --parentid <parentid> [--id <id>] --type <type> [--standard-grade <standard_grade>] [--register-year <register_year>] [--order <order>] [--department-admins <department_admins>] --department-admins-userid <department_admins_userid> --department-admins-type <department_admins_type> [--department-admins-subject <department_admins_subject>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "id": {
+              "type": "integer",
+              "description": "创建的部门id"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "id"
+          ]
+        }
+      },
+      "doc": {
+        "title": "创建部门",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92340",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/department/create?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "name",
+            "required": false,
+            "description": "部门名称。长度限制为1~32个字符，字符不能包括-:*?\"<>/，*，当设置了入学年份和标准年级时，该参数将被忽略",
+            "type": null
+          },
+          {
+            "name": "parentid",
+            "required": true,
+            "description": "父部门id，32位整型",
+            "type": null
+          },
+          {
+            "name": "id",
+            "required": false,
+            "description": "部门id，32位整型，指定时必须大于1。若不填该参数，将自动生成id",
+            "type": null
+          },
+          {
+            "name": "type",
+            "required": true,
+            "description": "部门类型，32位整型，1表示班级，2表示年级，3表示学段，4表示校区",
+            "type": null
+          },
+          {
+            "name": "standard_grade",
+            "required": false,
+            "description": "标准年级，32位整型，参数值含义详见标准年级对照表，仅当部门类型为年级（2）时生效",
+            "type": null
+          },
+          {
+            "name": "register_year",
+            "required": false,
+            "description": "入学年份，32位整型，格式为YYYY，输入范围为1970～2100，仅当部门类型为年级（2）时生效，如果在创建标准年级时不填此参数，则由系统自动计算出入学年份",
+            "type": null
+          },
+          {
+            "name": "order",
+            "required": false,
+            "description": "在父部门中的次序值。order值大的排序靠前。有效的值范围是[0, 2^32)",
+            "type": null
+          },
+          {
+            "name": "department_admins",
+            "required": false,
+            "description": "部门管理员列表",
+            "type": null
+          },
+          {
+            "name": "department_admins_userid",
+            "required": true,
+            "description": "对应管理端的账号，企业内必须唯一。不区分大小写，长度为1~64个字节",
+            "type": null
+          },
+          {
+            "name": "department_admins_type",
+            "required": true,
+            "description": "部门管理员类型， 1表示校区负责人，2表示年级负责人，3表示班主任，4表示任课老师，5表示学段负责人",
+            "type": null
+          },
+          {
+            "name": "department_admins_subject",
+            "required": false,
+            "description": "教师的科目，仅班主任和任课老师可以设置，科目的最多15个字符，仅支持设置一个科目",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "id",
+            "required": null,
+            "description": "创建的部门id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"name\": \"一年级\",\n   \"parentid\": 5,\n   \"id\": 2,\n   \"type\": 1,\n   \"register_year\":2018,\n   \"standard_grade\":1,\n   \"order\":1,\n   \"department_admins\": [\n\t   {\n\t\t   \"userid\": \"zhangsan\",\n\t\t   \"type\": 4,\n\t\t   \"subject\":\"语文\"\n\t   },\n\t   {\n\t\t   \"userid\": \"lisi\",\n\t\t   \"type\": 3,\n\t\t   \"subject\":\"数学\"\n\t   }\n\t]\n}",
+        "request_example_json": {
+          "name": "一年级",
+          "parentid": 5,
+          "id": 2,
+          "type": 1,
+          "register_year": 2018,
+          "standard_grade": 1,
+          "order": 1,
+          "department_admins": [
+            {
+              "userid": "zhangsan",
+              "type": 4,
+              "subject": "语文"
+            },
+            {
+              "userid": "lisi",
+              "type": 3,
+              "subject": "数学"
+            }
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"created\",\n   \"id\": 2\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "created",
+          "id": 2
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "注意，班级的父部门必须是年级，也就是说type为1的部门的父部门type值必须是2。\n如果创建的标准年级为小学二年级，当前为2019年，则系统默认的入学年份为2018年，依次类推。\n管理员类型须与部门类型保持一致，即校区负责人只能配置到校区部门，班主任和任课老师只能设置到班级。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "department_delete",
+      "cli_action": "department-delete",
+      "summary": "删除部门",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/department/delete",
+      "args": [
+        {
+          "name": "id",
+          "flag": "--id",
+          "type": "str",
+          "help": "部门id。（注：不能删除根部门；不能删除含有子部门、成员的部门）"
+        }
+      ],
+      "request": {
+        "query": {
+          "id": {
+            "from_arg": "id"
+          }
+        }
+      },
+      "examples": [
+        "wecom school department-delete [--id <id>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除部门",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92342",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/department/delete?access_token=ACCESS_TOKEN&id=ID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "id",
+            "required": false,
+            "description": "部门id。（注：不能删除根部门；不能删除含有子部门、成员的部门）",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"deleted\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "deleted"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "department_list",
+      "cli_action": "department-list",
+      "summary": "获取部门列表",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/department/list",
+      "args": [
+        {
+          "name": "id",
+          "flag": "--id",
+          "type": "str",
+          "help": "部门id。获取指定部门及其下的子部门。 如果不填，默认获取全量组织架构"
+        }
+      ],
+      "request": {
+        "query": {
+          "id": {
+            "from_arg": "id"
+          }
+        }
+      },
+      "examples": [
+        "wecom school department-list [--id <id>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "departments": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "部门名称"
+                  },
+                  "parentid": {
+                    "type": "integer",
+                    "description": "父亲部门id,根部门该项为0"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "description": "部门id,根部门固定为1"
+                  },
+                  "type": {
+                    "type": "integer",
+                    "description": "部门类型，32位整型，1表示班级，2表示年级，3表示学段，4表示校区，5表示学校（根部门）"
+                  },
+                  "register_year": {
+                    "type": "integer",
+                    "description": "入学年份，仅标准年级返回，格式为YYYY"
+                  },
+                  "standard_grade": {
+                    "type": "integer",
+                    "description": "标准年级，当为部门为标准年级时返回，返回值具体请参考标准年级对照表"
+                  },
+                  "order": {
+                    "type": "integer",
+                    "description": "在父部门中的次序值，order值大的排序靠前。有效的值范围是[0, 2^32)，仅在API设置后才返回"
+                  },
+                  "department_admins": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "userid": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "integer",
+                          "description": "部门类型，32位整型，1表示班级，2表示年级，3表示学段，4表示校区，5表示学校（根部门）"
+                        }
+                      },
+                      "required": [
+                        "userid",
+                        "type"
+                      ]
+                    }
+                  },
+                  "is_graduated": {
+                    "type": "integer",
+                    "description": "是否是已毕业，1表示是，0表示不是。仅部门类型为年级时才返回该字段"
+                  }
+                },
+                "required": [
+                  "name",
+                  "parentid",
+                  "id",
+                  "type",
+                  "register_year",
+                  "standard_grade",
+                  "order",
+                  "department_admins",
+                  "is_graduated"
+                ]
+              },
+              "description": "部门列表数据"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "departments"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取部门列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92343",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/department/list?access_token=ACCESS_TOKEN&id=ID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "id",
+            "required": false,
+            "description": "部门id。获取指定部门及其下的子部门。 如果不填，默认获取全量组织架构",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "departments",
+            "required": null,
+            "description": "部门列表数据",
+            "type": null
+          },
+          {
+            "name": "id",
+            "required": null,
+            "description": "部门id,根部门固定为1",
+            "type": null
+          },
+          {
+            "name": "type",
+            "required": null,
+            "description": "部门类型，32位整型，1表示班级，2表示年级，3表示学段，4表示校区，5表示学校（根部门）",
+            "type": null
+          },
+          {
+            "name": "name",
+            "required": null,
+            "description": "部门名称",
+            "type": null
+          },
+          {
+            "name": "parentid",
+            "required": null,
+            "description": "父亲部门id,根部门该项为0",
+            "type": null
+          },
+          {
+            "name": "register_year",
+            "required": null,
+            "description": "入学年份，仅标准年级返回，格式为YYYY",
+            "type": null
+          },
+          {
+            "name": "standard_grade",
+            "required": null,
+            "description": "标准年级，当为部门为标准年级时返回，返回值具体请参考标准年级对照表",
+            "type": null
+          },
+          {
+            "name": "order",
+            "required": null,
+            "description": "在父部门中的次序值，order值大的排序靠前。有效的值范围是[0, 2^32)，仅在API设置后才返回",
+            "type": null
+          },
+          {
+            "name": "department_admins_userid",
+            "required": null,
+            "description": "部门管理员的userid",
+            "type": null
+          },
+          {
+            "name": "department_admins_type",
+            "required": null,
+            "description": "部门管理员的类型，1表示校区负责人，2表示年级负责人，3表示班主任，4表示任课老师，5表示学段负责人",
+            "type": null
+          },
+          {
+            "name": "department_admins_subject",
+            "required": null,
+            "description": "教师或班主任的科目",
+            "type": null
+          },
+          {
+            "name": "open_group_chat",
+            "required": null,
+            "description": "是否开启班级群，1表示开启，0表示关闭。仅部门类型为班级时才返回该字段",
+            "type": null
+          },
+          {
+            "name": "group_chat_id",
+            "required": null,
+            "description": "班级群id。仅部门类型为班级时且open_group_chat为1时才返回该字段",
+            "type": null
+          },
+          {
+            "name": "is_graduated",
+            "required": null,
+            "description": "是否是已毕业，1表示是，0表示不是。仅部门类型为年级时才返回该字段",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"departments\": [\n\t\t{\n\t\t\t\"name\": \"一年级\",\n\t\t\t\"parentid\": 1,\n\t\t\t\"id\": 2,\n\t\t\t\"type\":2,\n\t\t\t\"register_year\":2018,\n\t\t\t\"standard_grade\":1,\n\t\t\t\"order\":1,\n\t\t\t\"department_admins\": [\n\t\t\t\t{\n\t\t\t\t\t\"userid\": \"zhangsan\",\n\t\t\t\t\t\"type\": 1\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"userid\": \"lisi\",\n\t\t\t\t\t\"type\": 2\n\t\t\t\t}\n\t\t\t],\n            \"is_graduated\": 0\n\t\t},\n\t\t{\n\t\t\t\"name\": \"一年级一班\",\n\t\t\t\"parentid\": 1,\n\t\t\t\"id\": 3,\n\t\t\t\"type\": 1,\n\t\t\t\"department_admins\": [\n\t\t\t\t{\n\t\t\t\t\t\"userid\": \"zhangsan\",\n\t\t\t\t\t\"type\": 3,\n\t\t\t\t\t\"subject\":\"语文\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"userid\": \"lisi\",\n\t\t\t\t\t\"type\": 4,\n\t\t\t\t\t\"subject\":\"数学\"\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"open_group_chat\": 1,\n            \"group_chat_id\": \"group_chat_id\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "departments": [
+            {
+              "name": "一年级",
+              "parentid": 1,
+              "id": 2,
+              "type": 2,
+              "register_year": 2018,
+              "standard_grade": 1,
+              "order": 1,
+              "department_admins": [
+                {
+                  "userid": "zhangsan",
+                  "type": 1
+                },
+                {
+                  "userid": "lisi",
+                  "type": 2
+                }
+              ],
+              "is_graduated": 0
+            },
+            {
+              "name": "一年级一班",
+              "parentid": 1,
+              "id": 3,
+              "type": 1,
+              "department_admins": [
+                {
+                  "userid": "zhangsan",
+                  "type": 3,
+                  "subject": "语文"
+                },
+                {
+                  "userid": "lisi",
+                  "type": 4,
+                  "subject": "数学"
+                }
+              ],
+              "open_group_chat": 1,
+              "group_chat_id": "group_chat_id"
+            }
+          ]
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "department_update",
+      "cli_action": "department-update",
+      "summary": "更新部门",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/department/update",
+      "args": [
+        {
+          "name": "name",
+          "flag": "--name",
+          "type": "str",
+          "help": "部门名称，如果部门为标准年级则忽略该字段。长度限制为1~32个字符，字符不能包括-:*?\"<>/，*"
+        },
+        {
+          "name": "parentid",
+          "flag": "--parentid",
+          "type": "str",
+          "help": "父部门id，32位整型"
+        },
+        {
+          "name": "id",
+          "flag": "--id",
+          "type": "str",
+          "help": "部门id，32位整型，必须大于0。",
+          "required": true
+        },
+        {
+          "name": "new_id",
+          "flag": "--new-id",
+          "type": "str",
+          "help": "修改为新的id"
+        },
+        {
+          "name": "register_year",
+          "flag": "--register-year",
+          "type": "str",
+          "help": "入学年份，32位整型，格式为YYYY，输入范围为1970～2100，仅当部门类型为年级（2）时生效"
+        },
+        {
+          "name": "standard_grade",
+          "flag": "--standard-grade",
+          "type": "str",
+          "help": "标准年级，32位整型，参数值含义详见标准年级对照表，仅当部门类型为年级（2）时生效"
+        },
+        {
+          "name": "order",
+          "flag": "--order",
+          "type": "str",
+          "help": "在父部门中的次序值。order值大的排序靠前。有效的值范围是[0, 2^32)"
+        },
+        {
+          "name": "department_admins",
+          "flag": "--department-admins",
+          "type": "str",
+          "help": "部门管理员列表"
+        },
+        {
+          "name": "department_admins_op",
+          "flag": "--department-admins-op",
+          "type": "str",
+          "help": "op=0表示新增或者更新，op=1表示删除管理员",
+          "required": true
+        },
+        {
+          "name": "department_admins_userid",
+          "flag": "--department-admins-userid",
+          "type": "str",
+          "help": "对应管理端的账号，企业内必须唯一。不区分大小写，长度为1~64个字节",
+          "required": true
+        },
+        {
+          "name": "department_admins_type",
+          "flag": "--department-admins-type",
+          "type": "str",
+          "help": "部门管理员类型， 1表示校区负责人，2表示年级负责人，3表示班主任，4表示任课老师，5表示学段负责人"
+        },
+        {
+          "name": "department_admins_subject",
+          "flag": "--department-admins-subject",
+          "type": "str",
+          "help": "教师的科目，仅班主任和任课老师可以设置，科目的最多15个字符，仅支持设置一个科目"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "name": {
+            "from_arg": "name"
+          },
+          "parentid": {
+            "from_arg": "parentid"
+          },
+          "id": {
+            "from_arg": "id"
+          },
+          "new_id": {
+            "from_arg": "new_id"
+          },
+          "register_year": {
+            "from_arg": "register_year"
+          },
+          "standard_grade": {
+            "from_arg": "standard_grade"
+          },
+          "order": {
+            "from_arg": "order"
+          },
+          "department_admins": {
+            "from_arg": "department_admins"
+          },
+          "department_admins_op": {
+            "from_arg": "department_admins_op"
+          },
+          "department_admins_userid": {
+            "from_arg": "department_admins_userid"
+          },
+          "department_admins_type": {
+            "from_arg": "department_admins_type"
+          },
+          "department_admins_subject": {
+            "from_arg": "department_admins_subject"
+          }
+        }
+      },
+      "examples": [
+        "wecom school department-update [--name <name>] [--parentid <parentid>] --id <id> [--new-id <new_id>] [--register-year <register_year>] [--standard-grade <standard_grade>] [--order <order>] [--department-admins <department_admins>] --department-admins-op <department_admins_op> --department-admins-userid <department_admins_userid> [--department-admins-type <department_admins_type>] [--department-admins-subject <department_admins_subject>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "更新部门",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92341",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/department/update?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "name",
+            "required": false,
+            "description": "部门名称，如果部门为标准年级则忽略该字段。长度限制为1~32个字符，字符不能包括-:*?\"<>/，*",
+            "type": null
+          },
+          {
+            "name": "parentid",
+            "required": false,
+            "description": "父部门id，32位整型",
+            "type": null
+          },
+          {
+            "name": "id",
+            "required": true,
+            "description": "部门id，32位整型，必须大于0。",
+            "type": null
+          },
+          {
+            "name": "new_id",
+            "required": false,
+            "description": "修改为新的id",
+            "type": null
+          },
+          {
+            "name": "register_year",
+            "required": false,
+            "description": "入学年份，32位整型，格式为YYYY，输入范围为1970～2100，仅当部门类型为年级（2）时生效",
+            "type": null
+          },
+          {
+            "name": "standard_grade",
+            "required": false,
+            "description": "标准年级，32位整型，参数值含义详见标准年级对照表，仅当部门类型为年级（2）时生效",
+            "type": null
+          },
+          {
+            "name": "order",
+            "required": false,
+            "description": "在父部门中的次序值。order值大的排序靠前。有效的值范围是[0, 2^32)",
+            "type": null
+          },
+          {
+            "name": "department_admins",
+            "required": false,
+            "description": "部门管理员列表",
+            "type": null
+          },
+          {
+            "name": "department_admins_op",
+            "required": true,
+            "description": "op=0表示新增或者更新，op=1表示删除管理员",
+            "type": null
+          },
+          {
+            "name": "department_admins_userid",
+            "required": true,
+            "description": "对应管理端的账号，企业内必须唯一。不区分大小写，长度为1~64个字节",
+            "type": null
+          },
+          {
+            "name": "department_admins_type",
+            "required": false,
+            "description": "部门管理员类型， 1表示校区负责人，2表示年级负责人，3表示班主任，4表示任课老师，5表示学段负责人",
+            "type": null
+          },
+          {
+            "name": "department_admins_subject",
+            "required": false,
+            "description": "教师的科目，仅班主任和任课老师可以设置，科目的最多15个字符，仅支持设置一个科目",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"name\": \"一年级\",\n   \"parentid\": 5,\n   \"id\": 2,\n   \"register_year\":2018,\n   \"standard_grade\":1,\n   \"order\":1,\n   \"new_id\": 100,\n   \"department_admins\": [\n\t   {\n\t\t   \"op\": 0,\n\t\t   \"userid\": \"zhangsan\",\n\t\t   \"type\": 3,\n\t\t   \"subject\":\"语文\"\n\t   },\n\t   {\n\t\t   \"op\": 1,\n\t\t   \"userid\": \"lisi\",\n\t\t   \"type\": 4,\n\t\t   \"subject\":\"数学\"\n\t   }\n   ]\n}",
+        "request_example_json": {
+          "name": "一年级",
+          "parentid": 5,
+          "id": 2,
+          "register_year": 2018,
+          "standard_grade": 1,
+          "order": 1,
+          "new_id": 100,
+          "department_admins": [
+            {
+              "op": 0,
+              "userid": "zhangsan",
+              "type": 3,
+              "subject": "语文"
+            },
+            {
+              "op": 1,
+              "userid": "lisi",
+              "type": 4,
+              "subject": "数学"
+            }
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"updated\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "updated"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "注意，班级的父部门必须是年级，也就是说type为1的部门的父部门type值必须是2。\n当传入的standard_grade为0时，表示将此部门转换为非标准年级。\n管理员类型须与部门类型保持一致，即校区负责人只能配置到校区部门，班主任和任课老师只能设置到班级。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "get_chat_create_mode",
+      "cli_action": "get-chat-create-mode",
+      "summary": "管理「班级群创建方式」",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/get_chat_create_mode",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom school get-chat-create-mode"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "create_mode": {
+              "type": "integer",
+              "description": "创建模式 取值范围： 0 - 自动创建 1 - 手动创建"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "create_mode"
+          ]
+        }
+      },
+      "doc": {
+        "title": "管理「班级群创建方式」",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92430",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/get_chat_create_mode?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": null
+          },
+          {
+            "name": "create_mode",
+            "required": null,
+            "description": "创建模式 取值范围： 0 - 自动创建 1 - 手动创建",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"create_mode\": 0\n}",
+        "request_example_json": {
+          "create_mode": 0
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"create_mode\": 0\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "create_mode": 0
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "get_payment_result",
+      "cli_action": "get-payment-result",
+      "summary": "获取学生付款结果",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/get_payment_result",
+      "args": [
+        {
+          "name": "payment_id",
+          "flag": "--payment-id",
+          "type": "str",
+          "help": "收款项目id，由jssdk的发起班级收款接口 或者小程序的发起班级收款接口返回",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "payment_id": {
+            "from_arg": "payment_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom school get-payment-result --payment-id <payment_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "project_name": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "integer"
+            },
+            "payment_result": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "student_userid": {
+                    "type": "string"
+                  },
+                  "trade_state": {
+                    "type": "integer"
+                  },
+                  "trade_no": {
+                    "type": "string"
+                  },
+                  "payer_parent_userid": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "student_userid",
+                  "trade_state",
+                  "trade_no",
+                  "payer_parent_userid"
+                ]
+              },
+              "description": "学生付款信息列表，详情见PayInfo说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "project_name",
+            "amount",
+            "payment_result"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取学生付款结果",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94470",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/get_payment_result?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "payment_id",
+            "required": true,
+            "description": "收款项目id，由jssdk的发起班级收款接口 或者小程序的发起班级收款接口返回",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "payment_result",
+            "required": null,
+            "description": "学生付款信息列表，详情见PayInfo说明",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"payment_id\":\"xxxx\"\n}",
+        "request_example_json": {
+          "payment_id": "xxxx"
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"project_name\": \"学费\",\n\t\"amount\": 998,\n\t\"payment_result\": [{\n\t\t\"student_userid\": \"xxxx\",\n\t\t\"trade_state\": 1,\n\t\t\"trade_no\": \"xxxxx\",\n\t\t\"payer_parent_userid\": \"zhangshan\"\n\t}]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "project_name": "学费",
+          "amount": 998,
+          "payment_result": [
+            {
+              "student_userid": "xxxx",
+              "trade_state": 1,
+              "trade_no": "xxxxx",
+              "payer_parent_userid": "zhangshan"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_trade",
+      "cli_action": "get-trade",
+      "summary": "获取订单详情",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/get_trade",
+      "args": [
+        {
+          "name": "payment_id",
+          "flag": "--payment-id",
+          "type": "str",
+          "help": "收款项目id，由发起班级收款接口返回",
+          "required": true
+        },
+        {
+          "name": "trade_no",
+          "flag": "--trade-no",
+          "type": "str",
+          "help": "订单号，由获取学生付款结果返回",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "payment_id": {
+            "from_arg": "payment_id"
+          },
+          "trade_no": {
+            "from_arg": "trade_no"
+          }
+        }
+      },
+      "examples": [
+        "wecom school get-trade --payment-id <payment_id> --trade-no <trade_no>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "transaction_id": {
+              "type": "string",
+              "description": "微信交易单号"
+            },
+            "pay_time": {
+              "type": "integer",
+              "description": "交易时间"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "transaction_id",
+            "pay_time"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取订单详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/94471",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/get_trade?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "payment_id",
+            "required": true,
+            "description": "收款项目id，由发起班级收款接口返回",
+            "type": null
+          },
+          {
+            "name": "trade_no",
+            "required": true,
+            "description": "订单号，由获取学生付款结果返回",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "transaction_id",
+            "required": null,
+            "description": "微信交易单号",
+            "type": null
+          },
+          {
+            "name": "pay_time",
+            "required": null,
+            "description": "交易时间",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"payment_id\":\"xxxx\",\n   \"trade_no\":\"xxxx\" \n}",
+        "request_example_json": {
+          "payment_id": "xxxx",
+          "trade_no": "xxxx"
+        },
+        "response_example_text": "{\n\t\"errcode\":0,\n\t\"errmsg\":\"ok\",\n\t\"transaction_id\":\"xxxxx\",    \t     \n\t\"pay_time\":12345\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "transaction_id": "xxxxx",
+          "pay_time": 12345
+        }
+      }
+    },
+    {
+      "name": "getuserinfo",
+      "cli_action": "getuserinfo",
+      "summary": "获取家校访问用户身份",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/getuserinfo",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom school getuserinfo"
+      ],
+      "doc": {
+        "title": "获取家校访问用户身份",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95791",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/getuserinfo?access_token=ACCESS_TOKEN&code=CODE",
+        "request_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"DeviceId\":\"DEVICEID\",\n   \"parent_userid\": \"parent_userid\"\n}",
+        "request_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "DeviceId": "DEVICEID",
+          "parent_userid": "parent_userid"
+        },
+        "permissions": [
+          "a) 当用户为学校的家长时，返回示例如下：",
+          "b) 当用户为学校的学生时，返回示例如下：",
+          "出错返回示例："
+        ]
+      }
+    },
+    {
+      "name": "living_get_living_info",
+      "cli_action": "living-get-living-info",
+      "summary": "获取直播详情",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/living/get_living_info",
+      "args": [
+        {
+          "name": "livingid",
+          "flag": "--livingid",
+          "type": "str",
+          "help": "直播ID",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "livingid": {
+            "from_arg": "livingid"
+          }
+        }
+      },
+      "examples": [
+        "wecom school living-get-living-info --livingid <livingid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "living_info": {
+              "type": "object",
+              "properties": {
+                "theme": {
+                  "type": "string"
+                },
+                "living_start": {
+                  "type": "integer"
+                },
+                "living_duration": {
+                  "type": "integer"
+                },
+                "anchor_userid": {
+                  "type": "string"
+                },
+                "living_range": {
+                  "type": "object",
+                  "properties": {
+                    "partyids": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "group_names": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "partyids",
+                    "group_names"
+                  ]
+                },
+                "viewer_num": {
+                  "type": "integer"
+                },
+                "comment_num": {
+                  "type": "integer"
+                },
+                "open_replay": {
+                  "type": "integer"
+                },
+                "push_stream_url": {
+                  "type": "string"
+                },
+                "online_count": {
+                  "type": "integer"
+                },
+                "subscribe_count": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "theme",
+                "living_start",
+                "living_duration",
+                "anchor_userid",
+                "living_range",
+                "viewer_num",
+                "comment_num",
+                "open_replay",
+                "push_stream_url",
+                "online_count",
+                "subscribe_count"
+              ],
+              "description": "直播信息"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "living_info"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取直播详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93740",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/living/get_living_info?access_token=ACCESS_TOKEN&livingid=LIVINGID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "livingid",
+            "required": true,
+            "description": "直播ID",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "living_info",
+            "required": null,
+            "description": "直播信息",
+            "type": null
+          },
+          {
+            "name": "living_info_theme",
+            "required": null,
+            "description": "直播主题",
+            "type": null
+          },
+          {
+            "name": "living_info_living_start",
+            "required": null,
+            "description": "直播开始时间戳",
+            "type": null
+          },
+          {
+            "name": "living_info_living_duration",
+            "required": null,
+            "description": "直播时长，单位为秒",
+            "type": null
+          },
+          {
+            "name": "living_info_anchor_userid",
+            "required": null,
+            "description": "主播的userid",
+            "type": null
+          },
+          {
+            "name": "living_info_living_range",
+            "required": null,
+            "description": "直播范围，如果直播范围包含的是班级群，优先返回班级群对应班级的partyid，否则直接返回群名称",
+            "type": null
+          },
+          {
+            "name": "living_info_living_range_partyids",
+            "required": null,
+            "description": "班级的partyid列表",
+            "type": null
+          },
+          {
+            "name": "living_info_living_range_group_names",
+            "required": null,
+            "description": "群名称列表",
+            "type": null
+          },
+          {
+            "name": "living_info_viewer_num",
+            "required": null,
+            "description": "观看直播总人数",
+            "type": null
+          },
+          {
+            "name": "living_info_comment_num",
+            "required": null,
+            "description": "评论数",
+            "type": null
+          },
+          {
+            "name": "living_info_open_replay",
+            "required": null,
+            "description": "是否开启回放，1表示开启，0表示关闭",
+            "type": null
+          },
+          {
+            "name": "living_info_push_stream_url",
+            "required": null,
+            "description": "推流地址，仅直播类型为活动直播并且直播状态是待开播返回该字段",
+            "type": null
+          },
+          {
+            "name": "living_info_online_count",
+            "required": null,
+            "description": "当前在线观看人数",
+            "type": null
+          },
+          {
+            "name": "living_info_subscribe_count",
+            "required": null,
+            "description": "直播预约人数",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"living_info\":{\n\t\t\"theme\": \"直角三角形讲解\",\n\t\t\"living_start\": 1586405229,\n\t\t\"living_duration\": 1800,\n\t\t\"anchor_userid\": \"zhangsan\",\n\t\t\"living_range\":{\n\t\t\t\t\"partyids\":[1,4,9],\n\t\t\t\t\"group_names\":[\n\t\t\t\t\t\"group_name1\",\n\t\t\t\t\t\"group_name2\"\n\t\t\t\t]\n\t\t},\n\t\t\"viewer_num\": 100,\n\t\t\"comment_num\": 110,\n\t\t\"open_replay\": 1,\n\t\t\"push_stream_url\": \"https://www.qq.test.com\",\n\t\t\"online_count\": 1,\n\t\t\"subscribe_count\": 1\n\t}\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "living_info": {
+            "theme": "直角三角形讲解",
+            "living_start": 1586405229,
+            "living_duration": 1800,
+            "anchor_userid": "zhangsan",
+            "living_range": {
+              "partyids": [
+                1,
+                4,
+                9
+              ],
+              "group_names": [
+                "group_name1",
+                "group_name2"
+              ]
+            },
+            "viewer_num": 100,
+            "comment_num": 110,
+            "open_replay": 1,
+            "push_stream_url": "https://www.qq.test.com",
+            "online_count": 1,
+            "subscribe_count": 1
+          }
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "living_get_unwatch_stat",
+      "cli_action": "living-get-unwatch-stat",
+      "summary": "获取未观看直播统计",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/living/get_unwatch_stat",
+      "args": [
+        {
+          "name": "livingid",
+          "flag": "--livingid",
+          "type": "str",
+          "help": "直播id",
+          "required": true
+        },
+        {
+          "name": "next_key",
+          "flag": "--next-key",
+          "type": "str",
+          "help": "上一次调用时返回的next_key，初次调用可以填\"0\""
+        }
+      ],
+      "request": {
+        "json_body": {
+          "livingid": {
+            "from_arg": "livingid"
+          },
+          "next_key": {
+            "from_arg": "next_key"
+          }
+        }
+      },
+      "examples": [
+        "wecom school living-get-unwatch-stat --livingid <livingid> [--next-key <next_key>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "ending": {
+              "type": "integer",
+              "description": "是否结束。0：表示还有更多数据，需要继续拉取，1：表示已经拉取完所有数据。注意只能根据该字段判断是否已经拉完数据"
+            },
+            "next_key": {
+              "type": "string",
+              "description": "当前数据最后一个key值，如果下次调用带上该值则从该key值往后拉，用于实现分页拉取"
+            },
+            "stat_info": {
+              "type": "object",
+              "properties": {
+                "students": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "student_userid": {
+                        "type": "string"
+                      },
+                      "parent_userid": {
+                        "type": "string"
+                      },
+                      "partyids": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "required": [
+                      "student_userid",
+                      "parent_userid",
+                      "partyids"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "students"
+              ],
+              "description": "统计信息列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "ending",
+            "next_key",
+            "stat_info"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取未观看直播统计",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93742",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/living/get_unwatch_stat?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "livingid",
+            "required": true,
+            "description": "直播id",
+            "type": null
+          },
+          {
+            "name": "next_key",
+            "required": false,
+            "description": "上一次调用时返回的next_key，初次调用可以填\"0\"",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "ending",
+            "required": null,
+            "description": "是否结束。0：表示还有更多数据，需要继续拉取，1：表示已经拉取完所有数据。注意只能根据该字段判断是否已经拉完数据",
+            "type": null
+          },
+          {
+            "name": "next_key",
+            "required": null,
+            "description": "当前数据最后一个key值，如果下次调用带上该值则从该key值往后拉，用于实现分页拉取",
+            "type": null
+          },
+          {
+            "name": "stat_info",
+            "required": null,
+            "description": "统计信息列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_students",
+            "required": null,
+            "description": "未观看直播的学生列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_student_userid",
+            "required": null,
+            "description": "学生的userid",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_parent_userid",
+            "required": null,
+            "description": "家长的userid",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_partyids",
+            "required": null,
+            "description": "学生所在的班级id列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"livingid\": \"livingid1\",\n\t\"next_key\": \"NEXT_KEY\"\n}",
+        "request_example_json": {
+          "livingid": "livingid1",
+          "next_key": "NEXT_KEY"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"ending\":1,\n   \"next_key\": \"NEXT_KEY\",\n   \"stat_info\":{\n\t\t\"students\":[\n\t\t\t{\n\t\t\t\t\"student_userid\": \"zhansan_child\",\n\t\t\t\t\"parent_userid\": \"zhangsan\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t]\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"student_userid\": \"lisi_child\",\n\t\t\t\t\"parent_userid\": \"lisi\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t5\n\t\t\t\t]\n\t\t\t}\n\t\t]\n   }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "ending": 1,
+          "next_key": "NEXT_KEY",
+          "stat_info": {
+            "students": [
+              {
+                "student_userid": "zhansan_child",
+                "parent_userid": "zhangsan",
+                "partyids": [
+                  10,
+                  11
+                ]
+              },
+              {
+                "student_userid": "lisi_child",
+                "parent_userid": "lisi",
+                "partyids": [
+                  5
+                ]
+              }
+            ]
+          }
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "living_get_unwatch_stat_v2",
+      "cli_action": "living-get-unwatch-stat-v2",
+      "summary": "获取未观看直播统计V2",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/living/get_unwatch_stat_v2",
+      "args": [
+        {
+          "name": "livingid",
+          "flag": "--livingid",
+          "type": "str",
+          "help": "直播id",
+          "required": true
+        },
+        {
+          "name": "next_cursor",
+          "flag": "--next-cursor",
+          "type": "str",
+          "help": "上一次调用时返回的next_cursor，初次调用可以填\"0\""
+        }
+      ],
+      "request": {
+        "json_body": {
+          "livingid": {
+            "from_arg": "livingid"
+          },
+          "next_cursor": {
+            "from_arg": "next_cursor"
+          }
+        }
+      },
+      "examples": [
+        "wecom school living-get-unwatch-stat-v2 --livingid <livingid> [--next-cursor <next_cursor>]"
+      ],
+      "doc": {
+        "title": "获取未观看直播统计V2",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95795",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/living/get_unwatch_stat_v2?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "livingid",
+            "required": true,
+            "description": "直播id",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": false,
+            "description": "上一次调用时返回的next_cursor，初次调用可以填\"0\"",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否结束。1：表示还有更多数据，需要继续拉取，0：表示已经拉取完所有数据。注意只能根据该字段判断是否已经拉完数据",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "当前数据最后一个cursor值，如果下次调用带上该值则从该cursor值往后拉，用于实现分页拉取",
+            "type": null
+          },
+          {
+            "name": "stat_info",
+            "required": null,
+            "description": "统计信息列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_students",
+            "required": null,
+            "description": "未观看直播的学生列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_student_userid",
+            "required": null,
+            "description": "学生的userid",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_partyids",
+            "required": null,
+            "description": "学生所在的班级id列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents",
+            "required": null,
+            "description": "未观看直播的家长列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_parent_userid",
+            "required": null,
+            "description": "家长的userid",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_student_userid",
+            "required": null,
+            "description": "家长对应学生的userid",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_partyids",
+            "required": null,
+            "description": "家长对应学生所在的班级id列表",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"livingid\": \"livingid1\",\n\t\"next_cursor\": \"NEXT_CURSOR\"\n}",
+        "request_example_json": {
+          "livingid": "livingid1",
+          "next_cursor": "NEXT_CURSOR"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"has_more\":1,\n   \"next_cursor\": \"NEXT_CURSOR\",\n   \"stat_info\":{\n\t\t\"students\":[\n\t\t\t{\n\t\t\t\t\"student_userid\": \"zhansan_child\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t]\n\t\t\t}，\n\t\t\t{\n\t\t\t\t\"student_userid\": \"lisi_child\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t5\n\t\t\t\t]\n\t\t\t}\n\t\t],\n\t\t\"parents\":[\n\t\t\t{\n\t\t\t\t\"parent_userid\": \"zhangsan\",\n\t\t\t\t\"student_userid\": \"zhansan_child\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t]\n\t\t\t}，\n\t\t\t{\n\t\t\t\t\"parent_userid\": \"lisi\",\n\t\t\t\t\"student_userid\": \"lisi_child\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t5\n\t\t\t\t]\n\t\t\t}\n\t\t]\n   }\n}",
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "living_get_watch_stat",
+      "cli_action": "living-get-watch-stat",
+      "summary": "获取观看直播统计",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/living/get_watch_stat",
+      "args": [
+        {
+          "name": "livingid",
+          "flag": "--livingid",
+          "type": "str",
+          "help": "直播的id",
+          "required": true
+        },
+        {
+          "name": "next_key",
+          "flag": "--next-key",
+          "type": "str",
+          "help": "上一次调用时返回的next_key，初次调用可以填\"0\""
+        }
+      ],
+      "request": {
+        "json_body": {
+          "livingid": {
+            "from_arg": "livingid"
+          },
+          "next_key": {
+            "from_arg": "next_key"
+          }
+        }
+      },
+      "examples": [
+        "wecom school living-get-watch-stat --livingid <livingid> [--next-key <next_key>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "ending": {
+              "type": "integer",
+              "description": "是否结束。0：表示还有更多数据，需要继续拉取，1：表示已经拉取完所有数据。注意只能根据该字段判断是否已经拉完数据"
+            },
+            "next_key": {
+              "type": "string",
+              "description": "当前数据最后一个key值，如果下次调用带上该值则从该key值往后拉，用于实现分页拉取"
+            },
+            "stat_infoes": {
+              "type": "object",
+              "properties": {
+                "students": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "student_userid": {
+                        "type": "string"
+                      },
+                      "parent_userid": {
+                        "type": "string"
+                      },
+                      "partyids": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
+                      },
+                      "watch_time": {
+                        "type": "integer"
+                      },
+                      "enter_time": {
+                        "type": "integer"
+                      },
+                      "leave_time": {
+                        "type": "integer"
+                      },
+                      "is_comment": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "student_userid",
+                      "parent_userid",
+                      "partyids",
+                      "watch_time",
+                      "enter_time",
+                      "leave_time",
+                      "is_comment"
+                    ]
+                  }
+                },
+                "visitors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "nickname": {
+                        "type": "string"
+                      },
+                      "watch_time": {
+                        "type": "integer"
+                      },
+                      "enter_time": {
+                        "type": "integer"
+                      },
+                      "leave_time": {
+                        "type": "integer"
+                      },
+                      "is_comment": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "nickname",
+                      "watch_time",
+                      "enter_time",
+                      "leave_time",
+                      "is_comment"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "students",
+                "visitors"
+              ],
+              "description": "统计信息列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "ending",
+            "next_key",
+            "stat_infoes"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取观看直播统计",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93741",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/living/get_watch_stat?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "livingid",
+            "required": true,
+            "description": "直播的id",
+            "type": null
+          },
+          {
+            "name": "next_key",
+            "required": false,
+            "description": "上一次调用时返回的next_key，初次调用可以填\"0\"",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "ending",
+            "required": null,
+            "description": "是否结束。0：表示还有更多数据，需要继续拉取，1：表示已经拉取完所有数据。注意只能根据该字段判断是否已经拉完数据",
+            "type": null
+          },
+          {
+            "name": "next_key",
+            "required": null,
+            "description": "当前数据最后一个key值，如果下次调用带上该值则从该key值往后拉，用于实现分页拉取",
+            "type": null
+          },
+          {
+            "name": "stat_infoes",
+            "required": null,
+            "description": "统计信息列表",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_students",
+            "required": null,
+            "description": "观看直播的学生列表",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_students_student_userid",
+            "required": null,
+            "description": "学生的userid",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_students_parent_userid",
+            "required": null,
+            "description": "家长的userid，直播参与者是家长身份才展示，学生身份加入直播不展示",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_students_partyids",
+            "required": null,
+            "description": "学生所在的班级id列表",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_students_watch_time",
+            "required": null,
+            "description": "观看时长，单位为秒",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_students_enter_time",
+            "required": null,
+            "description": "首次进入直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_students_leave_time",
+            "required": null,
+            "description": "最后离开直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_students_is_comment",
+            "required": null,
+            "description": "是否评论，1表示评论，0表示没有评论",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_visitors",
+            "required": null,
+            "description": "观看直播的游客列表",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_visitors_nickname",
+            "required": null,
+            "description": "微信昵称",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_visitors_watch_time",
+            "required": null,
+            "description": "观看时长，单位为秒",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_visitors_enter_time",
+            "required": null,
+            "description": "首次进入直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_visitors_leave_time",
+            "required": null,
+            "description": "最后离开直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_infoes_visitors_is_comment",
+            "required": null,
+            "description": "是否评论，1表示评论，0表示没有评论",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"livingid\": \"livingid1\",\n\t\"next_key\": \"NEXT_KEY\"\n}",
+        "request_example_json": {
+          "livingid": "livingid1",
+          "next_key": "NEXT_KEY"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"ending\":1,\n   \"next_key\": \"NEXT_KEY\",\n   \"stat_infoes\":{\n\t\t\"students\":[\n\t\t\t{\n\t\t\t\t\"student_userid\": \"zhansan_child\",\n\t\t\t\t\"parent_userid\": \"zhangsan\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t],\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 1\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"student_userid\": \"lisi_child\",\n\t\t\t\t\"parent_userid\": \"lisi\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t],\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 0\n\t\t\t}\n\t\t],\n\t\t\"visitors\":[\n\t\t\t{\n\t\t\t\t\"nickname\": \"wx_nickname1\",\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 1\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"nickname\": \"wx_nickname2\",\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 0\n\t\t\t}\n\t\t]\n   }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "ending": 1,
+          "next_key": "NEXT_KEY",
+          "stat_infoes": {
+            "students": [
+              {
+                "student_userid": "zhansan_child",
+                "parent_userid": "zhangsan",
+                "partyids": [
+                  10,
+                  11
+                ],
+                "watch_time": 30,
+                "enter_time": 1586433904,
+                "leave_time": 1586434000,
+                "is_comment": 1
+              },
+              {
+                "student_userid": "lisi_child",
+                "parent_userid": "lisi",
+                "partyids": [
+                  10,
+                  11
+                ],
+                "watch_time": 30,
+                "enter_time": 1586433904,
+                "leave_time": 1586434000,
+                "is_comment": 0
+              }
+            ],
+            "visitors": [
+              {
+                "nickname": "wx_nickname1",
+                "watch_time": 30,
+                "enter_time": 1586433904,
+                "leave_time": 1586434000,
+                "is_comment": 1
+              },
+              {
+                "nickname": "wx_nickname2",
+                "watch_time": 30,
+                "enter_time": 1586433904,
+                "leave_time": 1586434000,
+                "is_comment": 0
+              }
+            ]
+          }
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "living_get_watch_stat_v2",
+      "cli_action": "living-get-watch-stat-v2",
+      "summary": "获取观看直播统计V2",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/living/get_watch_stat_v2",
+      "args": [
+        {
+          "name": "livingid",
+          "flag": "--livingid",
+          "type": "str",
+          "help": "直播的id",
+          "required": true
+        },
+        {
+          "name": "next_cursor",
+          "flag": "--next-cursor",
+          "type": "str",
+          "help": "上一次调用时返回的next_cursor，初次调用可以填\"0\""
+        }
+      ],
+      "request": {
+        "json_body": {
+          "livingid": {
+            "from_arg": "livingid"
+          },
+          "next_cursor": {
+            "from_arg": "next_cursor"
+          }
+        }
+      },
+      "examples": [
+        "wecom school living-get-watch-stat-v2 --livingid <livingid> [--next-cursor <next_cursor>]"
+      ],
+      "doc": {
+        "title": "获取观看直播统计V2",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95793",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/living/get_watch_stat_v2?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "livingid",
+            "required": true,
+            "description": "直播的id",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": false,
+            "description": "上一次调用时返回的next_cursor，初次调用可以填\"0\"",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否结束。1：表示还有更多数据，需要继续拉取，0：表示已经拉取完所有数据。注意只能根据该字段判断是否已经拉完数据",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "当前数据最后一个cursor值，如果下次调用带上该值则从该cursor值往后拉，用于实现分页拉取",
+            "type": null
+          },
+          {
+            "name": "stat_info",
+            "required": null,
+            "description": "统计信息列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_students",
+            "required": null,
+            "description": "观看直播的学生列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_student_userid",
+            "required": null,
+            "description": "学生的userid",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_partyids",
+            "required": null,
+            "description": "学生所在的班级id列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_watch_time",
+            "required": null,
+            "description": "观看时长，单位为秒",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_enter_time",
+            "required": null,
+            "description": "首次进入直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_leave_time",
+            "required": null,
+            "description": "最后离开直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_info_students_is_comment",
+            "required": null,
+            "description": "是否评论，1表示评论，0表示没有评论",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents",
+            "required": null,
+            "description": "观看直播的家长列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_parent_userid",
+            "required": null,
+            "description": "家长的userid",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_student_userid",
+            "required": null,
+            "description": "家长对应学生的userid",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_partyids",
+            "required": null,
+            "description": "家长对应学生所在的班级id列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_watch_time",
+            "required": null,
+            "description": "观看时长，单位为秒",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_enter_time",
+            "required": null,
+            "description": "首次进入直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_leave_time",
+            "required": null,
+            "description": "最后离开直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_info_parents_is_comment",
+            "required": null,
+            "description": "是否评论，1表示评论，0表示没有评论",
+            "type": null
+          },
+          {
+            "name": "stat_info_visitors",
+            "required": null,
+            "description": "观看直播的游客列表",
+            "type": null
+          },
+          {
+            "name": "stat_info_visitors_nickname",
+            "required": null,
+            "description": "微信昵称",
+            "type": null
+          },
+          {
+            "name": "stat_info_visitors_watch_time",
+            "required": null,
+            "description": "观看时长，单位为秒",
+            "type": null
+          },
+          {
+            "name": "stat_info_visitors_enter_time",
+            "required": null,
+            "description": "首次进入直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_info_visitors_leave_time",
+            "required": null,
+            "description": "最后离开直播时间",
+            "type": null
+          },
+          {
+            "name": "stat_info_visitors_is_comment",
+            "required": null,
+            "description": "是否评论，1表示评论，0表示没有评论",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"livingid\": \"livingid1\",\n\t\"next_cursor\": \"NEXT_CURSOR\"\n}",
+        "request_example_json": {
+          "livingid": "livingid1",
+          "next_cursor": "NEXT_CURSOR"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"has_more\":1,\n   \"next_cursor\": \"NEXT_CURSOR\",\n   \"stat_info\":{\n   \"students\":[\n\t\t\t{\n\t\t\t\t\"student_userid\": \"zhansan_child\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t],\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 1\n\t\t\t}，\n\t\t\t{\n\t\t\t\t\"student_userid\": \"lisi_child\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t],\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 0\n\t\t\t}\n\t\t],\n\t\t\"parents\":[\n\t\t\t{\n\t\t\t\t\"parent_userid\": \"zhangsan\",\n\t\t\t\t\"student_userid\": \"zhansan_child\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t],\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 1\n\t\t\t}，\n\t\t\t{\n\t\t\t\t\"parent_userid\": \"lisi\",\n\t\t\t\t\"student_userid\": \"lisi_child\",\n\t\t\t\t\"partyids\":[\n\t\t\t\t\t10,11\n\t\t\t\t],\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 0\n\t\t\t}\n\t\t],\n\t\t\"visitors\":[\n\t\t\t{\n\t\t\t\t\"nickname\": \"wx_nickname1\",\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 1\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"nickname\": \"wx_nickname2\",\n\t\t\t\t\"watch_time\": 30,\n\t\t\t\t\"enter_time\": 1586433904,\n\t\t\t\t\"leave_time\": 1586434000,\n\t\t\t\t\"is_comment\": 0\n\t\t\t}\n\t\t]\n   }\n}",
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "set_arch_sync_mode",
+      "cli_action": "set-arch-sync-mode",
+      "summary": "设置家校通讯录自动同步模式",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/set_arch_sync_mode",
+      "args": [
+        {
+          "name": "arch_sync_mode",
+          "flag": "--arch-sync-mode",
+          "type": "str",
+          "help": "家校通讯录同步模式：1-禁止将标签同步至家校通讯录，2-禁止将家校通讯录同步至标签，3-禁止家校通讯录和标签相互同步",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "arch_sync_mode": {
+            "from_arg": "arch_sync_mode"
+          }
+        }
+      },
+      "examples": [
+        "wecom school set-arch-sync-mode --arch-sync-mode <arch_sync_mode>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "设置家校通讯录自动同步模式",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92345",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/set_arch_sync_mode?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "arch_sync_mode",
+            "required": true,
+            "description": "家校通讯录同步模式：1-禁止将标签同步至家校通讯录，2-禁止将家校通讯录同步至标签，3-禁止家校通讯录和标签相互同步",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"arch_sync_mode\":1\n}",
+        "request_example_json": {
+          "arch_sync_mode": 1
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "set_upgrade_info",
+      "cli_action": "set-upgrade-info",
+      "summary": "修改自动升年级的配置",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/set_upgrade_info",
+      "args": [
+        {
+          "name": "upgrade_time",
+          "flag": "--upgrade-time",
+          "type": "str",
+          "help": "自动升年级的时间，该时间戳只有月和日有效，不传则默认为传0，代表的1月1号"
+        },
+        {
+          "name": "upgrade_switch",
+          "flag": "--upgrade-switch",
+          "type": "str",
+          "help": "开启或关闭自动升年级。0：表示关闭，1：表示开启，不传默认关闭，传所有非1的值也视为关闭"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "upgrade_time": {
+            "from_arg": "upgrade_time"
+          },
+          "upgrade_switch": {
+            "from_arg": "upgrade_switch"
+          }
+        }
+      },
+      "examples": [
+        "wecom school set-upgrade-info [--upgrade-time <upgrade_time>] [--upgrade-switch <upgrade_switch>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "next_upgrade_time": {
+              "type": "integer",
+              "description": "下次升级的时间，只有年月日有效，如果该学校今年已经升过年级，那本参数会给明年对应日期的时间戳"
+            },
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "next_upgrade_time",
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "修改自动升年级的配置",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92949",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/set_upgrade_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "upgrade_time",
+            "required": false,
+            "description": "自动升年级的时间，该时间戳只有月和日有效，不传则默认为传0，代表的1月1号",
+            "type": null
+          },
+          {
+            "name": "upgrade_switch",
+            "required": false,
+            "description": "开启或关闭自动升年级。0：表示关闭，1：表示开启，不传默认关闭，传所有非1的值也视为关闭",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "next_upgrade_time",
+            "required": null,
+            "description": "下次升级的时间，只有年月日有效，如果该学校今年已经升过年级，那本参数会给明年对应日期的时间戳",
+            "type": null
+          },
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"upgrade_time\": 1594090969,\n   \"upgrade_switch\": 2\n}",
+        "request_example_json": {
+          "upgrade_time": 1594090969,
+          "upgrade_switch": 2
+        },
+        "response_example_text": "{\n   \"next_upgrade_time\": 1625587200,\n   \"errcode\": 0,\n   \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "next_upgrade_time": 1625587200,
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "user_batch_create_parent",
+      "cli_action": "user-batch-create-parent",
+      "summary": "批量创建家长",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/batch_create_parent",
+      "args": [
+        {
+          "name": "parents",
+          "flag": "--parents",
+          "type": "str",
+          "help": "家长列表，每次最多100个",
+          "required": true
+        },
+        {
+          "name": "parents_parent_userid",
+          "flag": "--parents-parent-userid",
+          "type": "str",
+          "help": "家长UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+          "required": true
+        },
+        {
+          "name": "parents_mobile",
+          "flag": "--parents-mobile",
+          "type": "str",
+          "help": "家长手机号",
+          "required": true
+        },
+        {
+          "name": "parents_to_invite",
+          "flag": "--parents-to-invite",
+          "type": "bool",
+          "help": "是否发起邀请，默认为true"
+        },
+        {
+          "name": "parents_children",
+          "flag": "--parents-children",
+          "type": "str",
+          "help": "家长的孩子列表，最多10个",
+          "required": true
+        },
+        {
+          "name": "parents_children_student_userid",
+          "flag": "--parents-children-student-userid",
+          "type": "str",
+          "help": "学生的UserID",
+          "required": true
+        },
+        {
+          "name": "parents_children_relation",
+          "flag": "--parents-children-relation",
+          "type": "str",
+          "help": "家长与学生的关系，最长32字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "parents": {
+            "from_arg": "parents"
+          },
+          "parents_parent_userid": {
+            "from_arg": "parents_parent_userid"
+          },
+          "parents_mobile": {
+            "from_arg": "parents_mobile"
+          },
+          "parents_to_invite": {
+            "from_arg": "parents_to_invite"
+          },
+          "parents_children": {
+            "from_arg": "parents_children"
+          },
+          "parents_children_student_userid": {
+            "from_arg": "parents_children_student_userid"
+          },
+          "parents_children_relation": {
+            "from_arg": "parents_children_relation"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-batch-create-parent --parents <parents> --parents-parent-userid <parents_parent_userid> --parents-mobile <parents_mobile> [--parents-to-invite <parents_to_invite>] --parents-children <parents_children> --parents-children-student-userid <parents_children_student_userid> --parents-children-relation <parents_children_relation>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "result_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "parent_userid": {
+                    "type": "string"
+                  },
+                  "errcode": {
+                    "type": "integer",
+                    "description": "返回码"
+                  },
+                  "errmsg": {
+                    "type": "string",
+                    "description": "对返回码的文本描述内容"
+                  }
+                },
+                "required": [
+                  "parent_userid",
+                  "errcode",
+                  "errmsg"
+                ]
+              },
+              "description": "失败列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "result_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "批量创建家长",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92334",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/batch_create_parent?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "parents",
+            "required": true,
+            "description": "家长列表，每次最多100个",
+            "type": null
+          },
+          {
+            "name": "parents_parent_userid",
+            "required": true,
+            "description": "家长UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+            "type": null
+          },
+          {
+            "name": "parents_mobile",
+            "required": true,
+            "description": "家长手机号",
+            "type": null
+          },
+          {
+            "name": "parents_to_invite",
+            "required": false,
+            "description": "是否发起邀请，默认为true",
+            "type": null
+          },
+          {
+            "name": "parents_children",
+            "required": true,
+            "description": "家长的孩子列表，最多10个",
+            "type": null
+          },
+          {
+            "name": "parents_children_student_userid",
+            "required": true,
+            "description": "学生的UserID",
+            "type": null
+          },
+          {
+            "name": "parents_children_relation",
+            "required": true,
+            "description": "家长与学生的关系，最长32字节",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "result_list",
+            "required": null,
+            "description": "失败列表",
+            "type": null
+          },
+          {
+            "name": "result_list_parent_userid",
+            "required": null,
+            "description": "失败的家长userid",
+            "type": null
+          },
+          {
+            "name": "result_list_errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "result_list_errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"parents\":[\n\t\t{\n\t\t\t\"parent_userid\": \"zhangsan_parent_userid\",\n    \t\t\"mobile\": \"18000000000\",\n\t\t\t\"to_invite\": false,\n\t\t\t\"children\":[\n\t\t\t\t{\n\t\t\t\t\t\"student_userid\": \"zhangsan\",\n    \t\t        \"relation\": \"爸爸\"\n    \t\t    },\n    \t\t    {\n\t\t\t\t\t\"student_userid\": \"lisi\",\n    \t\t        \"relation\": \"伯父\"\n    \t\t    }\n    \t\t]\n\t\t},\n\t\t{\n\t\t\t\"parent_userid\": \"lisi_parent_userid\",\n    \t\t\"mobile\": \"18000000001\",\n\t\t\t\"children\":[\n\t\t\t\t{\n\t\t\t\t\t\"student_userid\": \"lisi\",\n    \t\t        \"relation\": \"爸爸\"\n    \t\t    },\n    \t\t    {\n\t\t\t\t\t\"student_userid\": \"zhangsan\",\n    \t\t        \"relation\": \"伯父\"\n    \t\t    }\n    \t\t]\n\t\t}\n\t]\n}",
+        "request_example_json": {
+          "parents": [
+            {
+              "parent_userid": "zhangsan_parent_userid",
+              "mobile": "18000000000",
+              "to_invite": false,
+              "children": [
+                {
+                  "student_userid": "zhangsan",
+                  "relation": "爸爸"
+                },
+                {
+                  "student_userid": "lisi",
+                  "relation": "伯父"
+                }
+              ]
+            },
+            {
+              "parent_userid": "lisi_parent_userid",
+              "mobile": "18000000001",
+              "children": [
+                {
+                  "student_userid": "lisi",
+                  "relation": "爸爸"
+                },
+                {
+                  "student_userid": "zhangsan",
+                  "relation": "伯父"
+                }
+              ]
+            }
+          ]
+        },
+        "response_example_text": "{\n\t\"errcode\": 1,\n\t\"errmsg\": \"invalid parent_userid: lisi_parent_userid\",\n\t\"result_list\": [\n\t\t{\n\t\t\t\"parent_userid\": \"lisi_parent_userid\",\n\t\t\t\"errcode\": 1,\n\t\t\t\"errmsg\": \"invalid parent_userid: lisi_parent_userid\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 1,
+          "errmsg": "invalid parent_userid: lisi_parent_userid",
+          "result_list": [
+            {
+              "parent_userid": "lisi_parent_userid",
+              "errcode": 1,
+              "errmsg": "invalid parent_userid: lisi_parent_userid"
+            }
+          ]
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "当参数字段超过长度限制，那么整个请求会被拦掉。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_batch_create_student",
+      "cli_action": "user-batch-create-student",
+      "summary": "批量创建学生",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/batch_create_student",
+      "args": [
+        {
+          "name": "students",
+          "flag": "--students",
+          "type": "str",
+          "help": "学生列表，每次最多100个学生",
+          "required": true
+        },
+        {
+          "name": "students_student_userid",
+          "flag": "--students-student-userid",
+          "type": "str",
+          "help": "学生UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+          "required": true
+        },
+        {
+          "name": "students_mobile",
+          "flag": "--students-mobile",
+          "type": "str",
+          "help": "学生手机号"
+        },
+        {
+          "name": "students_to_invite",
+          "flag": "--students-to-invite",
+          "type": "bool",
+          "help": "是否发起邀请，默认为true"
+        },
+        {
+          "name": "students_name",
+          "flag": "--students-name",
+          "type": "str",
+          "help": "学生姓名，长度为1~32个字符",
+          "required": true
+        },
+        {
+          "name": "students_department",
+          "flag": "--students-department",
+          "type": "str",
+          "help": "学生所在的班级id列表,不超过20个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "students": {
+            "from_arg": "students"
+          },
+          "students_student_userid": {
+            "from_arg": "students_student_userid"
+          },
+          "students_mobile": {
+            "from_arg": "students_mobile"
+          },
+          "students_to_invite": {
+            "from_arg": "students_to_invite"
+          },
+          "students_name": {
+            "from_arg": "students_name"
+          },
+          "students_department": {
+            "from_arg": "students_department"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-batch-create-student --students <students> --students-student-userid <students_student_userid> [--students-mobile <students_mobile>] [--students-to-invite <students_to_invite>] --students-name <students_name> --students-department <students_department>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "result_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "student_userid": {
+                    "type": "string"
+                  },
+                  "errcode": {
+                    "type": "integer",
+                    "description": "返回码"
+                  },
+                  "errmsg": {
+                    "type": "string",
+                    "description": "对返回码的文本描述内容"
+                  }
+                },
+                "required": [
+                  "student_userid",
+                  "errcode",
+                  "errmsg"
+                ]
+              },
+              "description": "失败的学生列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "result_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "批量创建学生",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92328",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/batch_create_student?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "students",
+            "required": true,
+            "description": "学生列表，每次最多100个学生",
+            "type": null
+          },
+          {
+            "name": "students_student_userid",
+            "required": true,
+            "description": "学生UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+            "type": null
+          },
+          {
+            "name": "students_mobile",
+            "required": false,
+            "description": "学生手机号",
+            "type": null
+          },
+          {
+            "name": "students_to_invite",
+            "required": false,
+            "description": "是否发起邀请，默认为true",
+            "type": null
+          },
+          {
+            "name": "students_name",
+            "required": true,
+            "description": "学生姓名，长度为1~32个字符",
+            "type": null
+          },
+          {
+            "name": "students_department",
+            "required": true,
+            "description": "学生所在的班级id列表,不超过20个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "result_list",
+            "required": null,
+            "description": "失败的学生列表",
+            "type": null
+          },
+          {
+            "name": "result_list_student_userid",
+            "required": null,
+            "description": "失败的学生userid",
+            "type": null
+          },
+          {
+            "name": "result_list_errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "result_list_errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"students\":[\n        {\n\t\t\t\"student_userid\": \"zhangsan\",\n\t\t\t\"mobile\": \"18000000000\",\n\t\t\t\"to_invite\": false,\n\t\t\t\"name\": \"张三\",\n\t\t\t\"department\": [1, 2]\n\t\t},\n        {\n\t\t\t\"student_userid\": \"lisi\",\n\t\t\t\"mobile\": \"18000000000\",\n\t\t\t\"name\": \"李四\",\n\t\t\t\"department\": [3, 4]\n\t\t}\n     ]\n}",
+        "request_example_json": {
+          "students": [
+            {
+              "student_userid": "zhangsan",
+              "mobile": "18000000000",
+              "to_invite": false,
+              "name": "张三",
+              "department": [
+                1,
+                2
+              ]
+            },
+            {
+              "student_userid": "lisi",
+              "mobile": "18000000000",
+              "name": "李四",
+              "department": [
+                3,
+                4
+              ]
+            }
+          ]
+        },
+        "response_example_text": "{\n\t\"errcode\": 1,\n\t\"errmsg\": \"invalid student_userid: zhangsan\",\n\t\"result_list\": [\n\t\t{\n\t\t\t\"student_userid\": \"zhangsan\",\n\t\t\t\"errcode\": 1,\n\t\t\t\"errmsg\": \"invalid student_userid: zhangsan\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 1,
+          "errmsg": "invalid student_userid: zhangsan",
+          "result_list": [
+            {
+              "student_userid": "zhangsan",
+              "errcode": 1,
+              "errmsg": "invalid student_userid: zhangsan"
+            }
+          ]
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "当参数字段超过长度限制，那么整个请求会被拦掉。",
+          "注意，每个班级下学生总数不能超过3万个。建议保证创建department对应的部门和创建成员是串行化处理。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_batch_delete_parent",
+      "cli_action": "user-batch-delete-parent",
+      "summary": "批量删除家长",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/batch_delete_parent",
+      "args": [
+        {
+          "name": "useridlist",
+          "flag": "--useridlist",
+          "type": "str",
+          "help": "家长的userid列表，每次最多100个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "useridlist": {
+            "from_arg": "useridlist"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-batch-delete-parent --useridlist <useridlist>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "result_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "parent_userid": {
+                    "type": "string"
+                  },
+                  "errcode": {
+                    "type": "integer",
+                    "description": "返回码"
+                  },
+                  "errmsg": {
+                    "type": "string",
+                    "description": "对返回码的文本描述内容"
+                  }
+                },
+                "required": [
+                  "parent_userid",
+                  "errcode",
+                  "errmsg"
+                ]
+              },
+              "description": "批量操作结果"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "result_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "批量删除家长",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92335",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/batch_delete_parent?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "useridlist",
+            "required": true,
+            "description": "家长的userid列表，每次最多100个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "result_list",
+            "required": null,
+            "description": "批量操作结果",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"useridlist\": [\"zhangsan\", \"lisi\"]\n}",
+        "request_example_json": {
+          "useridlist": [
+            "zhangsan",
+            "lisi"
+          ]
+        },
+        "response_example_text": "{\n\t\"errcode\": 1111,\n\t\"errmsg\": \"userid not found\",\n\t\"result_list\": [\n\t\t{\n\t\t\t\"parent_userid\": \"lisi\",\n\t\t\t\"errcode\": 1111,\n\t\t\t\"errmsg\": \"userid not found\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 1111,
+          "errmsg": "userid not found",
+          "result_list": [
+            {
+              "parent_userid": "lisi",
+              "errcode": 1111,
+              "errmsg": "userid not found"
+            }
+          ]
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "user_batch_delete_student",
+      "cli_action": "user-batch-delete-student",
+      "summary": "批量删除学生",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/batch_delete_student",
+      "args": [
+        {
+          "name": "useridlist",
+          "flag": "--useridlist",
+          "type": "str",
+          "help": "学生的userid列表，每次最多100个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "useridlist": {
+            "from_arg": "useridlist"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-batch-delete-student --useridlist <useridlist>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "result_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "student_userid": {
+                    "type": "string"
+                  },
+                  "errcode": {
+                    "type": "integer",
+                    "description": "返回码"
+                  },
+                  "errmsg": {
+                    "type": "string",
+                    "description": "对返回码的文本描述内容"
+                  }
+                },
+                "required": [
+                  "student_userid",
+                  "errcode",
+                  "errmsg"
+                ]
+              },
+              "description": "批量操作结果"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "result_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "批量删除学生",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92329",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/batch_delete_student?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "useridlist",
+            "required": true,
+            "description": "学生的userid列表，每次最多100个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "result_list",
+            "required": null,
+            "description": "批量操作结果",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"useridlist\": [\"zhangsan\", \"lisi\"]\n}",
+        "request_example_json": {
+          "useridlist": [
+            "zhangsan",
+            "lisi"
+          ]
+        },
+        "response_example_text": "{\n\t\"errcode\": 1111,\n\t\"errmsg\": \"userid not found\",\n\t\"result_list\": [\n\t\t{\n\t\t\t\"student_userid\": \"lisi\",\n\t\t\t\"errcode\": 1111,\n\t\t\t\"errmsg\": \"userid not found\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 1111,
+          "errmsg": "userid not found",
+          "result_list": [
+            {
+              "student_userid": "lisi",
+              "errcode": 1111,
+              "errmsg": "userid not found"
+            }
+          ]
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "注意，如果学生还有家长，则不允许删除学生，必须先把家长删除"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_batch_update_parent",
+      "cli_action": "user-batch-update-parent",
+      "summary": "批量更新家长",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/batch_update_parent",
+      "args": [
+        {
+          "name": "parents",
+          "flag": "--parents",
+          "type": "str",
+          "help": "家长列表，每次最多100个"
+        },
+        {
+          "name": "parents_parent_userid",
+          "flag": "--parents-parent-userid",
+          "type": "str",
+          "help": "家长UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+          "required": true
+        },
+        {
+          "name": "parents_new_parent_userid",
+          "flag": "--parents-new-parent-userid",
+          "type": "str",
+          "help": "更新的家长UserID。不能与已经存在的家长userid相同。每个家长仅能更新一次。"
+        },
+        {
+          "name": "parents_mobile",
+          "flag": "--parents-mobile",
+          "type": "str",
+          "help": "家长手机号"
+        },
+        {
+          "name": "parents_children",
+          "flag": "--parents-children",
+          "type": "str",
+          "help": "家长的孩子列表，最多10个"
+        },
+        {
+          "name": "parents_children_student_userid",
+          "flag": "--parents-children-student-userid",
+          "type": "str",
+          "help": "学生的UserID",
+          "required": true
+        },
+        {
+          "name": "parents_children_relation",
+          "flag": "--parents-children-relation",
+          "type": "str",
+          "help": "家长与学生的关系，最长32字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "parents": {
+            "from_arg": "parents"
+          },
+          "parents_parent_userid": {
+            "from_arg": "parents_parent_userid"
+          },
+          "parents_new_parent_userid": {
+            "from_arg": "parents_new_parent_userid"
+          },
+          "parents_mobile": {
+            "from_arg": "parents_mobile"
+          },
+          "parents_children": {
+            "from_arg": "parents_children"
+          },
+          "parents_children_student_userid": {
+            "from_arg": "parents_children_student_userid"
+          },
+          "parents_children_relation": {
+            "from_arg": "parents_children_relation"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-batch-update-parent [--parents <parents>] --parents-parent-userid <parents_parent_userid> [--parents-new-parent-userid <parents_new_parent_userid>] [--parents-mobile <parents_mobile>] [--parents-children <parents_children>] --parents-children-student-userid <parents_children_student_userid> --parents-children-relation <parents_children_relation>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "result_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "parent_userid": {
+                    "type": "string"
+                  },
+                  "errcode": {
+                    "type": "integer",
+                    "description": "返回码"
+                  },
+                  "errmsg": {
+                    "type": "string",
+                    "description": "对返回码的文本描述内容"
+                  }
+                },
+                "required": [
+                  "parent_userid",
+                  "errcode",
+                  "errmsg"
+                ]
+              },
+              "description": "失败的学生列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "result_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "批量更新家长",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92336",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/batch_update_parent?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "parents",
+            "required": false,
+            "description": "家长列表，每次最多100个",
+            "type": null
+          },
+          {
+            "name": "parents_parent_userid",
+            "required": true,
+            "description": "家长UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+            "type": null
+          },
+          {
+            "name": "parents_new_parent_userid",
+            "required": false,
+            "description": "更新的家长UserID。不能与已经存在的家长userid相同。每个家长仅能更新一次。",
+            "type": null
+          },
+          {
+            "name": "parents_mobile",
+            "required": false,
+            "description": "家长手机号",
+            "type": null
+          },
+          {
+            "name": "parents_children",
+            "required": false,
+            "description": "家长的孩子列表，最多10个",
+            "type": null
+          },
+          {
+            "name": "parents_children_student_userid",
+            "required": true,
+            "description": "学生的UserID",
+            "type": null
+          },
+          {
+            "name": "parents_children_relation",
+            "required": true,
+            "description": "家长与学生的关系，最长32字节",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "result_list",
+            "required": null,
+            "description": "失败的学生列表",
+            "type": null
+          },
+          {
+            "name": "result_list_parent_userid",
+            "required": null,
+            "description": "失败的家长userid",
+            "type": null
+          },
+          {
+            "name": "result_list_errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "result_list_errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"parents\":[\n        {   \n            \"parent_userid\": \"zhangsan_baba\",\n\t\t\t\"new_parent_userid\":\"zhangsan_baba_new\",\n            \"mobile\": \"10000000000\",\n            \"children\":[\n                {   \n                    \"student_userid\": \"zhangsan\",\n                    \"relation\": \"爸爸\"\n                }   \n            ]   \n        },  \n        {   \n            \"parent_userid\": \"lisi_mama\",\n            \"mobile\": \"10000000001\",\n            \"children\":[\n                {\n                    \"student_userid\": \"lisi\",\n                    \"relation\": \"妈妈\"\n                }   \n            ]   \n        }   \n    ]   \n}",
+        "request_example_json": {
+          "parents": [
+            {
+              "parent_userid": "zhangsan_baba",
+              "new_parent_userid": "zhangsan_baba_new",
+              "mobile": "10000000000",
+              "children": [
+                {
+                  "student_userid": "zhangsan",
+                  "relation": "爸爸"
+                }
+              ]
+            },
+            {
+              "parent_userid": "lisi_mama",
+              "mobile": "10000000001",
+              "children": [
+                {
+                  "student_userid": "lisi",
+                  "relation": "妈妈"
+                }
+              ]
+            }
+          ]
+        },
+        "response_example_text": "{\n\t\"errcode\": 1,\n\t\"errmsg\": \"invalid parent_userid: lisi_parent_userid\",\n\t\"result_list\": [\n\t\t{\n\t\t\t\"parent_userid\": \"lisi_parent_userid\",\n\t\t\t\"errcode\": 1,\n\t\t\t\"errmsg\": \"invalid parent_userid: lisi_parent_userid\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 1,
+          "errmsg": "invalid parent_userid: lisi_parent_userid",
+          "result_list": [
+            {
+              "parent_userid": "lisi_parent_userid",
+              "errcode": 1,
+              "errmsg": "invalid parent_userid: lisi_parent_userid"
+            }
+          ]
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "当参数字段超过长度限制，那么整个请求会被拦掉。",
+          "注意，每个班级下学生总数不能超过3万个。建议保证创建department对应的部门和创建成员是串行化处理。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_batch_update_student",
+      "cli_action": "user-batch-update-student",
+      "summary": "批量更新学生",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/batch_update_student",
+      "args": [
+        {
+          "name": "students",
+          "flag": "--students",
+          "type": "str",
+          "help": "学生列表，每次最多100个"
+        },
+        {
+          "name": "students_student_userid",
+          "flag": "--students-student-userid",
+          "type": "str",
+          "help": "学生UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+          "required": true
+        },
+        {
+          "name": "students_mobile",
+          "flag": "--students-mobile",
+          "type": "str",
+          "help": "学生手机号"
+        },
+        {
+          "name": "students_new_student_userid",
+          "flag": "--students-new-student-userid",
+          "type": "str",
+          "help": "要变更的学生UserID,不能与已存在的UserID相同。每个学生仅能修改一次。"
+        },
+        {
+          "name": "students_name",
+          "flag": "--students-name",
+          "type": "str",
+          "help": "学生姓名，长度为1~32个字符"
+        },
+        {
+          "name": "students_department",
+          "flag": "--students-department",
+          "type": "str",
+          "help": "学生所在的班级id列表,不超过20个"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "students": {
+            "from_arg": "students"
+          },
+          "students_student_userid": {
+            "from_arg": "students_student_userid"
+          },
+          "students_mobile": {
+            "from_arg": "students_mobile"
+          },
+          "students_new_student_userid": {
+            "from_arg": "students_new_student_userid"
+          },
+          "students_name": {
+            "from_arg": "students_name"
+          },
+          "students_department": {
+            "from_arg": "students_department"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-batch-update-student [--students <students>] --students-student-userid <students_student_userid> [--students-mobile <students_mobile>] [--students-new-student-userid <students_new_student_userid>] [--students-name <students_name>] [--students-department <students_department>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "result_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "student_userid": {
+                    "type": "string"
+                  },
+                  "errcode": {
+                    "type": "integer",
+                    "description": "返回码"
+                  },
+                  "errmsg": {
+                    "type": "string",
+                    "description": "对返回码的文本描述内容"
+                  }
+                },
+                "required": [
+                  "student_userid",
+                  "errcode",
+                  "errmsg"
+                ]
+              },
+              "description": "失败的学生列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "result_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "批量更新学生",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92330",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/batch_update_student?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "students",
+            "required": false,
+            "description": "学生列表，每次最多100个",
+            "type": null
+          },
+          {
+            "name": "students_student_userid",
+            "required": true,
+            "description": "学生UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+            "type": null
+          },
+          {
+            "name": "students_mobile",
+            "required": false,
+            "description": "学生手机号",
+            "type": null
+          },
+          {
+            "name": "students_new_student_userid",
+            "required": false,
+            "description": "要变更的学生UserID,不能与已存在的UserID相同。每个学生仅能修改一次。",
+            "type": null
+          },
+          {
+            "name": "students_name",
+            "required": false,
+            "description": "学生姓名，长度为1~32个字符",
+            "type": null
+          },
+          {
+            "name": "students_department",
+            "required": false,
+            "description": "学生所在的班级id列表,不超过20个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "result_list",
+            "required": null,
+            "description": "失败的学生列表",
+            "type": null
+          },
+          {
+            "name": "result_list_student_userid",
+            "required": null,
+            "description": "失败的学生userid",
+            "type": null
+          },
+          {
+            "name": "result_list_errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "result_list_errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"students\":[\n        {\n\t\t\t\"student_userid\": \"zhangsan\",\n\t\t\t\"mobile\": \"10000000000\",\n\t\t\t\"new_student_userid\":\"zhangsan_new\",\n\t\t\t\"name\": \"张三\",\n\t\t\t\"department\": [1, 2]\n\t\t},\n        {\n\t\t\t\"student_userid\": \"lisi\",\n\t\t\t\"mobile\": \"10000000000\",\n\t\t\t\"name\": \"李四\",\n\t\t\t\"department\": [3, 4]\n\t\t}\n     ]\n}",
+        "request_example_json": {
+          "students": [
+            {
+              "student_userid": "zhangsan",
+              "mobile": "10000000000",
+              "new_student_userid": "zhangsan_new",
+              "name": "张三",
+              "department": [
+                1,
+                2
+              ]
+            },
+            {
+              "student_userid": "lisi",
+              "mobile": "10000000000",
+              "name": "李四",
+              "department": [
+                3,
+                4
+              ]
+            }
+          ]
+        },
+        "response_example_text": "{\n\t\"errcode\": 1,\n\t\"errmsg\": \"invalid student_userid: zhangsan\",\n\t\"result_list\": [\n\t\t{\n\t\t\t\"student_userid\": \"zhangsan\",\n\t\t\t\"errcode\": 1,\n\t\t\t\"errmsg\": \"invalid student_userid: zhangsan\"\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 1,
+          "errmsg": "invalid student_userid: zhangsan",
+          "result_list": [
+            {
+              "student_userid": "zhangsan",
+              "errcode": 1,
+              "errmsg": "invalid student_userid: zhangsan"
+            }
+          ]
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "当参数字段超过长度限制，那么整个请求会被拦掉。",
+          "注意，每个班级下学生总数不能超过3万个。建议保证创建department对应的部门和创建成员是串行化处理。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_create_parent",
+      "cli_action": "user-create-parent",
+      "summary": "创建家长",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/create_parent",
+      "args": [
+        {
+          "name": "parent_userid",
+          "flag": "--parent-userid",
+          "type": "str",
+          "help": "家长UserID。学校内必须唯一，可以与企业通讯录内成员UserID相同。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+          "required": true
+        },
+        {
+          "name": "mobile",
+          "flag": "--mobile",
+          "type": "str",
+          "help": "家长手机号",
+          "required": true
+        },
+        {
+          "name": "to_invite",
+          "flag": "--to-invite",
+          "type": "bool",
+          "help": "是否发起邀请，默认为true，仅验证的学校才能发起邀请。"
+        },
+        {
+          "name": "children",
+          "flag": "--children",
+          "type": "str",
+          "help": "家长的孩子列表，最多10",
+          "required": true
+        },
+        {
+          "name": "children_student_userid",
+          "flag": "--children-student-userid",
+          "type": "str",
+          "help": "学生的UserID",
+          "required": true
+        },
+        {
+          "name": "children_relation",
+          "flag": "--children-relation",
+          "type": "str",
+          "help": "家长与学生的关系，最长32字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "parent_userid": {
+            "from_arg": "parent_userid"
+          },
+          "mobile": {
+            "from_arg": "mobile"
+          },
+          "to_invite": {
+            "from_arg": "to_invite"
+          },
+          "children": {
+            "from_arg": "children"
+          },
+          "children_student_userid": {
+            "from_arg": "children_student_userid"
+          },
+          "children_relation": {
+            "from_arg": "children_relation"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-create-parent --parent-userid <parent_userid> --mobile <mobile> [--to-invite <to_invite>] --children <children> --children-student-userid <children_student_userid> --children-relation <children_relation>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "创建家长",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92331",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/create_parent?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "parent_userid",
+            "required": true,
+            "description": "家长UserID。学校内必须唯一，可以与企业通讯录内成员UserID相同。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+            "type": null
+          },
+          {
+            "name": "mobile",
+            "required": true,
+            "description": "家长手机号",
+            "type": null
+          },
+          {
+            "name": "to_invite",
+            "required": false,
+            "description": "是否发起邀请，默认为true，仅验证的学校才能发起邀请。",
+            "type": null
+          },
+          {
+            "name": "children",
+            "required": true,
+            "description": "家长的孩子列表，最多10",
+            "type": null
+          },
+          {
+            "name": "children_student_userid",
+            "required": true,
+            "description": "学生的UserID",
+            "type": null
+          },
+          {
+            "name": "children_relation",
+            "required": true,
+            "description": "家长与学生的关系，最长32字节",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"parent_userid\": \"zhangsan_parent_userid\",\n    \"mobile\": \"10000000000\",\n\t\"to_invite\": false,\n\t\"children\":[\n\t\t{\n\t\t\t\"student_userid\": \"zhangsan\",\n            \"relation\": \"爸爸\"\n        },\n        {\n\t\t\t\"student_userid\": \"lisi\",\n            \"relation\": \"伯父\"\n        }\n     ]\n}",
+        "request_example_json": {
+          "parent_userid": "zhangsan_parent_userid",
+          "mobile": "10000000000",
+          "to_invite": false,
+          "children": [
+            {
+              "student_userid": "zhangsan",
+              "relation": "爸爸"
+            },
+            {
+              "student_userid": "lisi",
+              "relation": "伯父"
+            }
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"created\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "created"
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "当参数字段超过长度限制，那么整个请求会被拦掉。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_create_student",
+      "cli_action": "user-create-student",
+      "summary": "创建学生",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/create_student",
+      "args": [
+        {
+          "name": "student_userid",
+          "flag": "--student-userid",
+          "type": "str",
+          "help": "学生UserID。学校内必须唯一，可以与企业通讯录内成员UserID相同。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+          "required": true
+        },
+        {
+          "name": "mobile",
+          "flag": "--mobile",
+          "type": "str",
+          "help": "学生手机号"
+        },
+        {
+          "name": "to_invite",
+          "flag": "--to-invite",
+          "type": "bool",
+          "help": "是否发起邀请，默认为true，仅验证的学校才能发起邀请。"
+        },
+        {
+          "name": "name",
+          "flag": "--name",
+          "type": "str",
+          "help": "学生姓名，长度为1~32个字符",
+          "required": true
+        },
+        {
+          "name": "department",
+          "flag": "--department",
+          "type": "str",
+          "help": "学生所在的班级id列表,不超过20个",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "student_userid": {
+            "from_arg": "student_userid"
+          },
+          "mobile": {
+            "from_arg": "mobile"
+          },
+          "to_invite": {
+            "from_arg": "to_invite"
+          },
+          "name": {
+            "from_arg": "name"
+          },
+          "department": {
+            "from_arg": "department"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-create-student --student-userid <student_userid> [--mobile <mobile>] [--to-invite <to_invite>] --name <name> --department <department>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "创建学生",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92325",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/create_student?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "student_userid",
+            "required": true,
+            "description": "学生UserID。学校内必须唯一，可以与企业通讯录内成员UserID相同。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+            "type": null
+          },
+          {
+            "name": "mobile",
+            "required": false,
+            "description": "学生手机号",
+            "type": null
+          },
+          {
+            "name": "to_invite",
+            "required": false,
+            "description": "是否发起邀请，默认为true，仅验证的学校才能发起邀请。",
+            "type": null
+          },
+          {
+            "name": "name",
+            "required": true,
+            "description": "学生姓名，长度为1~32个字符",
+            "type": null
+          },
+          {
+            "name": "department",
+            "required": true,
+            "description": "学生所在的班级id列表,不超过20个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"student_userid\": \"zhangsan\",\n\t\"mobile\": \"10000000000\",\n\t\"to_invite\": false,\n\t\"name\": \"张三\",\n\t\"department\": [1, 2]\n}",
+        "request_example_json": {
+          "student_userid": "zhangsan",
+          "mobile": "10000000000",
+          "to_invite": false,
+          "name": "张三",
+          "department": [
+            1,
+            2
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"created\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "created"
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "当参数字段超过长度限制，那么整个请求会被拦掉。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_delete_parent",
+      "cli_action": "user-delete-parent",
+      "summary": "删除家长",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/user/delete_parent",
+      "args": [
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "家校通信录中家长的userid",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "userid": {
+            "from_arg": "userid"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-delete-parent --userid <userid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除家长",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92332",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/delete_parent?access_token=ACCESS_TOKEN&userid=USERID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "家校通信录中家长的userid",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n\t\"errcode\": 0,\n    \"errmsg\": \"deleted\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "deleted"
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "user_delete_student",
+      "cli_action": "user-delete-student",
+      "summary": "删除学生",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/user/delete_student",
+      "args": [
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "家校通信录中学生的userid",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "userid": {
+            "from_arg": "userid"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-delete-student --userid <userid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除学生",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92326",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/delete_student?access_token=ACCESS_TOKEN&userid=USERID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "家校通信录中学生的userid",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n\t\"errcode\": 0,\n    \"errmsg\": \"deleted\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "deleted"
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "注意，如果学生还有家长，则不允许删除学生，必须先把家长删除"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_get",
+      "cli_action": "user-get",
+      "summary": "读取学生或家长",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/user/get",
+      "args": [
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "家校通讯录的userid，家长或者学生的userid。不区分大小写，长度为1~64个字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "userid": {
+            "from_arg": "userid"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-get --userid <userid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "user_type": {
+              "type": "integer",
+              "description": "用户类型:1表示学生，2表示家长"
+            },
+            "student": {
+              "type": "object",
+              "properties": {
+                "student_userid": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "department": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "parents": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "parent_userid": {
+                        "type": "string"
+                      },
+                      "relation": {
+                        "type": "string"
+                      },
+                      "mobile": {
+                        "type": "string"
+                      },
+                      "is_subscribe": {
+                        "type": "integer"
+                      },
+                      "external_userid": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "parent_userid",
+                      "relation",
+                      "mobile",
+                      "is_subscribe",
+                      "external_userid"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "student_userid",
+                "name",
+                "department",
+                "parents"
+              ],
+              "description": "学生字段，user_type为1时返回该字段"
+            },
+            "parent": {
+              "type": "object",
+              "properties": {
+                "parent_userid": {
+                  "type": "string"
+                },
+                "mobile": {
+                  "type": "string"
+                },
+                "is_subscribe": {
+                  "type": "integer"
+                },
+                "external_userid": {
+                  "type": "string"
+                },
+                "children": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "student_userid": {
+                        "type": "string"
+                      },
+                      "relation": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "student_userid",
+                      "relation"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "parent_userid",
+                "mobile",
+                "is_subscribe",
+                "external_userid",
+                "children"
+              ],
+              "description": "学生家长，user_type为2时返回该字段"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "user_type",
+            "student",
+            "parent"
+          ]
+        }
+      },
+      "doc": {
+        "title": "读取学生或家长",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92337",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/get?access_token=ACCESS_TOKEN&userid=USERID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "家校通讯录的userid，家长或者学生的userid。不区分大小写，长度为1~64个字节",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "user_type",
+            "required": null,
+            "description": "用户类型:1表示学生，2表示家长",
+            "type": null
+          },
+          {
+            "name": "student",
+            "required": null,
+            "description": "学生字段，user_type为1时返回该字段",
+            "type": null
+          },
+          {
+            "name": "student_student_userid",
+            "required": null,
+            "description": "学生UserID",
+            "type": null
+          },
+          {
+            "name": "student_name",
+            "required": null,
+            "description": "学生名字",
+            "type": null
+          },
+          {
+            "name": "student_department",
+            "required": null,
+            "description": "学生所在的班级id列表,不超过20个",
+            "type": null
+          },
+          {
+            "name": "student_parents",
+            "required": null,
+            "description": "学生家长列表",
+            "type": null
+          },
+          {
+            "name": "student_parents_parent_userid",
+            "required": null,
+            "description": "家长的userid",
+            "type": null
+          },
+          {
+            "name": "student_parents_relation",
+            "required": null,
+            "description": "与家长的关系",
+            "type": null
+          },
+          {
+            "name": "student_parents_mobile",
+            "required": null,
+            "description": "家长手机号，第三方不可获取；代开发自建应用需管理员授权手机号才返回",
+            "type": null
+          },
+          {
+            "name": "student_parents_external_userid",
+            "required": null,
+            "description": "家长的external_userid,仅当家长已关注才返回。对同一个服务商来说，同一个家长微信在不同学校下返回的家长的external_userid是一样的",
+            "type": null
+          },
+          {
+            "name": "parent",
+            "required": null,
+            "description": "学生家长，user_type为2时返回该字段",
+            "type": null
+          },
+          {
+            "name": "parent_parent_userid",
+            "required": null,
+            "description": "家长的userid",
+            "type": null
+          },
+          {
+            "name": "parents_relation",
+            "required": null,
+            "description": "学生与家长的关系",
+            "type": null
+          },
+          {
+            "name": "parent_mobile",
+            "required": null,
+            "description": "家长手机号，第三方不可获取；代开发自建应用需管理员授权手机号才返回",
+            "type": null
+          },
+          {
+            "name": "parent_is_subscribe",
+            "required": null,
+            "description": "家长是否关注了“学校通知”，0-未关注，1-已关注",
+            "type": null
+          },
+          {
+            "name": "parent_external_userid",
+            "required": null,
+            "description": "家长的external_userid,仅当家长已关注才返回。对同一个服务商来说，同一个家长微信在不同学校下返回的家长的external_userid是一样的",
+            "type": null
+          },
+          {
+            "name": "parent_children",
+            "required": null,
+            "description": "家长孩子列表",
+            "type": null
+          },
+          {
+            "name": "parent_children_student_userid",
+            "required": null,
+            "description": "学生的userid",
+            "type": null
+          },
+          {
+            "name": "parent_children_relation",
+            "required": null,
+            "description": "家长与孩子关系",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"user_type\": 1,\n\t\"student\":{\n\t\t\"student_userid\": \"zhangsan\",\n\t\t\"name\": \"张三\",\n\t\t\"department\": [1, 2],\n\t\t\"parents\":[\n\t\t\t{\n\t\t\t\t\"parent_userid\": \"zhangsan_parent1\",\n\t\t\t\t\"relation\": \"爸爸\",\n\t\t\t\t\"mobile\":\"18000000000\",\n\t\t\t\t\"is_subscribe\": 1,\n\t\t\t\t\"external_userid\":\"xxxxx\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"parent_userid\": \"zhangsan_parent2\",\n\t\t\t\t\"relation\": \"妈妈\",\n\t\t\t\t\"mobile\": \"18000000001\",\n\t\t\t\t\"is_subscribe\": 0\n\t\t\t}\n\t\t]\n    },\n\t\"parent\":{\n\t\t\"parent_userid\": \"zhangsan_parent2\",\n\t\t\"mobile\": \"18000000003\",\n\t\t\"is_subscribe\": 1,\n\t\t\"external_userid\":\"xxxxx\",\n\t\t\"children\":[\n\t\t\t{\n\t\t\t\t\"student_userid\": \"zhangsan\",\n\t\t\t\t\"relation\": \"妈妈\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"student_userid\": \"lisi\",\n\t\t\t\t\"relation\": \"伯母\"\n\t\t\t}\n\t\t]\n\t}\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "user_type": 1,
+          "student": {
+            "student_userid": "zhangsan",
+            "name": "张三",
+            "department": [
+              1,
+              2
+            ],
+            "parents": [
+              {
+                "parent_userid": "zhangsan_parent1",
+                "relation": "爸爸",
+                "mobile": "18000000000",
+                "is_subscribe": 1,
+                "external_userid": "xxxxx"
+              },
+              {
+                "parent_userid": "zhangsan_parent2",
+                "relation": "妈妈",
+                "mobile": "18000000001",
+                "is_subscribe": 0
+              }
+            ]
+          },
+          "parent": {
+            "parent_userid": "zhangsan_parent2",
+            "mobile": "18000000003",
+            "is_subscribe": 1,
+            "external_userid": "xxxxx",
+            "children": [
+              {
+                "student_userid": "zhangsan",
+                "relation": "妈妈"
+              },
+              {
+                "student_userid": "lisi",
+                "relation": "伯母"
+              }
+            ]
+          }
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "user_list_parent",
+      "cli_action": "user-list-parent",
+      "summary": "获取部门家长详情",
+      "method": "GET",
+      "endpoint": "/cgi-bin/school/user/list_parent",
+      "args": [
+        {
+          "name": "department_id",
+          "flag": "--department-id",
+          "type": "str",
+          "help": "获取的部门id",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "department_id": {
+            "from_arg": "department_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-list-parent --department-id <department_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "parents": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "parent_userid": {
+                    "type": "string"
+                  },
+                  "mobile": {
+                    "type": "string"
+                  },
+                  "is_subscribe": {
+                    "type": "integer"
+                  },
+                  "external_userid": {
+                    "type": "string"
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "student_userid": {
+                          "type": "string"
+                        },
+                        "relation": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "student_userid",
+                        "relation",
+                        "name"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "parent_userid",
+                  "mobile",
+                  "is_subscribe",
+                  "external_userid",
+                  "children"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "parents"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取部门家长详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92446",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/list_parent?access_token=ACCESS_TOKEN&department_id=DEPARTMENT_ID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "department_id",
+            "required": true,
+            "description": "获取的部门id",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "parents_parent_userid",
+            "required": null,
+            "description": "家长的userid",
+            "type": null
+          },
+          {
+            "name": "parents_mobile",
+            "required": null,
+            "description": "家长手机号，第三方不可获取;代开发应用需要管理员授权该权限才返回",
+            "type": null
+          },
+          {
+            "name": "parents_is_subscribe",
+            "required": null,
+            "description": "家长是否关注了“学校通知”，0-未关注，1-已关注",
+            "type": null
+          },
+          {
+            "name": "parents_children",
+            "required": null,
+            "description": "家长孩子列表",
+            "type": null
+          },
+          {
+            "name": "parents_children_student_userid",
+            "required": null,
+            "description": "学生的userid",
+            "type": null
+          },
+          {
+            "name": "parents_children_relation",
+            "required": null,
+            "description": "家长与学生关系",
+            "type": null
+          },
+          {
+            "name": "parents_children_name",
+            "required": null,
+            "description": "学生姓名",
+            "type": null
+          },
+          {
+            "name": "parents_external_userid",
+            "required": null,
+            "description": "家长的external_userid,仅当家长已关注才返回。对同一个服务商来说，同一个家长微信在不同学校下返回的家长的external_userid是一样的",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"parents\": [\n        {\n            \"parent_userid\": \"zhangsan_parent\",\n            \"mobile\": \"18900000000\",\n            \"is_subscribe\": 1,\n\t\t\t\"external_userid\":\"xxx\",\n            \"children\": [\n                {\n                    \"student_userid\": \"zhangsan\",\n                    \"relation\": \"爸爸\",\n                    \"name\": \"张三\"\n                }\n            ]\n        },\n\t\t{\n            \"parent_userid\": \"lisi_parent\",\n            \"mobile\": \"18900000001\",\n            \"is_subscribe\": 0,\n            \"children\": [\n                {\n                    \"student_userid\": \"lisi\",\n                    \"relation\": \"妈妈\",\n                    \"name\": \"李四\"\n                }\n            ]\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "parents": [
+            {
+              "parent_userid": "zhangsan_parent",
+              "mobile": "18900000000",
+              "is_subscribe": 1,
+              "external_userid": "xxx",
+              "children": [
+                {
+                  "student_userid": "zhangsan",
+                  "relation": "爸爸",
+                  "name": "张三"
+                }
+              ]
+            },
+            {
+              "parent_userid": "lisi_parent",
+              "mobile": "18900000001",
+              "is_subscribe": 0,
+              "children": [
+                {
+                  "student_userid": "lisi",
+                  "relation": "妈妈",
+                  "name": "李四"
+                }
+              ]
+            }
+          ]
+        },
+        "notes": [
+          "如需获取该部门及其子部门的所有家长，需先获取该部门下的子部门，然后再获取子部门下的家长，逐层递归获取。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_update_parent",
+      "cli_action": "user-update-parent",
+      "summary": "更新家长",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/update_parent",
+      "args": [
+        {
+          "name": "parent_userid",
+          "flag": "--parent-userid",
+          "type": "str",
+          "help": "家长UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+          "required": true
+        },
+        {
+          "name": "new_parent_userid",
+          "flag": "--new-parent-userid",
+          "type": "str",
+          "help": "更新的家长UserID。不能与已经存在的家长UserID相同。每个家长仅能更新一次。"
+        },
+        {
+          "name": "mobile",
+          "flag": "--mobile",
+          "type": "str",
+          "help": "家长手机号"
+        },
+        {
+          "name": "children",
+          "flag": "--children",
+          "type": "str",
+          "help": "家长的孩子列表，该字段是全量更新，如果孩子列表为空则忽略该字段，最多10个"
+        },
+        {
+          "name": "children_student_userid",
+          "flag": "--children-student-userid",
+          "type": "str",
+          "help": "学生的UserID",
+          "required": true
+        },
+        {
+          "name": "children_relation",
+          "flag": "--children-relation",
+          "type": "str",
+          "help": "家长与学生的关系，最长32字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "parent_userid": {
+            "from_arg": "parent_userid"
+          },
+          "new_parent_userid": {
+            "from_arg": "new_parent_userid"
+          },
+          "mobile": {
+            "from_arg": "mobile"
+          },
+          "children": {
+            "from_arg": "children"
+          },
+          "children_student_userid": {
+            "from_arg": "children_student_userid"
+          },
+          "children_relation": {
+            "from_arg": "children_relation"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-update-parent --parent-userid <parent_userid> [--new-parent-userid <new_parent_userid>] [--mobile <mobile>] [--children <children>] --children-student-userid <children_student_userid> --children-relation <children_relation>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "更新家长",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92333",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/update_parent?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "parent_userid",
+            "required": true,
+            "description": "家长UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+            "type": null
+          },
+          {
+            "name": "new_parent_userid",
+            "required": false,
+            "description": "更新的家长UserID。不能与已经存在的家长UserID相同。每个家长仅能更新一次。",
+            "type": null
+          },
+          {
+            "name": "mobile",
+            "required": false,
+            "description": "家长手机号",
+            "type": null
+          },
+          {
+            "name": "children",
+            "required": false,
+            "description": "家长的孩子列表，该字段是全量更新，如果孩子列表为空则忽略该字段，最多10个",
+            "type": null
+          },
+          {
+            "name": "children_student_userid",
+            "required": true,
+            "description": "学生的UserID",
+            "type": null
+          },
+          {
+            "name": "children_relation",
+            "required": true,
+            "description": "家长与学生的关系，最长32字节",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"parent_userid\": \"zhangsan_parent_userid\",\n\t\"new_parent_userid\":\"NEW_ID\",\n    \"mobile\": \"18000000000\",\n\t\"children\":[\n\t\t{\n\t\t\t\"student_userid\": \"zhangsan\",\n            \"relation\": \"爸爸\"\n        },\n        {\n\t\t\t\"student_userid\": \"lisi\",\n            \"relation\": \"伯父\"\n        }\n     ]\n}",
+        "request_example_json": {
+          "parent_userid": "zhangsan_parent_userid",
+          "new_parent_userid": "NEW_ID",
+          "mobile": "18000000000",
+          "children": [
+            {
+              "student_userid": "zhangsan",
+              "relation": "爸爸"
+            },
+            {
+              "student_userid": "lisi",
+              "relation": "伯父"
+            }
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"updated\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "updated"
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "当参数字段超过长度限制，那么整个请求会被拦掉。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "user_update_student",
+      "cli_action": "user-update-student",
+      "summary": "更新学生",
+      "method": "POST",
+      "endpoint": "/cgi-bin/school/user/update_student",
+      "args": [
+        {
+          "name": "student_userid",
+          "flag": "--student-userid",
+          "type": "str",
+          "help": "学生UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+          "required": true
+        },
+        {
+          "name": "mobile",
+          "flag": "--mobile",
+          "type": "str",
+          "help": "学生手机号"
+        },
+        {
+          "name": "new_student_userid",
+          "flag": "--new-student-userid",
+          "type": "str",
+          "help": "要变更的学生UserID,不能与已存在的UserID相同。每个学生仅能修改一次。"
+        },
+        {
+          "name": "name",
+          "flag": "--name",
+          "type": "str",
+          "help": "学生姓名，长度为1~32个字符"
+        },
+        {
+          "name": "department",
+          "flag": "--department",
+          "type": "str",
+          "help": "学生所在的班级id列表,不超过20个"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "student_userid": {
+            "from_arg": "student_userid"
+          },
+          "mobile": {
+            "from_arg": "mobile"
+          },
+          "new_student_userid": {
+            "from_arg": "new_student_userid"
+          },
+          "name": {
+            "from_arg": "name"
+          },
+          "department": {
+            "from_arg": "department"
+          }
+        }
+      },
+      "examples": [
+        "wecom school user-update-student --student-userid <student_userid> [--mobile <mobile>] [--new-student-userid <new_student_userid>] [--name <name>] [--department <department>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "更新学生",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/92327",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/school/user/update_student?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "student_userid",
+            "required": true,
+            "description": "学生UserID。学校内必须唯一。不区分大小写，长度为1~64个字节。只能由数字、字母和“_-@.”四种字符组成，且第一个字符必须是数字或字母。",
+            "type": null
+          },
+          {
+            "name": "mobile",
+            "required": false,
+            "description": "学生手机号",
+            "type": null
+          },
+          {
+            "name": "new_student_userid",
+            "required": false,
+            "description": "要变更的学生UserID,不能与已存在的UserID相同。每个学生仅能修改一次。",
+            "type": null
+          },
+          {
+            "name": "name",
+            "required": false,
+            "description": "学生姓名，长度为1~32个字符",
+            "type": null
+          },
+          {
+            "name": "department",
+            "required": false,
+            "description": "学生所在的班级id列表,不超过20个",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"student_userid\": \"zhangsan\",\n\t\"mobile\": \"18000000000\",\n\t\"new_student_userid\":\"NEW_ID\",\n\t\"name\": \"张三\",\n\t\"department\": [1, 2]\n}",
+        "request_example_json": {
+          "student_userid": "zhangsan",
+          "mobile": "18000000000",
+          "new_student_userid": "NEW_ID",
+          "name": "张三",
+          "department": [
+            1,
+            2
+          ]
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"updated\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "updated"
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "当参数字段超过长度限制，那么整个请求会被拦掉。",
+          "注意，每个班级下学生总数不能超过3万个。建议保证创建department对应的部门和创建成员是串行化处理。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

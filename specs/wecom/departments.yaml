@@ -580,7 +580,24 @@
             "description": "在父部门中的次序值。order值大的排序靠前。值范围是[0, 2^32)。",
             "type": null
           }
-        ]
+        ],
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"department_id\": [\n       {\n           \"id\": 2,\n           \"parentid\": 1,\n           \"order\": 10\n       },\n       {\n           \"id\": 3,\n\t\t   \"parentid\": 2,\n           \"order\": 40\n       }\n   ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "department_id": [
+            {
+              "id": 2,
+              "parentid": 1,
+              "order": 10
+            },
+            {
+              "id": 3,
+              "parentid": 2,
+              "order": 40
+            }
+          ]
+        }
       }
     },
     {
@@ -673,8 +690,8 @@
         }
       },
       "doc": {
-        "title": "创建部门",
-        "source_url": "https://developer.work.weixin.qq.com/document/path/90205",
+        "title": "接口代码参考示例",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90469",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/department/create?access_token=ACCESS_TOKEN",
         "request_params": [
           {
@@ -734,7 +751,7 @@
             "type": null
           }
         ],
-        "request_example_text": "{\n   \"name\": \"广州研发中心\",\n   \"name_en\": \"RDGZ\",\n   \"parentid\": 1,\n   \"order\": 1,\n   \"id\": 2\n}",
+        "request_example_text": "public function getAccessToken($corpid,$secret) {      \n        //TODO: access_token 应该全局存储与更新，以下代码以写入到文件中做示例                      \n\t\t//TODO: 每个应用的access_token应独立存储，此处用secret作为区分应用的标识\n        $path = \"../cache/$secret.php\";\n        $data = json_decode(get_php_file($path));\n        \n        if($data->expire_time < time()) {                \n            $url = \"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=$corpid&corpsecret=$secret\";                      \n            $res = json_decode(http_get($url)[\"content\"]);\n\n            $access_token = $res->access_token;\n            \n            if($access_token) {\n                $data->expire_time = time() + 7000;\n                $data->access_token = $access_token;        \n                set_php_file($path, json_encode($data));\n            }\n        } else {\n            $access_token = $data->access_token;\n        }\n        return $access_token;    \n    }",
         "request_example_json": {
           "name": "广州研发中心",
           "name_en": "RDGZ",

@@ -1,0 +1,793 @@
+{
+  "domain": "health",
+  "operations": [
+    {
+      "name": "get_health_report_stat",
+      "cli_action": "get-health-report-stat",
+      "summary": "获取健康上报使用统计",
+      "method": "POST",
+      "endpoint": "/cgi-bin/health/get_health_report_stat",
+      "args": [
+        {
+          "name": "date",
+          "flag": "--date",
+          "type": "str",
+          "help": "具体某天的使用统计，最长支持获取30天前数据",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "date": {
+            "from_arg": "date"
+          }
+        }
+      },
+      "examples": [
+        "wecom health get-health-report-stat --date <date>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "pv": {
+              "type": "integer",
+              "description": "应用使用次数"
+            },
+            "uv": {
+              "type": "integer",
+              "description": "应用使用成员数"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "pv",
+            "uv"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取健康上报使用统计",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93676",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/health/get_health_report_stat?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。",
+            "type": null
+          },
+          {
+            "name": "date",
+            "required": true,
+            "description": "具体某天的使用统计，最长支持获取30天前数据",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "pv",
+            "required": null,
+            "description": "应用使用次数",
+            "type": null
+          },
+          {
+            "name": "uv",
+            "required": null,
+            "description": "应用使用成员数",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"date\": \"2020-03-27\"\n}",
+        "request_example_json": {
+          "date": "2020-03-27"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"pv\": 100,\n   \"uv\": 50\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "pv": 100,
+          "uv": 50
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "get_report_answer",
+      "cli_action": "get-report-answer",
+      "summary": "获取用户填写答案",
+      "method": "POST",
+      "endpoint": "/cgi-bin/health/get_report_answer",
+      "args": [
+        {
+          "name": "jobid",
+          "flag": "--jobid",
+          "type": "str",
+          "help": "任务ID",
+          "required": true
+        },
+        {
+          "name": "date",
+          "flag": "--date",
+          "type": "str",
+          "help": "具体某天任务的填写答案，仅支持获取最近14天数据",
+          "required": true
+        },
+        {
+          "name": "offset",
+          "flag": "--offset",
+          "type": "str",
+          "help": "数据偏移量"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "拉取的数据量，最大值100"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "jobid": {
+            "from_arg": "jobid"
+          },
+          "date": {
+            "from_arg": "date"
+          },
+          "offset": {
+            "from_arg": "offset"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom health get-report-answer --jobid <jobid> --date <date> [--offset <offset>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "answers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id_type": {
+                    "type": "integer"
+                  },
+                  "userid": {
+                    "type": "string"
+                  },
+                  "report_time": {
+                    "type": "integer"
+                  },
+                  "report_values": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "question_id": {
+                          "type": "integer"
+                        },
+                        "single_choice": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "question_id",
+                        "single_choice"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "id_type",
+                  "userid",
+                  "report_time",
+                  "report_values"
+                ]
+              },
+              "description": "答案列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "answers"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取用户填写答案",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93679",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/health/get_report_answer?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": true,
+            "description": "任务ID",
+            "type": null
+          },
+          {
+            "name": "date",
+            "required": true,
+            "description": "具体某天任务的填写答案，仅支持获取最近14天数据",
+            "type": null
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "description": "数据偏移量",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "拉取的数据量，最大值100",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "answers",
+            "required": null,
+            "description": "答案列表",
+            "type": null
+          },
+          {
+            "name": "creator",
+            "required": null,
+            "description": "发起人的userid",
+            "type": null
+          },
+          {
+            "name": "answers_id_type",
+            "required": null,
+            "description": "id类型：1：表示返回企业内部成员的userid，2：表示返回的是家长和学生的userid",
+            "type": null
+          },
+          {
+            "name": "answers_userid",
+            "required": null,
+            "description": "企业内部成员的userid，id_type=1时返回",
+            "type": null
+          },
+          {
+            "name": "answers_student_userid",
+            "required": null,
+            "description": "学生的userid，id_type=2时返回",
+            "type": null
+          },
+          {
+            "name": "answers_parent_userid",
+            "required": null,
+            "description": "家长的userid，id_type=2时返回",
+            "type": null
+          },
+          {
+            "name": "answers_report_time",
+            "required": null,
+            "description": "用户填写时的时间戳",
+            "type": null
+          },
+          {
+            "name": "answers_report_values",
+            "required": null,
+            "description": "用户填写的答案列表",
+            "type": null
+          },
+          {
+            "name": "answers_report_values_question_id",
+            "required": null,
+            "description": "问题的id",
+            "type": null
+          },
+          {
+            "name": "answers_report_values_single_choice",
+            "required": null,
+            "description": "单选题答案编号",
+            "type": null
+          },
+          {
+            "name": "answers_report_values_text",
+            "required": null,
+            "description": "填空题答案内容",
+            "type": null
+          },
+          {
+            "name": "answers_report_values_multi_choice",
+            "required": null,
+            "description": "多选题答案编号",
+            "type": null
+          },
+          {
+            "name": "answers_report_values_fileid",
+            "required": null,
+            "description": "文件id，可以用下载文件接口下载",
+            "type": null
+          },
+          {
+            "name": "answers_report_values_url",
+            "required": null,
+            "description": "签名的url，目前仅签名类型的问题会返回该字段",
+            "type": null
+          },
+          {
+            "name": "answers_report_values_itinerary_card_type",
+            "required": null,
+            "description": "行程卡类型，仅行程卡类型的问题会返回该字段，0:行程码状态识别失败、1:绿码、2:红码、3:黄码、4:橙码、5:未识别出行程卡",
+            "type": null
+          },
+          {
+            "name": "answers_report_values_high_risk_area",
+            "required": null,
+            "description": "高风险行程信息，仅行程卡类型的问题会返回该字段",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"jobid\": \"jobid1\",\n\t\"date\": \"2020-03-27\",\n\t\"offset\": 0,\n\t\"limit\": 100\n}",
+        "request_example_json": {
+          "jobid": "jobid1",
+          "date": "2020-03-27",
+          "offset": 0,
+          "limit": 100
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"answers\":[\n\t\t{\n\t\t\t\"id_type\": 1,\n\t\t\t\"userid\": \"userid2\",\n\t\t\t\"report_time\": 123456789,\n\t\t\t\"report_values\": [\n\t\t\t\t{\n\t\t\t\t\t\"question_id\": 1,\n\t\t\t\t\t\"single_choice\": 2\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"question_id\": 2,\n\t\t\t\t\t\"text\": \"广东省广州市\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"question_id\": 3,\n\t\t\t\t\t\"multi_choice\": [\n\t\t\t\t\t\t1, 3\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"question_id\": 4,\n\t\t\t\t\t\"fileid\": [\n                        \"XXXXXXX\"\n                    ]\n\t\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"id_type\": 2,\n\t\t\t\"student_userid\": \"student_userid1\",\n\t\t\t\"parent_userid\": \"parent_userid1\",\n\t\t\t\"report_time\": 123456789,\n\t\t\t\"report_values\":[\n\t\t\t\t{\n\t\t\t\t\t\"question_id\": 1,\n\t\t\t\t\t\"single_choice\": 1\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"question_id\": 2,\n\t\t\t\t\t\"text\": \"广东省深圳市\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"question_id\": 3,\n\t\t\t\t\t\"multi_choice\":[\n\t\t\t\t\t\t1,2,3\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"question_id\": 4,\n\t\t\t\t\t\"fileid\": [\n                        \"XXXXXXX\"\n                    ]\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "answers": [
+            {
+              "id_type": 1,
+              "userid": "userid2",
+              "report_time": 123456789,
+              "report_values": [
+                {
+                  "question_id": 1,
+                  "single_choice": 2
+                },
+                {
+                  "question_id": 2,
+                  "text": "广东省广州市"
+                },
+                {
+                  "question_id": 3,
+                  "multi_choice": [
+                    1,
+                    3
+                  ]
+                },
+                {
+                  "question_id": 4,
+                  "fileid": [
+                    "XXXXXXX"
+                  ]
+                }
+              ]
+            },
+            {
+              "id_type": 2,
+              "student_userid": "student_userid1",
+              "parent_userid": "parent_userid1",
+              "report_time": 123456789,
+              "report_values": [
+                {
+                  "question_id": 1,
+                  "single_choice": 1
+                },
+                {
+                  "question_id": 2,
+                  "text": "广东省深圳市"
+                },
+                {
+                  "question_id": 3,
+                  "multi_choice": [
+                    1,
+                    2,
+                    3
+                  ]
+                },
+                {
+                  "question_id": 4,
+                  "fileid": [
+                    "XXXXXXX"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "get_report_job_info",
+      "cli_action": "get-report-job-info",
+      "summary": "获取健康上报任务详情",
+      "method": "POST",
+      "endpoint": "/cgi-bin/health/get_report_job_info",
+      "args": [
+        {
+          "name": "jobid",
+          "flag": "--jobid",
+          "type": "str",
+          "help": "任务ID",
+          "required": true
+        },
+        {
+          "name": "date",
+          "flag": "--date",
+          "type": "str",
+          "help": "具体某天任务详情，仅支持获取最近14天数据",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "jobid": {
+            "from_arg": "jobid"
+          },
+          "date": {
+            "from_arg": "date"
+          }
+        }
+      },
+      "examples": [
+        "wecom health get-report-job-info --jobid <jobid> --date <date>"
+      ],
+      "doc": {
+        "title": "获取健康上报任务详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93678",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/health/get_report_job_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": true,
+            "description": "任务ID",
+            "type": null
+          },
+          {
+            "name": "date",
+            "required": true,
+            "description": "具体某天任务详情，仅支持获取最近14天数据",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "title",
+            "required": null,
+            "description": "任务名称",
+            "type": null
+          },
+          {
+            "name": "creator",
+            "required": null,
+            "description": "发起人的userid",
+            "type": null
+          },
+          {
+            "name": "type",
+            "required": null,
+            "description": "任务类型。1：表示企业内部成员，2：表示家长",
+            "type": null
+          },
+          {
+            "name": "apply_range",
+            "required": null,
+            "description": "适用范围",
+            "type": null
+          },
+          {
+            "name": "apply_range_userids",
+            "required": null,
+            "description": "type=1时表示企业成员的userid，type=2时表示学生的userid",
+            "type": null
+          },
+          {
+            "name": "apply_range_partyids",
+            "required": null,
+            "description": "type=1时表示企业通讯录的部门id，type=2时表示学校通讯录的部门id",
+            "type": null
+          },
+          {
+            "name": "report_to_userids",
+            "required": null,
+            "description": "汇报对象的企业通讯录userid",
+            "type": null
+          },
+          {
+            "name": "report_type",
+            "required": null,
+            "description": "上报方式。1表示仅上报一次，2表示每天都上报",
+            "type": null
+          },
+          {
+            "name": "skip_weekend",
+            "required": null,
+            "description": "非工作日是否需要上报。0表示周末需要上报，1表示周末不需要上报",
+            "type": null
+          },
+          {
+            "name": "finish_cnt",
+            "required": null,
+            "description": "已填表人数",
+            "type": null
+          },
+          {
+            "name": "question_templates",
+            "required": null,
+            "description": "健康上报问题列表",
+            "type": null
+          },
+          {
+            "name": "question_templates_question_id",
+            "required": null,
+            "description": "问题的question_id",
+            "type": null
+          },
+          {
+            "name": "question_templates_title",
+            "required": null,
+            "description": "问题的title",
+            "type": null
+          },
+          {
+            "name": "question_templates_question_type",
+            "required": null,
+            "description": "问题类型，1：表示是填空题(包括地理位置和日期)，2：表示是单选题，3：表示多选题，4：表示收集文件/图片题，5：签名链接，6：行程卡截图",
+            "type": null
+          },
+          {
+            "name": "question_templates_is_required",
+            "required": null,
+            "description": "问题是否必填，1：表示“是”，0：表示“否”",
+            "type": null
+          },
+          {
+            "name": "question_templates_option_list",
+            "required": null,
+            "description": "选项列表，仅当该题为单/多选题时才有该字段",
+            "type": null
+          },
+          {
+            "name": "question_templates_option_list_option_id",
+            "required": null,
+            "description": "该选项的option_id",
+            "type": null
+          },
+          {
+            "name": "question_templates_option_list_option_text",
+            "required": null,
+            "description": "该选项的文案说明",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"jobid\": \"jobid1\",\n\t\"date\": \"2020-03-27\"\n}",
+        "request_example_json": {
+          "jobid": "jobid1",
+          "date": "2020-03-27"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"job_info\":{\n\t\t\"title\": \"职工收集任务\",\n\t\t\"creator\"： \"creator_userid\",\n\t\t\"type\": 1,\n\t\t\"apply_range\": {\n\t\t\t\"userids\":[\n\t\t\t\t\"userid1\",\n\t\t\t\t\"userid2\"\n\t\t\t],\n\t\t\t\"partyids\":[\n\t\t\t\t1,\n\t\t\t\t2\n\t\t\t]\n\t\t},\n\t\t\"report_to\":{\n\t\t\t\"userids\":[\n\t\t\t\t\"userid1\",\n\t\t\t\t\"userid2\"\n\t\t\t]\n\t\t}\n\t\t\"report_type\": 1,\n\t\t\"skip_weekend\": 0,\n\t\t\"finish_cnt\": 10,\n\t\t\"question_templates\":[\n\t\t\t{\n\t\t\t\t\"question_id\": 1,\n\t\t\t\t\"title\": \"请问你有任何身体不适吗？\",\n\t\t\t\t\"question_type\": 2,\n\t\t\t\t\"is_required\": 1,\n\t\t\t\t\"option_list\":[\n\t\t\t\t\t{\n\t\t\t\t\t\t\"option_id\": 1,\n\t\t\t\t\t\t\"option_text\": \"有\"\n\t\t\t\t\t},\n\t\t\t\t\t{\n\t\t\t\t\t\t\"option_id\": 2,\n\t\t\t\t\t\t\"option_text\": \"没有\"\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"question_id\": 2,\n\t\t\t\t\"title\": \"常驻地址\",\n\t\t\t\t\"question_type\": 1,\n\t\t\t\t\"is_required\": 0\n\t\t\t}\n\t\t]\n   }\n}",
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    },
+    {
+      "name": "get_report_jobids",
+      "cli_action": "get-report-jobids",
+      "summary": "获取健康上报任务ID列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/health/get_report_jobids",
+      "args": [
+        {
+          "name": "offset",
+          "flag": "--offset",
+          "type": "str",
+          "help": "分页，偏移量, 默认为0"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "分页，预期请求的数据量，默认为100，取值范围 1 ~ 100"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "offset": {
+            "from_arg": "offset"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom health get-report-jobids [--offset <offset>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "ending": {
+              "type": "integer",
+              "description": "是否结束。0：表示还有更多数据，需要继续拉取，1：表示已经拉取完所有数据"
+            },
+            "jobids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "任务id"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "ending",
+            "jobids"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取健康上报任务ID列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93677",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/health/get_report_jobids?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "description": "分页，偏移量, 默认为0",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "分页，预期请求的数据量，默认为100，取值范围 1 ~ 100",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "ending",
+            "required": null,
+            "description": "是否结束。0：表示还有更多数据，需要继续拉取，1：表示已经拉取完所有数据",
+            "type": null
+          },
+          {
+            "name": "jobids",
+            "required": null,
+            "description": "任务id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"offset\": 0,\n\t\"limit\": 100\n}",
+        "request_example_json": {
+          "offset": 0,
+          "limit": 100
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"ending\":1,\n   \"jobids\":[\n\t\t\"jobid1\",\n\t\t\"jobid2\"\n   ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "ending": 1,
+          "jobids": [
+            "jobid1",
+            "jobid2"
+          ]
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ]
+      }
+    }
+  ]
+}

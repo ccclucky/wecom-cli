@@ -1,0 +1,1545 @@
+{
+  "domain": "corpgroup",
+  "operations": [
+    {
+      "name": "corp_get_chain_list",
+      "cli_action": "corp-get-chain-list",
+      "summary": "获取上下游信息",
+      "method": "GET",
+      "endpoint": "/cgi-bin/corpgroup/corp/get_chain_list",
+      "args": [],
+      "request": {},
+      "examples": [
+        "wecom corpgroup corp-get-chain-list"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "chains": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "chain_id": {
+                    "type": "string"
+                  },
+                  "chain_name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "chain_id",
+                  "chain_name"
+                ]
+              },
+              "description": "企业上下游列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "chains"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取上下游信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95820",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/corp/get_chain_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。上游企业应用access_token",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "chains",
+            "required": null,
+            "description": "企业上下游列表",
+            "type": null
+          },
+          {
+            "name": "chains_chain_id",
+            "required": null,
+            "description": "上下游id",
+            "type": null
+          },
+          {
+            "name": "chains_chain_name",
+            "required": null,
+            "description": "上下游名称",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"chain_id\":\"Chxxxxxx\",\n    \"groupid\":1\n}",
+        "request_example_json": {
+          "chain_id": "Chxxxxxx",
+          "groupid": 1
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"chains\": [\n        {\n            \"chain_id\": \"chainid1\",\n            \"chain_name\": \"能源供应链\"\n        },\n        {\n            \"chain_id\": \"chainid2\",\n            \"chain_name\": \"原材料供应链\"\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "chains": [
+            {
+              "chain_id": "chainid1",
+              "chain_name": "能源供应链"
+            },
+            {
+              "chain_id": "chainid2",
+              "chain_name": "原材料供应链"
+            }
+          ]
+        },
+        "notes": [
+          "如需获取该分组及其子分组的所有企业详情，需先获取该分组下的所有子分组，然后再获取子分组下的企业，逐层递归获取。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "corp_get_chain_user_custom_id",
+      "cli_action": "corp-get-chain-user-custom-id",
+      "summary": "查询成员自定义id",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corpgroup/corp/get_chain_user_custom_id",
+      "args": [
+        {
+          "name": "chain_id",
+          "flag": "--chain-id",
+          "type": "str",
+          "help": "上下游id",
+          "required": true
+        },
+        {
+          "name": "corpid",
+          "flag": "--corpid",
+          "type": "str",
+          "help": "已加入企业id",
+          "required": true
+        },
+        {
+          "name": "userid",
+          "flag": "--userid",
+          "type": "str",
+          "help": "企业内的成员",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "chain_id": {
+            "from_arg": "chain_id"
+          },
+          "corpid": {
+            "from_arg": "corpid"
+          },
+          "userid": {
+            "from_arg": "userid"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup corp-get-chain-user-custom-id --chain-id <chain_id> --corpid <corpid> --userid <userid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "user_custom_id": {
+              "type": "string",
+              "description": "成员自定义 id"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "user_custom_id"
+          ]
+        }
+      },
+      "doc": {
+        "title": "查询成员自定义id",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97441",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/corp/get_chain_user_custom_id?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。上游企业应用access_token",
+            "type": null
+          },
+          {
+            "name": "chain_id",
+            "required": true,
+            "description": "上下游id",
+            "type": null
+          },
+          {
+            "name": "corpid",
+            "required": true,
+            "description": "已加入企业id",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": true,
+            "description": "企业内的成员",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "user_custom_id",
+            "required": null,
+            "description": "成员自定义 id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"chain_id\":\"Chxxxxxx\",\n    \"corpid\":\"xxxxx\",\n    \"userid\":\"xxxxx\"\n}",
+        "request_example_json": {
+          "chain_id": "Chxxxxxx",
+          "corpid": "xxxxx",
+          "userid": "xxxxx"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"user_custom_id\":\"1234\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "user_custom_id": "1234"
+        }
+      }
+    },
+    {
+      "name": "corp_gettoken",
+      "cli_action": "corp-gettoken",
+      "summary": "获取下级/下游企业的access_token",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corpgroup/corp/gettoken",
+      "args": [
+        {
+          "name": "corpid",
+          "flag": "--corpid",
+          "type": "str",
+          "help": "已授权的下级/下游企业corpid",
+          "required": true
+        },
+        {
+          "name": "agentid",
+          "flag": "--agentid",
+          "type": "str",
+          "help": "已授权的下级/下游企业应用ID",
+          "required": true
+        },
+        {
+          "name": "business_type",
+          "flag": "--business-type",
+          "type": "str",
+          "help": "填0则为企业互联/局校互联，填1则表示上下游企业，默认0"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "corpid": {
+            "from_arg": "corpid"
+          },
+          "agentid": {
+            "from_arg": "agentid"
+          },
+          "business_type": {
+            "from_arg": "business_type"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup corp-gettoken --corpid <corpid> --agentid <agentid> [--business-type <business_type>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "出错返回码，为0表示成功，非0表示调用失败"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "返回码提示语"
+            },
+            "access_token": {
+              "type": "string",
+              "description": "获取到的下级/下游企业调用凭证，最长为512字节"
+            },
+            "expires_in": {
+              "type": "integer",
+              "description": "凭证的有效时间（秒）"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "access_token",
+            "expires_in"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取下级/下游企业的access_token",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95816",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/corp/gettoken?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证，上级/上游企业应用access_token",
+            "type": null
+          },
+          {
+            "name": "corpid",
+            "required": true,
+            "description": "已授权的下级/下游企业corpid",
+            "type": null
+          },
+          {
+            "name": "agentid",
+            "required": true,
+            "description": "已授权的下级/下游企业应用ID",
+            "type": null
+          },
+          {
+            "name": "business_type",
+            "required": false,
+            "description": "填0则为企业互联/局校互联，填1则表示上下游企业，默认0",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "出错返回码，为0表示成功，非0表示调用失败",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "返回码提示语",
+            "type": null
+          },
+          {
+            "name": "access_token",
+            "required": null,
+            "description": "获取到的下级/下游企业调用凭证，最长为512字节",
+            "type": null
+          },
+          {
+            "name": "expires_in",
+            "required": null,
+            "description": "凭证的有效时间（秒）",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"corpid\": \"wwabc\",\n\t\"business_type\":1,\n\t\"agentid\": 1111\n}",
+        "request_example_json": {
+          "corpid": "wwabc",
+          "business_type": 1,
+          "agentid": 1111
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"access_token\": \"accesstoken000001\",\n   \"expires_in\": 7200\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "access_token": "accesstoken000001",
+          "expires_in": 7200
+        }
+      }
+    },
+    {
+      "name": "corp_list_app_share_info",
+      "cli_action": "corp-list-app-share-info",
+      "summary": "获取应用共享信息",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corpgroup/corp/list_app_share_info",
+      "args": [
+        {
+          "name": "business_type",
+          "flag": "--business-type",
+          "type": "str",
+          "help": "填0则为企业互联/局校互联，填1则表示上下游企业"
+        },
+        {
+          "name": "agentid",
+          "flag": "--agentid",
+          "type": "str",
+          "help": "上级/上游企业应用agentid",
+          "required": true
+        },
+        {
+          "name": "corpid",
+          "flag": "--corpid",
+          "type": "str",
+          "help": "下级/下游企业corpid，若指定该参数则表示拉取该下级/下游企业的应用共享信息"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "返回的最大记录数，整型，最大值100，默认情况或者值为0表示下拉取全量数据，建议分页拉取或者通过指定corpid参数拉取。"
+        },
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "business_type": {
+            "from_arg": "business_type"
+          },
+          "agentid": {
+            "from_arg": "agentid"
+          },
+          "corpid": {
+            "from_arg": "corpid"
+          },
+          "limit": {
+            "from_arg": "limit"
+          },
+          "cursor": {
+            "from_arg": "cursor"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup corp-list-app-share-info [--business-type <business_type>] --agentid <agentid> [--corpid <corpid>] [--limit <limit>] [--cursor <cursor>]"
+      ],
+      "doc": {
+        "title": "获取应用共享信息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95813",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/corp/list_app_share_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证，上级/上游企业应用access_token",
+            "type": null
+          },
+          {
+            "name": "business_type",
+            "required": false,
+            "description": "填0则为企业互联/局校互联，填1则表示上下游企业",
+            "type": null
+          },
+          {
+            "name": "agentid",
+            "required": true,
+            "description": "上级/上游企业应用agentid",
+            "type": null
+          },
+          {
+            "name": "corpid",
+            "required": false,
+            "description": "下级/下游企业corpid，若指定该参数则表示拉取该下级/下游企业的应用共享信息",
+            "type": null
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "返回的最大记录数，整型，最大值100，默认情况或者值为0表示下拉取全量数据，建议分页拉取或者通过指定corpid参数拉取。",
+            "type": null
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "用于分页查询的游标，字符串类型，由上一次调用返回，首次调用可不填",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "ending",
+            "required": null,
+            "description": "1表示拉取完毕，0表示数据没有拉取完",
+            "type": null
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "分页游标，再下次请求时填写以获取之后分页的记录，如果已经没有更多的数据则返回空",
+            "type": null
+          },
+          {
+            "name": "corp_list",
+            "required": null,
+            "description": "应用共享信息",
+            "type": null
+          },
+          {
+            "name": "corp_list_corpid",
+            "required": null,
+            "description": "下级/下游企业corpid",
+            "type": null
+          },
+          {
+            "name": "corp_list_corp_name",
+            "required": null,
+            "description": "下级/下游企业名称",
+            "type": null
+          },
+          {
+            "name": "corp_list_agentid",
+            "required": null,
+            "description": "下级/下游企业应用id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n        \"agentid\":1111,\n\t\t\"business_type\":1,\n\t\t\"corpid\":\"wwcorp\",\n\t\t\"limit\":100,\n\t\t\"cursor\":\"xxxxxx\"\n}",
+        "request_example_json": {
+          "agentid": 1111,
+          "business_type": 1,
+          "corpid": "wwcorp",
+          "limit": 100,
+          "cursor": "xxxxxx"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"ending\":0\n   \"corp_list\":[\n                {\n                        \"corpid\": \"wwcorpid1\",\n                        \"corp_name\": \"测试企业1\"\n                        \"agentid\": 1111\n                },\n                {\n                        \"corpid\": \"wwcorpid2\",\n                        \"corp_name\": \"测试企业2\",\n                        \"agentid\": 1112\n                }\n   ],\n   \"next_cursor\": \"next_cursor1111\"\n}"
+      }
+    },
+    {
+      "name": "corp_remove_corp",
+      "cli_action": "corp-remove-corp",
+      "summary": "移除企业",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corpgroup/corp/remove_corp",
+      "args": [
+        {
+          "name": "chain_id",
+          "flag": "--chain-id",
+          "type": "str",
+          "help": "上下游id",
+          "required": true
+        },
+        {
+          "name": "corpid",
+          "flag": "--corpid",
+          "type": "str",
+          "help": "需要移除的下游企业corpid"
+        },
+        {
+          "name": "pending_corpid",
+          "flag": "--pending-corpid",
+          "type": "str",
+          "help": "需要移除的未加入下游企业corpid，corpid和pending_corpid至少填一个，都填corpid生效"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "chain_id": {
+            "from_arg": "chain_id"
+          },
+          "corpid": {
+            "from_arg": "corpid"
+          },
+          "pending_corpid": {
+            "from_arg": "pending_corpid"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup corp-remove-corp --chain-id <chain_id> [--corpid <corpid>] [--pending-corpid <pending_corpid>]"
+      ],
+      "doc": {
+        "title": "移除企业",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95822",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/corp/remove_corp?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证，上游企业应用access_token",
+            "type": null
+          },
+          {
+            "name": "chain_id",
+            "required": true,
+            "description": "上下游id",
+            "type": null
+          },
+          {
+            "name": "corpid",
+            "required": false,
+            "description": "需要移除的下游企业corpid",
+            "type": null
+          },
+          {
+            "name": "pending_corpid",
+            "required": false,
+            "description": "需要移除的未加入下游企业corpid，corpid和pending_corpid至少填一个，都填corpid生效",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\t\"chain_id\":\"xxxx\",\n\t\t\"corpid\":\"xxxxx\",\n\t\t\"pending_corpid\":\"xxxx\"\n}",
+        "request_example_json": {
+          "chain_id": "xxxx",
+          "corpid": "xxxxx",
+          "pending_corpid": "xxxx"
+        },
+        "response_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n}",
+        "permissions": [
+          "并发限制：1"
+        ]
+      }
+    },
+    {
+      "name": "get_corp_shared_chain_list",
+      "cli_action": "get-corp-shared-chain-list",
+      "summary": "获取下级企业加入的上下游",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corpgroup/get_corp_shared_chain_list",
+      "args": [
+        {
+          "name": "corpid",
+          "flag": "--corpid",
+          "type": "str",
+          "help": "已加入企业id"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "corpid": {
+            "from_arg": "corpid"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup get-corp-shared-chain-list [--corpid <corpid>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "chains": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "chain_id": {
+                    "type": "string"
+                  },
+                  "chain_name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "chain_id",
+                  "chain_name"
+                ]
+              },
+              "description": "上下游列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "chains"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取下级企业加入的上下游",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/97442",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/get_corp_shared_chain_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。上游企业应用access_token",
+            "type": null
+          },
+          {
+            "name": "corpid",
+            "required": false,
+            "description": "已加入企业id",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "chains",
+            "required": null,
+            "description": "上下游列表",
+            "type": null
+          },
+          {
+            "name": "chains_chain_id",
+            "required": null,
+            "description": "上下游id",
+            "type": null
+          },
+          {
+            "name": "chains_chain_name",
+            "required": null,
+            "description": "上下游名称",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"corpid\":\"xxxxx\"\n}",
+        "request_example_json": {
+          "corpid": "xxxxx"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"chains\": [\n      {\n         \"chain_id\": \"xxx\",\n         \"chain_name\": \"xxx\"\n      }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "chains": [
+            {
+              "chain_id": "xxx",
+              "chain_name": "xxx"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "getresult",
+      "cli_action": "getresult",
+      "summary": "获取异步任务结果",
+      "method": "GET",
+      "endpoint": "/cgi-bin/corpgroup/getresult",
+      "args": [
+        {
+          "name": "jobid",
+          "flag": "--jobid",
+          "type": "str",
+          "help": "异步任务id，最大长度为64字节",
+          "required": true
+        }
+      ],
+      "request": {
+        "query": {
+          "jobid": {
+            "from_arg": "jobid"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup getresult --jobid <jobid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "status": {
+              "type": "integer",
+              "description": "任务状态，整型，1表示任务开始，2表示任务进行中，3表示任务已完成"
+            },
+            "result": {
+              "type": "object",
+              "properties": {
+                "chain_id": {
+                  "type": "string"
+                },
+                "import_status": {
+                  "type": "integer"
+                },
+                "fail_list": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "corp_name": {
+                        "type": "string"
+                      },
+                      "custom_id": {
+                        "type": "string"
+                      },
+                      "errcode": {
+                        "type": "integer",
+                        "description": "返回码"
+                      },
+                      "errmsg": {
+                        "type": "string",
+                        "description": "对返回码的文本描述内容"
+                      },
+                      "contact_info_list": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "mobile": {
+                              "type": "string"
+                            },
+                            "errcode": {
+                              "type": "integer",
+                              "description": "返回码"
+                            },
+                            "errmsg": {
+                              "type": "string",
+                              "description": "对返回码的文本描述内容"
+                            }
+                          },
+                          "required": [
+                            "mobile",
+                            "errcode",
+                            "errmsg"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "corp_name",
+                      "custom_id",
+                      "errcode",
+                      "errmsg",
+                      "contact_info_list"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "chain_id",
+                "import_status",
+                "fail_list"
+              ],
+              "description": "详细的处理结果。当任务完成后此字段有效"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "status",
+            "result"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取异步任务结果",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95823",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/getresult?access_token=ACCESS_TOKEN&jobid=JOBID",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": true,
+            "description": "异步任务id，最大长度为64字节",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "status",
+            "required": null,
+            "description": "任务状态，整型，1表示任务开始，2表示任务进行中，3表示任务已完成",
+            "type": null
+          },
+          {
+            "name": "result",
+            "required": null,
+            "description": "详细的处理结果。当任务完成后此字段有效",
+            "type": null
+          },
+          {
+            "name": "result_chain_id",
+            "required": null,
+            "description": "上下游id",
+            "type": null
+          },
+          {
+            "name": "result_import_status",
+            "required": null,
+            "description": "导入状态。1:全部企业导入成功，2:部分企业导入成功，3:全部企业导入失败",
+            "type": null
+          },
+          {
+            "name": "result_fail_list",
+            "required": null,
+            "description": "导入失败结果列表 。当企业中有联系人导入失败时，本次导入该企业所有联系人的导入都会被阻断。",
+            "type": null
+          },
+          {
+            "name": "result_fail_list_custom_id",
+            "required": null,
+            "description": "自定义企业id",
+            "type": null
+          },
+          {
+            "name": "result_fail_list_corp_name",
+            "required": null,
+            "description": "自定义企业名称",
+            "type": null
+          },
+          {
+            "name": "result_fail_list_errmsg",
+            "required": null,
+            "description": "该企业导入操作的结果错误码",
+            "type": null
+          },
+          {
+            "name": "result_fail_list_errcode",
+            "required": null,
+            "description": "该企业导入操作的结果错误码描述",
+            "type": null
+          },
+          {
+            "name": "result_fail_list_contact_info_list",
+            "required": null,
+            "description": "导入失败的联系人结果",
+            "type": null
+          },
+          {
+            "name": "result_fail_list_contact_info_user_mobile",
+            "required": null,
+            "description": "导入失败的联系人手机号。有此联系人相关的错误时才会返回",
+            "type": null
+          },
+          {
+            "name": "result_fail_list_contact_info_errcode",
+            "required": null,
+            "description": "导入失败的联系人错误码。有此联系人相关的错误时才会返回",
+            "type": null
+          },
+          {
+            "name": "result_fail_list_contact_info_errmsg",
+            "required": null,
+            "description": "导入失败的联系人错误码描述。有此联系人相关的错误时才会返回",
+            "type": null
+          }
+        ],
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"status\": 3,\n\t\"result\": {\n\t\t\"chain_id\": \"xxxx\",\n\t\t\"import_status\": 2,\n\t\t\"fail_list\": [{\n\t\t\t\"corp_name\": \"飞飞培训学校2入2222\",\n\t\t\t\"custom_id\": \"\",\n\t\t\t\"errcode\": 670016,\n\t\t\t\"errmsg\": \"invalid contact identity\",\n\t\t\t\"contact_info_list\": [{\n\t\t\t\t\"mobile\": \"13000000001\",\n\t\t\t\t\"errcode\": 670016,\n\t\t\t\t\"errmsg\": \"invalid contact identity\"\n\t\t\t}]\n\t\t}]\n\t}\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "status": 3,
+          "result": {
+            "chain_id": "xxxx",
+            "import_status": 2,
+            "fail_list": [
+              {
+                "corp_name": "飞飞培训学校2入2222",
+                "custom_id": "",
+                "errcode": 670016,
+                "errmsg": "invalid contact identity",
+                "contact_info_list": [
+                  {
+                    "mobile": "13000000001",
+                    "errcode": 670016,
+                    "errmsg": "invalid contact identity"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "permissions": [
+          "并发限制：5"
+        ]
+      }
+    },
+    {
+      "name": "import_chain_contact",
+      "cli_action": "import-chain-contact",
+      "summary": "批量导入上下游联系人",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corpgroup/import_chain_contact",
+      "args": [
+        {
+          "name": "chain_id",
+          "flag": "--chain-id",
+          "type": "str",
+          "help": "上下游id。文件中的联系人将会被导入此上下游中",
+          "required": true
+        },
+        {
+          "name": "contact_list",
+          "flag": "--contact-list",
+          "type": "str",
+          "help": "上下游联系人列表。这些联系人将会被导入此上下游中",
+          "required": true
+        },
+        {
+          "name": "contact_list_corp_name",
+          "flag": "--contact-list-corp-name",
+          "type": "str",
+          "help": "上下游企业名称。长度为1-32个utf8字符。只能由中文、字母、数字和“ -_()（）”六种字符组成",
+          "required": true
+        },
+        {
+          "name": "contact_list_group_path",
+          "flag": "--contact-list-group-path",
+          "type": "str",
+          "help": "导入后企业所在分组。分组为空的企业会放在根分组下。仅针对新导入企业生效，不会修改已导入企业的分组。"
+        },
+        {
+          "name": "contact_list_custom_id",
+          "flag": "--contact-list-custom-id",
+          "type": "str",
+          "help": "上下游企业自定义 id。长度为0～64 个字节，只能由数字和字母组成"
+        },
+        {
+          "name": "contact_list_contact_info_list",
+          "flag": "--contact-list-contact-info-list",
+          "type": "str",
+          "help": "上下游联系人信息列表",
+          "required": true
+        },
+        {
+          "name": "contact_list_contact_info_list_name",
+          "flag": "--contact-list-contact-info-list-name",
+          "type": "str",
+          "help": "上下游联系人姓名。长度为1～32个utf8字符",
+          "required": true
+        },
+        {
+          "name": "contact_list_contact_info_list_identity_type",
+          "flag": "--contact-list-contact-info-list-identity-type",
+          "type": "str",
+          "help": "联系人身份类型。1:成员，2:负责人。",
+          "required": true
+        },
+        {
+          "name": "contact_list_contact_info_list_mobile",
+          "flag": "--contact-list-contact-info-list-mobile",
+          "type": "str",
+          "help": "手机号。支持国内、国际手机号（国内手机号直接输入手机号即可，格式示例：“138****0001”；国际手机号必须包含加号以及国家地区码，格式示例：“+85259****45”",
+          "required": true
+        },
+        {
+          "name": "contact_list_contact_info_list_user_custom_id",
+          "flag": "--contact-list-contact-info-list-user-custom-id",
+          "type": "str",
+          "help": "上下游用户自定义 id。类型为字符串，暂时只支持传入64比特无符号整型，取值范围1到2^64-2，必须是全数字，不得传入前置0，且不能为11位或13位数字。"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "chain_id": {
+            "from_arg": "chain_id"
+          },
+          "contact_list": {
+            "from_arg": "contact_list"
+          },
+          "contact_list_corp_name": {
+            "from_arg": "contact_list_corp_name"
+          },
+          "contact_list_group_path": {
+            "from_arg": "contact_list_group_path"
+          },
+          "contact_list_custom_id": {
+            "from_arg": "contact_list_custom_id"
+          },
+          "contact_list_contact_info_list": {
+            "from_arg": "contact_list_contact_info_list"
+          },
+          "contact_list_contact_info_list_name": {
+            "from_arg": "contact_list_contact_info_list_name"
+          },
+          "contact_list_contact_info_list_identity_type": {
+            "from_arg": "contact_list_contact_info_list_identity_type"
+          },
+          "contact_list_contact_info_list_mobile": {
+            "from_arg": "contact_list_contact_info_list_mobile"
+          },
+          "contact_list_contact_info_list_user_custom_id": {
+            "from_arg": "contact_list_contact_info_list_user_custom_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup import-chain-contact --chain-id <chain_id> --contact-list <contact_list> --contact-list-corp-name <contact_list_corp_name> [--contact-list-group-path <contact_list_group_path>] [--contact-list-custom-id <contact_list_custom_id>] --contact-list-contact-info-list <contact_list_contact_info_list> --contact-list-contact-info-list-name <contact_list_contact_info_list_name> --contact-list-contact-info-list-identity-type <contact_list_contact_info_list_identity_type> --contact-list-contact-info-list-mobile <contact_list_contact_info_list_mobile> [--contact-list-contact-info-list-user-custom-id <contact_list_contact_info_list_user_custom_id>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码。仅表示提交任务的结果。任务执行结果需在任务提交成功后调用获取异步任务结果接口查询"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "jobid": {
+              "type": "string",
+              "description": "异步任务id，最大长度为64字节"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "jobid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "批量导入上下游联系人",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95821",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/import_chain_contact?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "chain_id",
+            "required": true,
+            "description": "上下游id。文件中的联系人将会被导入此上下游中",
+            "type": null
+          },
+          {
+            "name": "contact_list",
+            "required": true,
+            "description": "上下游联系人列表。这些联系人将会被导入此上下游中",
+            "type": null
+          },
+          {
+            "name": "contact_list_corp_name",
+            "required": true,
+            "description": "上下游企业名称。长度为1-32个utf8字符。只能由中文、字母、数字和“ -_()（）”六种字符组成",
+            "type": null
+          },
+          {
+            "name": "contact_list_group_path",
+            "required": false,
+            "description": "导入后企业所在分组。分组为空的企业会放在根分组下。仅针对新导入企业生效，不会修改已导入企业的分组。",
+            "type": null
+          },
+          {
+            "name": "contact_list_custom_id",
+            "required": false,
+            "description": "上下游企业自定义 id。长度为0～64 个字节，只能由数字和字母组成",
+            "type": null
+          },
+          {
+            "name": "contact_list_contact_info_list",
+            "required": true,
+            "description": "上下游联系人信息列表",
+            "type": null
+          },
+          {
+            "name": "contact_list_contact_info_list_name",
+            "required": true,
+            "description": "上下游联系人姓名。长度为1～32个utf8字符",
+            "type": null
+          },
+          {
+            "name": "contact_list_contact_info_list_identity_type",
+            "required": true,
+            "description": "联系人身份类型。1:成员，2:负责人。",
+            "type": null
+          },
+          {
+            "name": "contact_list_contact_info_list_mobile",
+            "required": true,
+            "description": "手机号。支持国内、国际手机号（国内手机号直接输入手机号即可，格式示例：“138****0001”；国际手机号必须包含加号以及国家地区码，格式示例：“+85259****45”",
+            "type": null
+          },
+          {
+            "name": "contact_list_contact_info_list_user_custom_id",
+            "required": false,
+            "description": "上下游用户自定义 id。类型为字符串，暂时只支持传入64比特无符号整型，取值范围1到2^64-2，必须是全数字，不得传入前置0，且不能为11位或13位数字。",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码。仅表示提交任务的结果。任务执行结果需在任务提交成功后调用获取异步任务结果接口查询",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "jobid",
+            "required": null,
+            "description": "异步任务id，最大长度为64字节",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n\t\"chain_id\":\"xxxxxx\",\n\t\"contact_list\":[\n\t\t{\n\t\t\t\"corp_name\":\"飞飞培训学校\",\n\t\t\t\"group_path\":\"华北区/北京市/海淀区\",\n\t\t\t\"custom_id\":\"wof3du51quo5sl1is\",\n\t\t\t\"contact_info_list\":[\n\t\t\t\t{\n\t\t\t\t\t\"name\":\"张三\",\n\t\t\t\t\t\"identity_type\":1,\n\t\t\t\t\t\"mobile\":\"13000000001\",\n\t\t\t\t\t\"user_custom_id\":\"100\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"name\":\"李四\",\n\t\t\t\t\t\"identity_type\":2,\n\t\t\t\t\t\"mobile\":\"13000000001\",\n\t\t\t\t\t\"user_custom_id\":\"100\"\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t]\n}",
+        "request_example_json": {
+          "chain_id": "xxxxxx",
+          "contact_list": [
+            {
+              "corp_name": "飞飞培训学校",
+              "group_path": "华北区/北京市/海淀区",
+              "custom_id": "wof3du51quo5sl1is",
+              "contact_info_list": [
+                {
+                  "name": "张三",
+                  "identity_type": 1,
+                  "mobile": "13000000001",
+                  "user_custom_id": "100"
+                },
+                {
+                  "name": "李四",
+                  "identity_type": 2,
+                  "mobile": "13000000001",
+                  "user_custom_id": "100"
+                }
+              ]
+            }
+          ]
+        },
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"jobid\": \"xxxxx\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "jobid": "xxxxx"
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情",
+          "导入任务限制： \n同时只能存在一个导入任务。导入任务包括通过API提交的任务和从管理后台提交的导入任务。"
+        ],
+        "notes": [
+          "可使用jobid通过获取异步任务结果接口查询任务执行状态及结果\n当开启了上下游应用回调通知后，任务运行完成时会推送异步任务完成通知"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "rule_list_ids",
+      "cli_action": "rule-list-ids",
+      "summary": "获取对接规则id列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corpgroup/rule/list_ids",
+      "args": [
+        {
+          "name": "chain_id",
+          "flag": "--chain-id",
+          "type": "str",
+          "help": "上下游id",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "chain_id": {
+            "from_arg": "chain_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup rule-list-ids --chain-id <chain_id>"
+      ],
+      "doc": {
+        "title": "获取对接规则id列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95631",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/rule/list_ids?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "chain_id",
+            "required": true,
+            "description": "上下游id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"chain_id\":\"Chxxxxxx\"\n}",
+        "request_example_json": {
+          "chain_id": "Chxxxxxx"
+        },
+        "permissions": [
+          "调用的应用需要满足如下的权限，仅适用于上下游中创建空间的主企业调用。",
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情\n \n返回结果："
+        ]
+      }
+    },
+    {
+      "name": "unionid_to_external_userid",
+      "cli_action": "unionid-to-external-userid",
+      "summary": "上下游关联客户信息-已添加客户",
+      "method": "POST",
+      "endpoint": "/cgi-bin/corpgroup/unionid_to_external_userid",
+      "args": [
+        {
+          "name": "unionid",
+          "flag": "--unionid",
+          "type": "str",
+          "help": "微信客户的unionid",
+          "required": true
+        },
+        {
+          "name": "openid",
+          "flag": "--openid",
+          "type": "str",
+          "help": "微信客户的openid",
+          "required": true
+        },
+        {
+          "name": "corpid",
+          "flag": "--corpid",
+          "type": "str",
+          "help": "需要换取的企业corpid，不填则拉取所有企业"
+        },
+        {
+          "name": "mass_call_ticket",
+          "flag": "--mass-call-ticket",
+          "type": "str",
+          "help": "大批量调用凭据, 适用于数据初始化场景, 有获取及使用限制"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "unionid": {
+            "from_arg": "unionid"
+          },
+          "openid": {
+            "from_arg": "openid"
+          },
+          "corpid": {
+            "from_arg": "corpid"
+          },
+          "mass_call_ticket": {
+            "from_arg": "mass_call_ticket"
+          }
+        }
+      },
+      "examples": [
+        "wecom corpgroup unionid-to-external-userid --unionid <unionid> --openid <openid> [--corpid <corpid>] [--mass-call-ticket <mass_call_ticket>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "external_userid": {
+              "type": "string"
+            },
+            "corpid": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "external_userid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "上下游关联客户信息-已添加客户",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/95818",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/unionid_to_external_userid?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "上游应用的access_token",
+            "type": null
+          },
+          {
+            "name": "unionid",
+            "required": true,
+            "description": "微信客户的unionid",
+            "type": null
+          },
+          {
+            "name": "openid",
+            "required": true,
+            "description": "微信客户的openid",
+            "type": null
+          },
+          {
+            "name": "corpid",
+            "required": false,
+            "description": "需要换取的企业corpid，不填则拉取所有企业",
+            "type": null
+          },
+          {
+            "name": "mass_call_ticket",
+            "required": false,
+            "description": "大批量调用凭据, 适用于数据初始化场景, 有获取及使用限制",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "external_userid_info",
+            "required": null,
+            "description": "该unionid对应的外部联系人信息",
+            "type": null
+          },
+          {
+            "name": "external_userid_info_corpid",
+            "required": null,
+            "description": "所属企业id",
+            "type": null
+          },
+          {
+            "name": "external_userid_info_external_userid",
+            "required": null,
+            "description": "外部联系人id",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"unionid\":\"xxxxx\",\n  \"openid\":\"xxxxx\",\n  \"corpid\":\"xxxxx\",\n  \"mass_call_ticket\":\"xxxxx\"\n}",
+        "request_example_json": {
+          "unionid": "xxxxx",
+          "openid": "xxxxx",
+          "corpid": "xxxxx",
+          "mass_call_ticket": "xxxxx"
+        },
+        "response_example_text": "｛\n \"errcode\":0,\n \"errmsg\":\"ok\",\n \"external_userid_info\":[\n \t\t{\n\t\t\t\"corpid\":\"AAAAA\", \n\t\t\t\"external_userid\":\"BBBB\"\n\t\t}, \n\t\t{\n\t\t\t\"corpid\":\"CCCCC\", \n\t\t\t\"external_userid\":\"DDDDD\"\n\t\t}\n\t]\n｝",
+        "response_example_json": [
+          {
+            "corpid": "AAAAA",
+            "external_userid": "BBBB"
+          },
+          {
+            "corpid": "CCCCC",
+            "external_userid": "DDDDD"
+          }
+        ],
+        "notes": [
+          "调用该接口的应用必须是上下游共享的应用\n上游企业须已认证\nunionid（unionid的主体为绑定了该小程序的微信开放平台账号主体）和openid（即小程序账号主体）的主体需与当前企业的主体一致\nopenid与unionid必须是在同一个小程序获取到的\n应用需要具有客户联系权限\n自建应用/代开发应用可调用，第三方应用请查看企业客户微信unionid的升级方案\n调用频率最大为10万次/小时，48万次/天，750万次/月; 传入有效mass_call_ticket，可不受此限制, 但是依然受到基础频率限制。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

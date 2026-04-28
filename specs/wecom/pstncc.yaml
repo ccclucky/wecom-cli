@@ -1,0 +1,307 @@
+{
+  "domain": "pstncc",
+  "operations": [
+    {
+      "name": "call",
+      "cli_action": "call",
+      "summary": "发起语音电话",
+      "method": "POST",
+      "endpoint": "/cgi-bin/pstncc/call",
+      "args": [
+        {
+          "name": "callee_userid",
+          "flag": "--callee-userid",
+          "type": "str",
+          "help": "需要呼叫的列表",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "callee_userid": {
+            "from_arg": "callee_userid"
+          }
+        }
+      },
+      "examples": [
+        "wecom pstncc call --callee-userid <callee_userid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "states": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "integer",
+                    "description": "呼叫结果状态：0成功发起呼叫，非0则失败"
+                  },
+                  "callid": {
+                    "type": "string",
+                    "description": "唯一标识一通呼叫的id"
+                  },
+                  "userid": {
+                    "type": "string",
+                    "description": "用户id"
+                  }
+                },
+                "required": [
+                  "code",
+                  "callid",
+                  "userid"
+                ]
+              },
+              "description": "自动语音来电呼叫状态列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "states"
+          ]
+        }
+      },
+      "doc": {
+        "title": "发起语音电话",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91627",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/pstncc/call?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": null
+          },
+          {
+            "name": "callee_userid",
+            "required": true,
+            "description": "需要呼叫的列表",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "states",
+            "required": null,
+            "description": "自动语音来电呼叫状态列表",
+            "type": null
+          },
+          {
+            "name": "userid",
+            "required": null,
+            "description": "用户id",
+            "type": null
+          },
+          {
+            "name": "callid",
+            "required": null,
+            "description": "唯一标识一通呼叫的id",
+            "type": null
+          },
+          {
+            "name": "code",
+            "required": null,
+            "description": "呼叫结果状态：0成功发起呼叫，非0则失败",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n    \"callee_userid\":[\"james\",\"paul\"]\n}",
+        "request_example_json": {
+          "callee_userid": [
+            "james",
+            "paul"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\":0,\n    \"errmsg\":\"ok\",\n    \"states\":[\n        {\n            \"code\":0,\n            \"callid\":\"6-20190510201844181887818-4d0251082406000-out\",\n            \"userid\":\"james\"\n        },\n        {\n            \"code\":0,\n            \"callid\":\"6-20190510201844181887818-4d025109f806000-out\",\n            \"userid\":\"paul\"\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "states": [
+            {
+              "code": 0,
+              "callid": "6-20190510201844181887818-4d0251082406000-out",
+              "userid": "james"
+            },
+            {
+              "code": 0,
+              "callid": "6-20190510201844181887818-4d025109f806000-out",
+              "userid": "paul"
+            }
+          ]
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "1. callee_userid不能为空"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "getstates",
+      "cli_action": "getstates",
+      "summary": "获取接听状态",
+      "method": "POST",
+      "endpoint": "/cgi-bin/pstncc/getstates",
+      "args": [
+        {
+          "name": "callee_userid",
+          "flag": "--callee-userid",
+          "type": "str",
+          "help": "用户id",
+          "required": true
+        },
+        {
+          "name": "callid",
+          "flag": "--callid",
+          "type": "str",
+          "help": "发起自动语音来电callid",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "callee_userid": {
+            "from_arg": "callee_userid"
+          },
+          "callid": {
+            "from_arg": "callid"
+          }
+        }
+      },
+      "examples": [
+        "wecom pstncc getstates --callee-userid <callee_userid> --callid <callid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "istalked": {
+              "type": "integer",
+              "description": "0.表示未接听，1.表示接听"
+            },
+            "calltime": {
+              "type": "integer",
+              "description": "呼叫发起时间戳"
+            },
+            "talktime": {
+              "type": "integer",
+              "description": "通话时长单位（s）"
+            },
+            "reason": {
+              "type": "integer",
+              "description": "呼叫结果状态：0正常结束"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "istalked",
+            "calltime",
+            "talktime",
+            "reason"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取接听状态",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91628",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/pstncc/getstates?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。",
+            "type": null
+          },
+          {
+            "name": "callee_userid",
+            "required": true,
+            "description": "用户id",
+            "type": null
+          },
+          {
+            "name": "callid",
+            "required": true,
+            "description": "发起自动语音来电callid",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "istalked",
+            "required": null,
+            "description": "0.表示未接听，1.表示接听",
+            "type": null
+          },
+          {
+            "name": "calltime",
+            "required": null,
+            "description": "呼叫发起时间戳",
+            "type": null
+          },
+          {
+            "name": "talktime",
+            "required": null,
+            "description": "通话时长单位（s）",
+            "type": null
+          },
+          {
+            "name": "reason",
+            "required": null,
+            "description": "呼叫结果状态：0正常结束",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n   \"callee_userid\" : \"james\",\n   \"callid\" : \"6-20190510201844181887818-4d0251082406000-out\"\n}",
+        "request_example_json": {
+          "callee_userid": "james",
+          "callid": "6-20190510201844181887818-4d0251082406000-out"
+        },
+        "response_example_text": "{\n    \"errcode\":0,\n    \"errmsg\":\"ok\",\n    \"istalked\":1,\n    \"calltime\":1557306531,\n    \"talktime\":2,\n    \"reason\":0\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "istalked": 1,
+          "calltime": 1557306531,
+          "talktime": 2,
+          "reason": 0
+        },
+        "permissions": [
+          "注： 从2023年12月1日0点起，不再支持通过系统应用secret调用接口，存量企业暂不受影响 查看详情"
+        ],
+        "notes": [
+          "1. callee_userid不能为空\n2. callid 不能为空\n3. 仅支持查询七天内的callid状态",
+          "reason值含义：\n1: 振铃\n2: 接听\n3: 通话中\n4: 呼叫超时 – 用户挂机\n5: 不在服务区\n6: 欠费未接听\n7: 被叫拒接\n8: 被叫关机\n9: 空号\n10: 呼叫受限\n11: 线路错误\n12: 呼叫超时 – 系统挂机\n13: 呼叫超过限制（8分钟3次24小时8次）\n14: 线路超时未返回\n15: 超限（主叫超限，需要换号码呼叫）\n16: 线路繁忙-稍后在呼\n17: 呼叫取消通知\n20: 外呼超时未确认\n99: 其他"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}
