@@ -1,0 +1,5 @@
+{"skill":"plan-ceo-review","timestamp":"2026-04-29T08:30:00","status":"issues_open","unresolved":0,"critical_gaps":4,"mode":"HOLD_SCOPE","scope_proposed":0,"scope_accepted":0,"scope_deferred":0,"commit":"aa2ebfc"}
+{"skill":"plan-eng-review","timestamp":"2026-04-29T09:11:46Z","status":"issues_open","unresolved":0,"critical_gaps":0,"issues_found":14,"mode":"FULL_REVIEW","commit":"aa2ebfc"}
+---CONFIG---
+false---HEAD---
+aa2ebfc
