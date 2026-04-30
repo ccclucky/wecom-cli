@@ -19,7 +19,7 @@ def register_generated_commands(
 
     advanced_feature_parser = subparsers.add_parser(
         "advanced_feature",
-        help="advanced_feature 域命令",
+        help="advanced_feature",
     )
     advanced_feature_sub = advanced_feature_parser.add_subparsers(dest="__action", required=True)
 
@@ -164,7 +164,7 @@ def register_generated_commands(
 
     appchat_parser = subparsers.add_parser(
         "appchat",
-        help="appchat 域命令",
+        help="appchat",
     )
     appchat_sub = appchat_parser.add_subparsers(dest="__action", required=True)
 
@@ -230,7 +230,7 @@ def register_generated_commands(
 
     auth_parser = subparsers.add_parser(
         "auth",
-        help="auth 域命令",
+        help="auth",
     )
     auth_sub = auth_parser.add_subparsers(dest="__action", required=True)
 
@@ -289,7 +289,7 @@ def register_generated_commands(
 
     batch_parser = subparsers.add_parser(
         "batch",
-        help="batch 域命令",
+        help="batch",
     )
     batch_sub = batch_parser.add_subparsers(dest="__action", required=True)
 
@@ -408,7 +408,7 @@ def register_generated_commands(
 
     chatdata_parser = subparsers.add_parser(
         "chatdata",
-        help="chatdata 域命令",
+        help="chatdata",
     )
     chatdata_sub = chatdata_parser.add_subparsers(dest="__action", required=True)
 
@@ -679,7 +679,7 @@ def register_generated_commands(
 
     checkin_parser = subparsers.add_parser(
         "checkin",
-        help="checkin 域命令",
+        help="checkin",
     )
     checkin_sub = checkin_parser.add_subparsers(dest="__action", required=True)
 
@@ -825,7 +825,7 @@ def register_generated_commands(
 
     contacts_parser = subparsers.add_parser(
         "contacts",
-        help="contacts 域命令",
+        help="contacts",
     )
     contacts_sub = contacts_parser.add_subparsers(dest="__action", required=True)
 
@@ -856,7 +856,7 @@ def register_generated_commands(
 
     corp_parser = subparsers.add_parser(
         "corp",
-        help="corp 域命令",
+        help="corp",
     )
     corp_sub = corp_parser.add_subparsers(dest="__action", required=True)
 
@@ -935,7 +935,7 @@ def register_generated_commands(
 
     corpgroup_parser = subparsers.add_parser(
         "corpgroup",
-        help="corpgroup 域命令",
+        help="corpgroup",
     )
     corpgroup_sub = corpgroup_parser.add_subparsers(dest="__action", required=True)
 
@@ -1254,7 +1254,7 @@ def register_generated_commands(
 
     customers_parser = subparsers.add_parser(
         "customers",
-        help="customers 域命令",
+        help="customers",
     )
     customers_sub = customers_parser.add_subparsers(dest="__action", required=True)
 
@@ -2080,7 +2080,7 @@ def register_generated_commands(
 
     departments_parser = subparsers.add_parser(
         "departments",
-        help="departments 域命令",
+        help="departments",
     )
     departments_sub = departments_parser.add_subparsers(dest="__action", required=True)
 
@@ -2241,7 +2241,7 @@ def register_generated_commands(
 
     dial_parser = subparsers.add_parser(
         "dial",
-        help="dial 域命令",
+        help="dial",
     )
     dial_sub = dial_parser.add_subparsers(dest="__action", required=True)
 
@@ -2282,7 +2282,7 @@ def register_generated_commands(
 
     exmail_parser = subparsers.add_parser(
         "exmail",
-        help="exmail 域命令",
+        help="exmail",
     )
     exmail_sub = exmail_parser.add_subparsers(dest="__action", required=True)
 
@@ -2843,7 +2843,7 @@ def register_generated_commands(
 
     export_parser = subparsers.add_parser(
         "export",
-        help="export 域命令",
+        help="export",
     )
     export_sub = export_parser.add_subparsers(dest="__action", required=True)
 
@@ -2970,7 +2970,7 @@ def register_generated_commands(
 
     externalpay_parser = subparsers.add_parser(
         "externalpay",
-        help="externalpay 域命令",
+        help="externalpay",
     )
     externalpay_sub = externalpay_parser.add_subparsers(dest="__action", required=True)
 
@@ -3080,7 +3080,7 @@ def register_generated_commands(
 
     hardware_parser = subparsers.add_parser(
         "hardware",
-        help="hardware 域命令",
+        help="hardware",
     )
     hardware_sub = hardware_parser.add_subparsers(dest="__action", required=True)
 
@@ -3124,7 +3124,7 @@ def register_generated_commands(
 
     health_parser = subparsers.add_parser(
         "health",
-        help="health 域命令",
+        help="health",
     )
     health_sub = health_parser.add_subparsers(dest="__action", required=True)
 
@@ -3233,7 +3233,7 @@ def register_generated_commands(
 
     hr_parser = subparsers.add_parser(
         "hr",
-        help="hr 域命令",
+        help="hr",
     )
     hr_sub = hr_parser.add_subparsers(dest="__action", required=True)
 
@@ -3327,7 +3327,7 @@ def register_generated_commands(
 
     idconvert_parser = subparsers.add_parser(
         "idconvert",
-        help="idconvert 域命令",
+        help="idconvert",
     )
     idconvert_sub = idconvert_parser.add_subparsers(dest="__action", required=True)
 
@@ -3365,7 +3365,7 @@ def register_generated_commands(
 
     kf_parser = subparsers.add_parser(
         "kf",
-        help="kf 域命令",
+        help="kf",
     )
     kf_sub = kf_parser.add_subparsers(dest="__action", required=True)
 
@@ -3740,7 +3740,7 @@ def register_generated_commands(
 
     living_parser = subparsers.add_parser(
         "living",
-        help="living 域命令",
+        help="living",
     )
     living_sub = living_parser.add_subparsers(dest="__action", required=True)
 
@@ -3812,7 +3812,7 @@ def register_generated_commands(
 
     meeting_parser = subparsers.add_parser(
         "meeting",
-        help="meeting 域命令",
+        help="meeting",
     )
     meeting_sub = meeting_parser.add_subparsers(dest="__action", required=True)
 
@@ -5332,7 +5332,7 @@ def register_generated_commands(
 
     messages_parser = subparsers.add_parser(
         "messages",
-        help="messages 域命令",
+        help="messages",
     )
     messages_sub = messages_parser.add_subparsers(dest="__action", required=True)
 
@@ -5448,7 +5448,7 @@ def register_generated_commands(
 
     miniapppay_parser = subparsers.add_parser(
         "miniapppay",
-        help="miniapppay 域命令",
+        help="miniapppay",
     )
     miniapppay_sub = miniapppay_parser.add_subparsers(dest="__action", required=True)
 
@@ -5827,7 +5827,7 @@ def register_generated_commands(
 
     miniprogram_parser = subparsers.add_parser(
         "miniprogram",
-        help="miniprogram 域命令",
+        help="miniprogram",
     )
     miniprogram_sub = miniprogram_parser.add_subparsers(dest="__action", required=True)
 
@@ -5858,7 +5858,7 @@ def register_generated_commands(
 
     msgaudit_parser = subparsers.add_parser(
         "msgaudit",
-        help="msgaudit 域命令",
+        help="msgaudit",
     )
     msgaudit_sub = msgaudit_parser.add_subparsers(dest="__action", required=True)
 
@@ -5990,7 +5990,7 @@ def register_generated_commands(
 
     network_parser = subparsers.add_parser(
         "network",
-        help="network 域命令",
+        help="network",
     )
     network_sub = network_parser.add_subparsers(dest="__action", required=True)
 
@@ -6016,7 +6016,7 @@ def register_generated_commands(
 
     oa_parser = subparsers.add_parser(
         "oa",
-        help="oa 域命令",
+        help="oa",
     )
     oa_sub = oa_parser.add_subparsers(dest="__action", required=True)
 
@@ -7034,7 +7034,7 @@ def register_generated_commands(
 
     pstncc_parser = subparsers.add_parser(
         "pstncc",
-        help="pstncc 域命令",
+        help="pstncc",
     )
     pstncc_sub = pstncc_parser.add_subparsers(dest="__action", required=True)
 
@@ -7083,7 +7083,7 @@ def register_generated_commands(
 
     school_parser = subparsers.add_parser(
         "school",
-        help="school 域命令",
+        help="school",
     )
     school_sub = school_parser.add_subparsers(dest="__action", required=True)
 
@@ -8032,7 +8032,7 @@ def register_generated_commands(
 
     security_parser = subparsers.add_parser(
         "security",
-        help="security 域命令",
+        help="security",
     )
     security_sub = security_parser.add_subparsers(dest="__action", required=True)
 
@@ -8316,7 +8316,7 @@ def register_generated_commands(
 
     tags_parser = subparsers.add_parser(
         "tags",
-        help="tags 域命令",
+        help="tags",
     )
     tags_sub = tags_parser.add_subparsers(dest="__action", required=True)
 
@@ -8477,7 +8477,7 @@ def register_generated_commands(
 
     ticket_parser = subparsers.add_parser(
         "ticket",
-        help="ticket 域命令",
+        help="ticket",
     )
     ticket_sub = ticket_parser.add_subparsers(dest="__action", required=True)
 
@@ -8493,7 +8493,7 @@ def register_generated_commands(
 
     unknown_parser = subparsers.add_parser(
         "unknown",
-        help="unknown 域命令",
+        help="unknown",
     )
     unknown_sub = unknown_parser.add_subparsers(dest="__action", required=True)
 
@@ -8527,7 +8527,7 @@ def register_generated_commands(
 
     users_parser = subparsers.add_parser(
         "users",
-        help="users 域命令",
+        help="users",
     )
     users_sub = users_parser.add_subparsers(dest="__action", required=True)
 
@@ -9027,7 +9027,7 @@ def register_generated_commands(
 
     wedoc_parser = subparsers.add_parser(
         "wedoc",
-        help="wedoc 域命令",
+        help="wedoc",
     )
     wedoc_sub = wedoc_parser.add_subparsers(dest="__action", required=True)
 
@@ -10494,7 +10494,7 @@ def register_generated_commands(
 
     wedrive_parser = subparsers.add_parser(
         "wedrive",
-        help="wedrive 域命令",
+        help="wedrive",
     )
     wedrive_sub = wedrive_parser.add_subparsers(dest="__action", required=True)
 

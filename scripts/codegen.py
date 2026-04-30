@@ -212,7 +212,7 @@ def _render_cli(specs: list[dict[str, Any]]) -> str:
             [
                 f"    {domain}_parser = subparsers.add_parser(",
                 f"        {repr(domain)},",
-                f"        help={repr(domain + ' 域命令')},",
+                f"        help={repr(domain)},",
                 "    )",
                 f"    {domain}_sub = {domain}_parser.add_subparsers(dest='__action', required=True)",
                 "",

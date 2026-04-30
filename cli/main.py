@@ -9,57 +9,18 @@ import sys
 
 from apis.generated_client import GeneratedWeComClient
 from cli.generated_commands import CommandHandler, register_generated_commands
+from cli.help_formatter import DOMAIN_DESCRIPTIONS, WeComHelpFormatter, install_formatter
 from core.auth import AccessTokenProvider
 from core.config import WeComConfig
 from core.errors import WeComCLIError
 from core.requester import UnifiedRequester
-
-DOMAIN_DESCRIPTIONS: dict[str, str] = {
-    "advanced_feature": "高级功能账号管理",
-    "appchat": "应用群聊管理",
-    "auth": "授权验证",
-    "batch": "异步任务",
-    "chatdata": "会话内容存档",
-    "checkin": "打卡管理",
-    "contacts": "通讯录管理 — 成员、部门、标签",
-    "corp": "企业信息",
-    "corpgroup": "企业互联",
-    "customers": "外部联系人管理",
-    "departments": "部门管理",
-    "dial": "公费电话",
-    "exmail": "企业邮箱",
-    "export": "数据导出",
-    "externalpay": "外部支付",
-    "hardware": "硬件管理",
-    "health": "健康上报",
-    "hr": "人事管理",
-    "idconvert": "ID转换",
-    "kf": "客服管理",
-    "living": "直播管理",
-    "meeting": "会议管理",
-    "messages": "消息推送 — 文本、卡片、文件",
-    "miniapppay": "小程序支付",
-    "miniprogram": "小程序管理",
-    "msgaudit": "会话审计",
-    "network": "网络管理",
-    "oa": "OA数据接口",
-    "pstncc": "企业专线电话",
-    "school": "家校沟通",
-    "security": "安全管理",
-    "tags": "标签管理",
-    "ticket": "电子发票",
-    "unknown": "未知域",
-    "users": "用户管理",
-    "wedoc": "企业文档",
-    "wedrive": "企业微盘",
-}
 
 
 def register_domain_help(
     subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
 ) -> None:
     for name, desc in DOMAIN_DESCRIPTIONS.items():
-        subparsers.add_parser(name, help=desc)
+        subparsers.add_parser(name, help=desc, formatter_class=WeComHelpFormatter)
 
 
 class _HelpOnlyClient:
@@ -81,15 +42,18 @@ def bootstrap(*, verbose: bool = False, debug: bool = False) -> GeneratedWeComCl
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="wecom",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        formatter_class=WeComHelpFormatter,
+        add_help=False,
         description="企业微信命令行工具 — 通过命令行调用企业微信API",
-        epilog="""\
-常用命令:
-  wecom contacts list --department-id 1     查看部门成员
-  wecom departments list                    查看部门列表
-  wecom messages send-text --to-user ...    发送文本消息
-
-使用 wecom <domain> --help 查看指定域的可用命令""",
+    )
+    # Bind formatter immediately so add_subparsers() doesn't crash
+    parser._get_formatter = lambda: WeComHelpFormatter(parser.prog)  # type: ignore[assignment]
+    parser.add_argument(
+        "-h",
+        "--help",
+        action="store_true",
+        default=False,
+        dest="wecom_help",
     )
     parser.add_argument(
         "--verbose", action="store_true", default=bool(os.getenv("WECOM_VERBOSE")), help="Print request URLs to stderr"
@@ -119,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
     if not effective_argv:
         subparsers = parser.add_subparsers(dest="domain")
         register_domain_help(subparsers)
+        install_formatter(parser)
         parser.print_help()
         return 0
 
@@ -133,7 +98,19 @@ def main(argv: list[str] | None = None) -> int:
         else:
             # Domain/action help → full registration with stub client
             register_generated_commands(subparsers, _HelpOnlyClient())  # type: ignore[arg-type]
+        install_formatter(parser)
         parser.parse_args(effective_argv)
+        # print_help was triggered by our custom flag or argparse
+        # For domain-level, the sub-parser's format_help handles it
+        # For root level, we need to explicitly print
+        if not positional:
+            parser.print_help()
+        else:
+            # argparse handles sub-parser help via SystemExit
+            try:
+                parser.parse_args(effective_argv)
+            except SystemExit:
+                pass
         return 0
 
     # Normal execution path
@@ -142,6 +119,7 @@ def main(argv: list[str] | None = None) -> int:
     if not remaining:
         subparsers = parser.add_subparsers(dest="domain")
         register_domain_help(subparsers)
+        install_formatter(parser)
         parser.print_help()
         return 0
 
@@ -149,6 +127,7 @@ def main(argv: list[str] | None = None) -> int:
         client = bootstrap(verbose=args.verbose, debug=args.debug)
         subparsers = parser.add_subparsers(dest="domain", required=True)
         command_table = register_generated_commands(subparsers, client)
+        install_formatter(parser)
         args = parser.parse_args(effective_argv)
         payload = route(args, command_table)
         print(json.dumps(payload, ensure_ascii=False, indent=2))

@@ -193,9 +193,8 @@ def test_build_parser_has_chinese_description():
 
 def test_help_shows_domain_list_no_bootstrap(capsys):
     """wecom --help should show domain list without requiring config/env."""
-    with pytest.raises(SystemExit) as exc_info:
-        main(["--help"])
-    assert exc_info.value.code == 0
+    ret = main(["--help"])
+    assert ret == 0
     captured = capsys.readouterr()
     assert "contacts" in captured.out
     assert "messages" in captured.out
@@ -213,6 +212,9 @@ def test_help_no_args_shows_domain_list(capsys):
 
 def test_help_domain_shows_actions_no_bootstrap(capsys):
     """wecom contacts --help should show actions without requiring config/env."""
+    # Domain --help triggers argparse built-in help on sub-parser → SystemExit(0)
     with pytest.raises(SystemExit) as exc_info:
         main(["contacts", "--help"])
     assert exc_info.value.code == 0
+    captured = capsys.readouterr()
+    assert "列出成员" in captured.out
