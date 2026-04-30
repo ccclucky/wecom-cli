@@ -3,39 +3,14 @@ name: Release Alpha
 on:
   push:
     tags:
-      - "v*-alpha*"
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to release (e.g. 0.1.0a2)'
-        required: true
-        default: '0.1.0a2'
+      - "v*a[0-9]*"
+      - "v*a[0-9]*.*"
 
 jobs:
-  validate-and-build:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      version: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Create tag if missing
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          TAG_NAME="v${{ github.event.inputs.version }}"
-          if ! git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
-            echo "Creating tag $TAG_NAME"
-            git tag "$TAG_NAME"
-            git push origin "$TAG_NAME"
-          fi
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -66,15 +41,13 @@ jobs:
           path: dist/
 
   publish-and-release:
-    needs: validate-and-build
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -88,13 +61,18 @@ jobs:
           password: ${{ secrets.PYPI_API_TOKEN }}
           skip-existing: true
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release (draft)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.event.inputs.version || github.ref_name }}
+          tag_name: ${{ github.ref_name }}
           generate_release_notes: true
           files: |
             dist/*.whl
             dist/*.tar.gz
-          prerelease: true
+          draft: true
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "${{ github.ref_name }}" --draft=false --prerelease
