@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "api-wecom-cli"
-version = "0.1.0-alpha.3"
+version = "0.1.0-alpha.4"
 description = "WeCom CLI"
 requires-python = ">=3.11"
 dependencies = []
