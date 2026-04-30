@@ -18,8 +18,7 @@ _MAX_RETRIES = 2
 
 
 class TokenProvider(Protocol):
-    def get_token(self, force_refresh: bool = False) -> str:
-        ...
+    def get_token(self, force_refresh: bool = False) -> str: ...
 
 
 class UnifiedRequester:
@@ -47,9 +46,13 @@ class UnifiedRequester:
         _retrying: bool = False,
     ) -> dict[str, Any]:
         return self._request_with_retry(
-            method=method, endpoint=endpoint, query=query,
-            json_body=json_body, require_auth=require_auth,
-            _retrying=_retrying, _attempt=0,
+            method=method,
+            endpoint=endpoint,
+            query=query,
+            json_body=json_body,
+            require_auth=require_auth,
+            _retrying=_retrying,
+            _attempt=0,
         )
 
     def _request_with_retry(
@@ -65,8 +68,11 @@ class UnifiedRequester:
     ) -> dict[str, Any]:
         try:
             return self._do_request(
-                method=method, endpoint=endpoint, query=query,
-                json_body=json_body, require_auth=require_auth,
+                method=method,
+                endpoint=endpoint,
+                query=query,
+                json_body=json_body,
+                require_auth=require_auth,
             )
         except APIResponseError as exc:
             if _retrying or _attempt >= _MAX_RETRIES:
@@ -75,18 +81,26 @@ class UnifiedRequester:
                 self._log_verbose(f"[retry {exc.errcode}] refreshing token")
                 self._token_provider.get_token(force_refresh=True)
                 return self._request_with_retry(
-                    method=method, endpoint=endpoint, query=query,
-                    json_body=json_body, require_auth=require_auth,
-                    _retrying=True, _attempt=_attempt + 1,
+                    method=method,
+                    endpoint=endpoint,
+                    query=query,
+                    json_body=json_body,
+                    require_auth=require_auth,
+                    _retrying=True,
+                    _attempt=_attempt + 1,
                 )
             if exc.errcode in _RATE_LIMIT_CODES:
-                wait = 0.5 * (2 ** _attempt)
+                wait = 0.5 * (2**_attempt)
                 self._log_verbose(f"[retry {exc.errcode}] backing off {wait:.1f}s")
                 time.sleep(wait)
                 return self._request_with_retry(
-                    method=method, endpoint=endpoint, query=query,
-                    json_body=json_body, require_auth=require_auth,
-                    _retrying=_retrying, _attempt=_attempt + 1,
+                    method=method,
+                    endpoint=endpoint,
+                    query=query,
+                    json_body=json_body,
+                    require_auth=require_auth,
+                    _retrying=_retrying,
+                    _attempt=_attempt + 1,
                 )
             raise
 
@@ -118,9 +132,11 @@ class UnifiedRequester:
 
         if self._verbose:
             import sys
+
             print(f"[wecom-cli] {method} {url}", file=sys.stderr)
         if self._debug:
             import sys
+
             if json_body:
                 print(f"[wecom-cli] body: {json.dumps(_strip_none(json_body), ensure_ascii=False)}", file=sys.stderr)
 
@@ -138,6 +154,7 @@ class UnifiedRequester:
 
         if self._debug:
             import sys
+
             print(f"[wecom-cli] response: {raw[:500]}", file=sys.stderr)
 
         try:
@@ -157,16 +174,13 @@ class UnifiedRequester:
     def _log_verbose(self, msg: str) -> None:
         if self._verbose:
             import sys
+
             print(f"[wecom-cli] {msg}", file=sys.stderr)
 
 
 def _strip_none(value: Any) -> Any:
     if isinstance(value, dict):
-        return {
-            key: _strip_none(item)
-            for key, item in value.items()
-            if item is not None
-        }
+        return {key: _strip_none(item) for key, item in value.items() if item is not None}
     if isinstance(value, list):
         return [_strip_none(item) for item in value if item is not None]
     return value

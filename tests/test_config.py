@@ -38,9 +38,15 @@ def test_missing_file_raises_config_error_with_path(tmp_path):
 
 def test_env_vars_override_file(tmp_path, monkeypatch):
     config_file = tmp_path / "config.json"
-    config_file.write_text(json.dumps({
-        "corp_id": "file-id", "corp_secret": "file-sec",
-    }), encoding="utf-8")
+    config_file.write_text(
+        json.dumps(
+            {
+                "corp_id": "file-id",
+                "corp_secret": "file-sec",
+            }
+        ),
+        encoding="utf-8",
+    )
 
     monkeypatch.setenv("WECOM_CORP_ID", "env-id")
     monkeypatch.setenv("WECOM_CORP_SECRET", "env-sec")

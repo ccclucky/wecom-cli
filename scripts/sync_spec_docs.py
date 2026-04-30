@@ -47,15 +47,15 @@ def _merge_doc(existing: dict[str, Any], incoming: dict[str, Any]) -> dict[str, 
 def _merge_contract(op: dict[str, Any], request_params: list[dict[str, Any]], request_example_json: Any = None) -> bool:
     changed = False
     generated_args, generated_request = _build_args_and_request(
-        op.get("method"), request_params, request_example_json,
+        op.get("method"),
+        request_params,
+        request_example_json,
     )
     if not generated_args and not generated_request:
         return False
 
     existing_args = op.setdefault("args", [])
-    existing_by_name = {
-        arg.get("name"): arg for arg in existing_args if isinstance(arg.get("name"), str)
-    }
+    existing_by_name = {arg.get("name"): arg for arg in existing_args if isinstance(arg.get("name"), str)}
     for generated_arg in generated_args:
         name = generated_arg["name"]
         current = existing_by_name.get(name)
@@ -89,7 +89,9 @@ def _review_hints_for_operation(op: dict[str, Any], doc: dict[str, Any]) -> list
         # Only hint when params are sparse — auto-generated body may need review
         if doc.get("request_params") and len(doc["request_params"]) <= 1:
             if doc.get("request_example_json"):
-                hints.append("POST parameter table is incomplete; json_body auto-generated from example, verify mapping.")
+                hints.append(
+                    "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+                )
     if doc.get("notes"):
         hints.append("Review doc.notes for conditional fields, limits, and permission caveats.")
     return hints
@@ -122,9 +124,7 @@ def _merge_output(op: dict[str, Any], doc: dict[str, Any]) -> bool:
 def sync_specs_with_catalog(
     catalog: dict[str, Any], spec_dir: Path, *, apply: bool = False
 ) -> tuple[list[Path], dict[str, int]]:
-    catalog_by_id = {
-        op["id"]: op for op in catalog.get("operations", []) if isinstance(op.get("id"), str)
-    }
+    catalog_by_id = {op["id"]: op for op in catalog.get("operations", []) if isinstance(op.get("id"), str)}
     changed_paths: list[Path] = []
     stats = {
         "spec_files_changed": 0,

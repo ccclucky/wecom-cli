@@ -76,16 +76,12 @@ def _collect_spec_operations(spec_dir: Path) -> tuple[set[str], list[str], list[
             request_refs = _collect_from_arg_refs(request)
             unknown_refs = sorted(request_refs - arg_name_set)
             if unknown_refs:
-                invalid_contracts.append(
-                    f"{op_id}: request uses unknown args {', '.join(unknown_refs)}"
-                )
+                invalid_contracts.append(f"{op_id}: request uses unknown args {', '.join(unknown_refs)}")
 
             required_args = {arg["name"] for arg in args if arg.get("required")}
             missing_required_mappings = sorted(required_args - request_refs)
             if missing_required_mappings:
-                invalid_contracts.append(
-                    f"{op_id}: required args not mapped {', '.join(missing_required_mappings)}"
-                )
+                invalid_contracts.append(f"{op_id}: required args not mapped {', '.join(missing_required_mappings)}")
 
             output = op.get("output")
             if output is not None:

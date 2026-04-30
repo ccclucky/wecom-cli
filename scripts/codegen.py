@@ -49,10 +49,18 @@ def _load_specs() -> list[dict[str, Any]]:
     return specs
 
 
-_PAGINATION_NAMES = frozenset({
-    "limit", "offset", "count", "page", "size",
-    "pagesize", "page_size", "per_page",
-})
+_PAGINATION_NAMES = frozenset(
+    {
+        "limit",
+        "offset",
+        "count",
+        "page",
+        "size",
+        "pagesize",
+        "page_size",
+        "per_page",
+    }
+)
 
 
 def _signature_type(arg_type: str, arg_name: str = "") -> str:
@@ -234,14 +242,16 @@ def _render_cli(specs: list[dict[str, Any]]) -> str:
                     ]
                 )
             if uses_body:
-                lines.extend([
-                    f"    {parser_name}.add_argument(",
-                    f"        '--body',",
-                    f"        type=json.loads,",
-                    f"        required=True,",
-                    f"        help='JSON request body',",
-                    f"    )",
-                ])
+                lines.extend(
+                    [
+                        f"    {parser_name}.add_argument(",
+                        "        '--body',",
+                        "        type=json.loads,",
+                        "        required=True,",
+                        "        help='JSON request body',",
+                        "    )",
+                    ]
+                )
             else:
                 deduped = _dedup_args(op.get("args", []))
                 for uniq, arg in deduped:
@@ -256,18 +266,13 @@ def _render_cli(specs: list[dict[str, Any]]) -> str:
                 deduped = _dedup_args(op.get("args", []))
                 call_args = [f"{uniq}=a.{uniq}" for uniq, _ in deduped]
                 if call_args:
-                    lines.append(
-                        f"        return client.{domain}_{op['name']}("
-                    )
+                    lines.append(f"        return client.{domain}_{op['name']}(")
                     for part in call_args:
                         lines.append(f"            {part},")
                     lines.append("        )")
                 else:
                     lines.append(f"        return client.{domain}_{op['name']}()")
-            lines.append(
-                f"    table[({repr(domain)}, {repr(action)})] = "
-                f"_handle_{domain}_{op['name']}"
-            )
+            lines.append(f"    table[({repr(domain)}, {repr(action)})] = _handle_{domain}_{op['name']}")
             lines.append("")
 
     lines.extend(["    return table", ""])

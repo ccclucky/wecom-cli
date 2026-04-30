@@ -64,6 +64,7 @@ def test_request_api_error(monkeypatch):
 
 def test_request_network_error_raises_api_request_error(monkeypatch):
     import urllib.error
+
     def fake_open(*args, **kwargs):
         raise urllib.error.URLError("Connection refused")
 
@@ -76,8 +77,10 @@ def test_request_json_decode_error_raises_api_request_error(monkeypatch):
     class BadResponse:
         def read(self):
             return b"not json"
+
         def __enter__(self):
             return self
+
         def __exit__(self, *a):
             return False
 
@@ -88,6 +91,7 @@ def test_request_json_decode_error_raises_api_request_error(monkeypatch):
 
 def test_request_token_expired_retries_with_refresh(monkeypatch):
     call_count = 0
+
     def fake_open(*args, **kwargs):
         nonlocal call_count
         call_count += 1
@@ -115,6 +119,7 @@ def test_request_token_expired_no_infinite_loop(monkeypatch):
 def test_request_rate_limit_retries_with_backoff(monkeypatch):
     call_count = 0
     slept = []
+
     def fake_open(*args, **kwargs):
         nonlocal call_count
         call_count += 1
@@ -132,6 +137,7 @@ def test_request_rate_limit_retries_with_backoff(monkeypatch):
 
 def test_request_non_retryable_error_no_retry(monkeypatch):
     call_count = 0
+
     def fake_open(*args, **kwargs):
         nonlocal call_count
         call_count += 1

@@ -36,6 +36,8 @@ def _is_captcha_block(html: str) -> bool:
     if len(html) > CAPTCHA_HTML_MAX:
         return False
     return any(sig in html for sig in CAPTCHA_SIGNALS)
+
+
 DOC_PATH_PREFIX = "https://developer.work.weixin.qq.com/document/path/"
 _TREE_PREFIX_RE = re.compile(r"^[\s│├└─┬┴┌┐┘└]+")
 ENDPOINT_RE = re.compile(r"/cgi-bin/[a-zA-Z0-9_./-]+")
@@ -52,9 +54,7 @@ logger = logging.getLogger("wecom-discovery")
 def setup_logging(log_file: Path | None = None) -> None:
     """Setup logging to console and optionally to a file."""
     logger.setLevel(logging.DEBUG)
-    formatter = logging.Formatter(
-        "[%(asctime)s] %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-    )
+    formatter = logging.Formatter("[%(asctime)s] %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
     # Console handler
     ch = logging.StreamHandler()
@@ -72,13 +72,45 @@ def setup_logging(log_file: Path | None = None) -> None:
 
 
 _INVALID_IDENT_RE = re.compile(r"[^\w]")
-_PY_KEYWORDS = frozenset({
-    "False", "None", "True", "and", "as", "assert", "async", "await",
-    "break", "class", "continue", "def", "del", "elif", "else", "except",
-    "finally", "for", "from", "global", "if", "import", "in", "is",
-    "lambda", "nonlocal", "not", "or", "pass", "raise", "return",
-    "try", "while", "with", "yield",
-})
+_PY_KEYWORDS = frozenset(
+    {
+        "False",
+        "None",
+        "True",
+        "and",
+        "as",
+        "assert",
+        "async",
+        "await",
+        "break",
+        "class",
+        "continue",
+        "def",
+        "del",
+        "elif",
+        "else",
+        "except",
+        "finally",
+        "for",
+        "from",
+        "global",
+        "if",
+        "import",
+        "in",
+        "is",
+        "lambda",
+        "nonlocal",
+        "not",
+        "or",
+        "pass",
+        "raise",
+        "return",
+        "try",
+        "while",
+        "with",
+        "yield",
+    }
+)
 
 
 def _safe_ident(name: str) -> str:
@@ -300,6 +332,7 @@ def build_seed_urls(
     if menu_tree_file and menu_tree_file.exists():
         try:
             import json
+
             tree_data = json.loads(menu_tree_file.read_text(encoding="utf-8"))
             for item in tree_data:
                 if item.get("type") != 1:
@@ -404,7 +437,9 @@ def _table_to_fields(block: DocBlock) -> tuple[DiscoveredField, ...]:
         required = None
         if required_index is not None and required_index < len(row):
             required = _bool_from_required(row[required_index])
-        description = row[description_index].strip() if description_index is not None and description_index < len(row) else None
+        description = (
+            row[description_index].strip() if description_index is not None and description_index < len(row) else None
+        )
         field_type = row[type_index].strip() if type_index is not None and type_index < len(row) else None
         fields.append(
             DiscoveredField(
@@ -635,8 +670,11 @@ def crawl(
             consecutive_blocks += 1
             logger.warning(
                 f"{progress_prefix} | BLOCKED  | Anti-bot page ({len(html)} bytes)"
-                + (f" | {consecutive_blocks} consecutive — will abort at {CAPTCHA_CONSECUTIVE_LIMIT}"
-                   if consecutive_blocks >= CAPTCHA_CONSECUTIVE_LIMIT - 2 else "")
+                + (
+                    f" | {consecutive_blocks} consecutive — will abort at {CAPTCHA_CONSECUTIVE_LIMIT}"
+                    if consecutive_blocks >= CAPTCHA_CONSECUTIVE_LIMIT - 2
+                    else ""
+                )
             )
             if consecutive_blocks >= CAPTCHA_CONSECUTIVE_LIMIT:
                 logger.error(
@@ -689,18 +727,21 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Discover WeCom APIs from doc pages")
     parser.add_argument("--seed", action="append", default=[], help="Seed doc URLs")
     parser.add_argument("--seed-file", type=Path, help="File containing seed URLs, one per line")
-    parser.add_argument("--menu-tree-file", type=Path, default=Path("specs/wecom/menu_tree.json"), help="Menu tree JSON file")
+    parser.add_argument(
+        "--menu-tree-file", type=Path, default=Path("specs/wecom/menu_tree.json"), help="Menu tree JSON file"
+    )
     parser.add_argument("--max-pages", type=int, default=300)
-    parser.add_argument("--delay-min", type=float, default=1.0,
-                        help="Minimum delay between page fetches in seconds")
-    parser.add_argument("--delay-max", type=float, default=3.0,
-                        help="Maximum delay between page fetches in seconds")
+    parser.add_argument("--delay-min", type=float, default=1.0, help="Minimum delay between page fetches in seconds")
+    parser.add_argument("--delay-max", type=float, default=3.0, help="Maximum delay between page fetches in seconds")
     parser.add_argument("--output", type=Path, default=Path("artifacts/catalog.discovery.yaml"))
     parser.add_argument("--log-file", type=Path, default=Path("artifacts/discovery.log"), help="Path to log file")
-    parser.add_argument("--empty-pages-file", type=Path, default=Path("specs/wecom/empty_pages.json"),
-                        help="Cache file for known-empty pages (skips on re-crawl)")
-    parser.add_argument("--cookie", default=None,
-                        help="Cookie header to send with each request (bypasses CAPTCHA)")
+    parser.add_argument(
+        "--empty-pages-file",
+        type=Path,
+        default=Path("specs/wecom/empty_pages.json"),
+        help="Cache file for known-empty pages (skips on re-crawl)",
+    )
+    parser.add_argument("--cookie", default=None, help="Cookie header to send with each request (bypasses CAPTCHA)")
     args = parser.parse_args()
 
     setup_logging(args.log_file)
@@ -716,7 +757,8 @@ def main() -> int:
     # Disable free link-following to avoid unbounded crawl expansion.
     seed_only = args.menu_tree_file is not None and args.menu_tree_file.exists()
     crawl_report = crawl(
-        seeds, args.max_pages,
+        seeds,
+        args.max_pages,
         seed_only=seed_only,
         delay_min=args.delay_min,
         delay_max=args.delay_max,
@@ -740,9 +782,9 @@ def main() -> int:
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    
+
     logger.info("-" * 40)
-    logger.info(f"Discovery completed in {duration/60:.1f} minutes")
+    logger.info(f"Discovery completed in {duration / 60:.1f} minutes")
     logger.info(
         "Summary: "
         f"{len(crawl_report.operations)} operations found "

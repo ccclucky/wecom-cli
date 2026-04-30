@@ -148,10 +148,7 @@ def _build_post_args_and_request(
     request_params: list[dict[str, Any]],
     request_example_json: Any = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    params = [
-        p for p in request_params
-        if p.get("name") and p["name"] != "access_token"
-    ]
+    params = [p for p in request_params if p.get("name") and p["name"] != "access_token"]
 
     # When params are available, build args from them
     if params:
@@ -174,7 +171,7 @@ def _build_post_args_and_request(
                 seen_names[name] = 0
 
             arg_type = _infer_arg_type(field)
-            clean_name = name.replace('└', '').strip()
+            clean_name = name.replace("└", "").strip()
             arg = {
                 "name": name,
                 "flag": f"--{clean_name.replace('_', '-').replace(' ', '-')}",
@@ -281,14 +278,12 @@ def build_missing_plan(catalog: dict[str, Any], spec_dir: Path) -> dict[str, lis
         if not isinstance(request_params, list):
             request_params = []
         args, request = _build_args_and_request(
-            op.get("method"), request_params, doc_payload.get("request_example_json"),
+            op.get("method"),
+            request_params,
+            doc_payload.get("request_example_json"),
         )
         output = _build_output_from_doc(doc_payload)
-        summary = (
-            str(doc_payload.get("title")).strip()
-            if doc_payload.get("title")
-            else f"TODO: {name}"
-        )
+        summary = str(doc_payload.get("title")).strip() if doc_payload.get("title") else f"TODO: {name}"
         scaffold = {
             "name": name,
             "cli_action": _slug_to_cli_action(name),

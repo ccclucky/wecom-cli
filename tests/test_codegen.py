@@ -91,10 +91,14 @@ def test_spec_validation_rejects_bad_method():
 
 
 def test_spec_validation_rejects_bad_type():
-    bad_spec = [{"domain": "test", "operations": [
-        {"name": "bad", "method": "GET", "endpoint": "/x",
-         "args": [{"name": "p", "type": "unknown"}]}
-    ]}]
+    bad_spec = [
+        {
+            "domain": "test",
+            "operations": [
+                {"name": "bad", "method": "GET", "endpoint": "/x", "args": [{"name": "p", "type": "unknown"}]}
+            ],
+        }
+    ]
     with pytest.raises(ValueError, match="invalid type"):
         codegen._validate_specs(bad_spec)
 
@@ -107,12 +111,22 @@ def test_render_cli_uses_dunder_action_dest():
 
 
 def test_render_client_body_mode():
-    specs = [{"domain": "test", "operations": [
-        {"name": "complex_op", "cli_action": "complex-op", "mode": "body",
-         "method": "POST", "endpoint": "/cgi-bin/test",
-         "request": {"json_body": {"key": "val"}},
-         "examples": ["wecom test complex-op --body '{}'"]}
-    ]}]
+    specs = [
+        {
+            "domain": "test",
+            "operations": [
+                {
+                    "name": "complex_op",
+                    "cli_action": "complex-op",
+                    "mode": "body",
+                    "method": "POST",
+                    "endpoint": "/cgi-bin/test",
+                    "request": {"json_body": {"key": "val"}},
+                    "examples": ["wecom test complex-op --body '{}'"],
+                }
+            ],
+        }
+    ]
     client_code = codegen._render_client(specs)
     assert "body: dict[str, Any]" in client_code
     assert "json_body=body" in client_code

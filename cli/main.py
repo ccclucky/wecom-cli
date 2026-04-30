@@ -91,10 +91,15 @@ def build_parser() -> argparse.ArgumentParser:
 
 使用 wecom <domain> --help 查看指定域的可用命令""",
     )
-    parser.add_argument("--verbose", action="store_true", default=bool(os.getenv("WECOM_VERBOSE")),
-                        help="Print request URLs to stderr")
-    parser.add_argument("--debug", action="store_true", default=bool(os.getenv("WECOM_DEBUG")),
-                        help="Print full request/response JSON to stderr")
+    parser.add_argument(
+        "--verbose", action="store_true", default=bool(os.getenv("WECOM_VERBOSE")), help="Print request URLs to stderr"
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        default=bool(os.getenv("WECOM_DEBUG")),
+        help="Print full request/response JSON to stderr",
+    )
     return parser
 
 

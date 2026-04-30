@@ -262,7 +262,10 @@ def test_crawl_skips_cached_empty_pages(tmp_path):
     with patch("scripts.discover_wecom_apis.fetch_html") as mock_fetch:
         mock_fetch.return_value = SAMPLE_HTML_WITH_API
         report = crawl(
-            [EMPTY_CACHE_SEED], max_pages=10, delay_min=0, delay_max=0,
+            [EMPTY_CACHE_SEED],
+            max_pages=10,
+            delay_min=0,
+            delay_max=0,
             empty_pages_file=cache_file,
         )
     # Cached-empty page must be skipped without fetching
@@ -276,7 +279,10 @@ def test_crawl_saves_new_empty_pages(tmp_path):
 
     with patch("scripts.discover_wecom_apis.fetch_html", return_value=SAMPLE_HTML_EMPTY):
         report = crawl(
-            [EMPTY_CACHE_SEED], max_pages=10, delay_min=0, delay_max=0,
+            [EMPTY_CACHE_SEED],
+            max_pages=10,
+            delay_min=0,
+            delay_max=0,
             empty_pages_file=cache_file,
         )
     assert report.visited_pages == 1
@@ -293,7 +299,10 @@ def test_crawl_empty_cache_merges_with_existing(tmp_path):
 
     with patch("scripts.discover_wecom_apis.fetch_html", return_value=SAMPLE_HTML_EMPTY):
         crawl(
-            [EMPTY_CACHE_SEED], max_pages=10, delay_min=0, delay_max=0,
+            [EMPTY_CACHE_SEED],
+            max_pages=10,
+            delay_min=0,
+            delay_max=0,
             empty_pages_file=cache_file,
         )
 
@@ -316,7 +325,7 @@ def test_strip_tree_prefix_removes_box_drawing_chars():
 
 # --- CAPTCHA detection tests ---
 
-CAPTCHA_HTML = '<html><body>TencentCaptcha</body></html>'
+CAPTCHA_HTML = "<html><body>TencentCaptcha</body></html>"
 CAPTCHA_SEED = "https://developer.work.weixin.qq.com/document/path/92000"
 
 
@@ -344,7 +353,10 @@ def test_crawl_does_not_cache_captcha_pages(tmp_path):
     cache_file = tmp_path / "empty.json"
     with patch("scripts.discover_wecom_apis.fetch_html", return_value=CAPTCHA_HTML):
         crawl(
-            [CAPTCHA_SEED], max_pages=100, delay_min=0, delay_max=0,
+            [CAPTCHA_SEED],
+            max_pages=100,
+            delay_min=0,
+            delay_max=0,
             empty_pages_file=cache_file,
         )
     # CAPTCHA pages must NOT be cached as empty
@@ -357,7 +369,10 @@ def test_crawl_recovers_after_isolated_captcha():
     responses = [CAPTCHA_HTML, SAMPLE_HTML_WITH_API]
     with patch("scripts.discover_wecom_apis.fetch_html", side_effect=responses):
         report = crawl(
-            [CAPTCHA_SEED, SEED_A], max_pages=10, delay_min=0, delay_max=0,
+            [CAPTCHA_SEED, SEED_A],
+            max_pages=10,
+            delay_min=0,
+            delay_max=0,
         )
     # One blocked page, but should continue and find the API
     assert report.blocked_pages == 1
@@ -365,6 +380,7 @@ def test_crawl_recovers_after_isolated_captcha():
 
 
 # --- fetch_html() tests ---
+
 
 def test_fetch_html_success():
     with patch("scripts.discover_wecom_apis.urlopen") as mock_urlopen:

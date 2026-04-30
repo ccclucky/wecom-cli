@@ -53,14 +53,8 @@ def build_diff(baseline: dict[str, Any], discovered: dict[str, Any]) -> dict[str
         if b.method != d.method:
             modified.append(d)
 
-    added = [
-        discovered_by_endpoint[e]
-        for e in sorted(set(discovered_by_endpoint) - set(baseline_by_endpoint))
-    ]
-    removed = [
-        baseline_by_endpoint[e]
-        for e in sorted(set(baseline_by_endpoint) - set(discovered_by_endpoint))
-    ]
+    added = [discovered_by_endpoint[e] for e in sorted(set(discovered_by_endpoint) - set(baseline_by_endpoint))]
+    removed = [baseline_by_endpoint[e] for e in sorted(set(baseline_by_endpoint) - set(discovered_by_endpoint))]
 
     return {"added": added, "removed": removed, "modified": modified}
 
@@ -162,9 +156,7 @@ def build_reconciled_catalog(
     baseline: dict[str, Any],
     discovered: dict[str, Any],
 ) -> dict[str, Any]:
-    baseline_by_endpoint = {
-        op["endpoint"]: op for op in baseline.get("operations", []) if op.get("endpoint")
-    }
+    baseline_by_endpoint = {op["endpoint"]: op for op in baseline.get("operations", []) if op.get("endpoint")}
 
     reconciled_ops: list[dict[str, Any]] = []
     for op in sorted(discovered.get("operations", []), key=lambda x: x.get("endpoint", "")):
@@ -208,21 +200,21 @@ def build_reconciled_catalog(
         )
 
     # Preserve baseline operations that the crawler did not re-discover.
-    discovered_endpoints = {
-        op.get("endpoint") for op in discovered.get("operations", []) if op.get("endpoint")
-    }
+    discovered_endpoints = {op.get("endpoint") for op in discovered.get("operations", []) if op.get("endpoint")}
     for op in baseline.get("operations", []):
         endpoint = op.get("endpoint")
         if not endpoint or endpoint in discovered_endpoints:
             continue
-        reconciled_ops.append({
-            "id": op.get("id"),
-            "domain": op.get("domain", "unknown"),
-            "name": op.get("name", _slug_from_endpoint(endpoint)),
-            "endpoint": endpoint,
-            "method": op.get("method"),
-            **({"doc": op["doc"]} if isinstance(op.get("doc"), dict) else {}),
-        })
+        reconciled_ops.append(
+            {
+                "id": op.get("id"),
+                "domain": op.get("domain", "unknown"),
+                "name": op.get("name", _slug_from_endpoint(endpoint)),
+                "endpoint": endpoint,
+                "method": op.get("method"),
+                **({"doc": op["doc"]} if isinstance(op.get("doc"), dict) else {}),
+            }
+        )
 
     reconciled_ops.sort(key=lambda x: x.get("endpoint", ""))
     return {

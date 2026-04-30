@@ -57,12 +57,9 @@ def main() -> int:
     parser.add_argument("--seed-file", default="specs/wecom/seeds.txt")
     parser.add_argument("--menu-tree-file", default="specs/wecom/menu_tree.json")
     parser.add_argument("--max-pages", type=int, default=2000)
-    parser.add_argument("--delay-min", type=float, default=1.0,
-                        help="Minimum delay between page fetches in seconds")
-    parser.add_argument("--delay-max", type=float, default=3.0,
-                        help="Maximum delay between page fetches in seconds")
-    parser.add_argument("--cookie", default=None,
-                        help="Cookie header for each request (bypasses CAPTCHA)")
+    parser.add_argument("--delay-min", type=float, default=1.0, help="Minimum delay between page fetches in seconds")
+    parser.add_argument("--delay-max", type=float, default=3.0, help="Maximum delay between page fetches in seconds")
+    parser.add_argument("--cookie", default=None, help="Cookie header for each request (bypasses CAPTCHA)")
     parser.add_argument("--mode", choices=["dry-run", "apply", "auto-apply"], default="dry-run")
     parser.add_argument("--discovered", default="artifacts/catalog.discovery.yaml")
     parser.add_argument("--report", default="artifacts/wecom-catalog-report.md")
@@ -94,7 +91,8 @@ def main() -> int:
             str(args.delay_max),
             "--output",
             args.discovered,
-        ] + cookie_args
+        ]
+        + cookie_args
     )
 
     diff_cmd = [
@@ -127,10 +125,10 @@ def main() -> int:
         ]
         if args.allow_prune_unknown:
             scaffold_cmd.append("--prune-unknown")
+        _run(scaffold_cmd)
         _run(
-            scaffold_cmd
+            ["python", "scripts/sync_spec_docs.py", "--catalog", args.baseline, "--spec-dir", "specs/wecom", "--apply"]
         )
-        _run(["python", "scripts/sync_spec_docs.py", "--catalog", args.baseline, "--spec-dir", "specs/wecom", "--apply"])
         _run(["python", "scripts/codegen.py"])
         _run(["python", "scripts/check_api_coverage.py"])
         task_catalog = args.baseline
@@ -150,7 +148,6 @@ def main() -> int:
         )
 
     if args.mode == "auto-apply":
-
         _run(
             [
                 "python",

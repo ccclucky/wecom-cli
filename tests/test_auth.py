@@ -26,6 +26,7 @@ class FakeResponse:
 def _make_provider():
     config = WeComConfig(corp_id="id", corp_secret="sec")
     from core.requester import UnifiedRequester
+
     requester = UnifiedRequester(config)
     provider = AccessTokenProvider(requester, config)
     requester.bind_token_provider(provider)
@@ -34,9 +35,16 @@ def _make_provider():
 
 def test_token_cached_within_ttl(monkeypatch):
     monkeypatch.setattr("time.time", lambda: 1000.0)
-    monkeypatch.setattr("urllib.request.urlopen", lambda *a, **k: FakeResponse({
-        "errcode": 0, "access_token": "tok_abc", "expires_in": 7200,
-    }))
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda *a, **k: FakeResponse(
+            {
+                "errcode": 0,
+                "access_token": "tok_abc",
+                "expires_in": 7200,
+            }
+        ),
+    )
 
     provider = _make_provider()
     token1 = provider.get_token()
@@ -56,12 +64,17 @@ def test_token_refresh_on_expiry(monkeypatch):
     monkeypatch.setattr("time.time", fake_time)
 
     call_count = 0
+
     def fake_open(*args, **kwargs):
         nonlocal call_count
         call_count += 1
-        return FakeResponse({
-            "errcode": 0, "access_token": f"tok_{call_count}", "expires_in": 7200,
-        })
+        return FakeResponse(
+            {
+                "errcode": 0,
+                "access_token": f"tok_{call_count}",
+                "expires_in": 7200,
+            }
+        )
 
     monkeypatch.setattr("urllib.request.urlopen", fake_open)
     provider = _make_provider()
@@ -78,7 +91,10 @@ def test_token_refresh_on_expiry(monkeypatch):
 
 def test_network_failure_raises_auth_error(monkeypatch):
     import urllib.error
-    monkeypatch.setattr("urllib.request.urlopen", lambda *a, **k: (_ for _ in ()).throw(urllib.error.URLError("Connection refused")))
+
+    monkeypatch.setattr(
+        "urllib.request.urlopen", lambda *a, **k: (_ for _ in ()).throw(urllib.error.URLError("Connection refused"))
+    )
 
     provider = _make_provider()
     with pytest.raises(AuthError, match="Connection refused"):
@@ -86,9 +102,15 @@ def test_network_failure_raises_auth_error(monkeypatch):
 
 
 def test_invalid_credentials_raises_auth_error(monkeypatch):
-    monkeypatch.setattr("urllib.request.urlopen", lambda *a, **k: FakeResponse({
-        "errcode": 40001, "errmsg": "invalid credential",
-    }))
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda *a, **k: FakeResponse(
+            {
+                "errcode": 40001,
+                "errmsg": "invalid credential",
+            }
+        ),
+    )
 
     provider = _make_provider()
     with pytest.raises(AuthError, match="invalid credential"):

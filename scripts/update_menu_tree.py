@@ -26,7 +26,9 @@ def update_menu_tree(output_path: Path, cookie: str | None = None) -> int:
 
     m = re.search(r"window\.categories\s*=\s*(\[.*?\])(?:;|\n|</script>)", html, re.DOTALL)
     if not m:
-        print("Could not find 'window.categories' in the HTML (possible CAPTCHA block). Falling back to existing menu tree.")
+        print(
+            "Could not find 'window.categories' in the HTML (possible CAPTCHA block). Falling back to existing menu tree."
+        )
         return 0
 
     try:

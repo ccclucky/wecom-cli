@@ -64,6 +64,7 @@ def test_route_unknown_command():
     parser, table = _build_parser_and_table()
     # domain "contacts" exists but action "nonexistent" should fail
     import argparse
+
     ns = argparse.Namespace(domain="contacts", __action="nonexistent")
     with pytest.raises(WeComCLIError, match="Unknown command"):
         route(ns, table)
@@ -134,8 +135,10 @@ def test_main_verbose_prints_request_info(monkeypatch, capsys):
     class FakeHttpResponse:
         def read(self):
             return json.dumps({"errcode": 0, "errmsg": "ok", "userlist": []}).encode()
+
         def __enter__(self):
             return self
+
         def __exit__(self, *a):
             return False
 
@@ -144,6 +147,7 @@ def test_main_verbose_prints_request_info(monkeypatch, capsys):
 
     # Patch gettoken response so auth succeeds
     call_count = {"n": 0}
+
     def selective_open(*args, **kwargs):
         call_count["n"] += 1
         if call_count["n"] == 1:
@@ -166,6 +170,7 @@ def test_main_debug_prints_full_request_response(monkeypatch, capsys):
     monkeypatch.setenv("WECOM_CORP_SECRET", "y")
 
     call_count = {"n": 0}
+
     def selective_open(*args, **kwargs):
         call_count["n"] += 1
         if call_count["n"] == 1:
