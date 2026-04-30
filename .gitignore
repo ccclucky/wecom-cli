@@ -1,7 +1,54 @@
-artifacts/
+# Python
 __pycache__/
-*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+ENV/
+
+# Testing
 .pytest_cache/
 .pytest-tmp/
 .tmp-pytest-agentflow/
 pytest-cache-files-*/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI Tools & Artifacts
+artifacts/
+.superpowers/
+.gstack/
+graphify-out/
+*.stackdump
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,28 +1,42 @@
-# WeCom CLI
+# WeCom CLI 🚀
 
-企业微信（WeCom）命令行工具。37 个业务域，309 个接口，100% 覆盖。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-## Install
+企业微信（WeCom）高效率命令行工具。
+**37 个业务域，300+ 接口，100% 覆盖。**
+
+---
+
+## 💡 为什么选择 WeCom CLI?
+
+- **工业级同步**：基于 API Menu 树自动发现接口，每日 GitHub Actions 自动巡检接口变更。
+- **类型安全**：100% Mypy 静态类型覆盖，生成的 API Client 具备完整的 IDE 补全。
+- **现代化体验**：支持中文帮助信息、领域分组导航、自动 Token 刷新。
+- **开发者友好**：基于 YAML Spec 的代码生成架构，极易扩展和维护。
+
+---
+
+## 📦 安装
 
 ```bash
 pip install -e .
 ```
 
-要求 Python >= 3.11。
+*要求 Python >= 3.11*
 
-## Quick Start
+## 🚀 快速上手
 
-先配置凭证（二选一）：
+配置凭证（支持环境变量或配置文件）：
 
 **环境变量：**
-
 ```bash
 export WECOM_CORP_ID="wwxxxxxxxxxxxxxxxx"
 export WECOM_CORP_SECRET="xxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 **配置文件** `~/.wecom-cli/config.json`：
-
 ```json
 {
   "corp_id": "wwxxxxxxxxxxxxxxxx",
@@ -30,10 +44,9 @@ export WECOM_CORP_SECRET="xxxxxxxxxxxxxxxxxxxxxxxx"
 }
 ```
 
-然后用：
-
+### 常用命令示例
 ```bash
-# 查看帮助
+# 查看帮助（交互式分组）
 wecom --help
 
 # 通讯录：列出成员
@@ -46,117 +59,50 @@ wecom messages send-text --to-user zhangsan --agent-id 1000002 --content "hello"
 wecom customers list-follow-users
 ```
 
-## Features
+## ✨ 核心特性
 
-- **37 个业务域全覆盖** — 通讯录、消息、客户、会议、文档、审批、打卡等 309 个 endpoint
-- **统一鉴权** — 自动获取和刷新 access_token
-- **统一错误处理** — 配置错误、认证失败、API 错误分级输出
-- **代码生成** — 基于 YAML spec 自动生成 CLI 命令和 API client
-- **每日自动巡检** — GitHub Actions 每日检测接口变更，自动开 PR 同步
+- **业务域全覆盖** — 通讯录、消息、客户、会议、文档、审批、打卡等所有 Endpoint。
+- **自动化生命周期** — 自动获取和刷新 `access_token`，统一错误分类输出。
+- **自愈式架构** — 每日自动扫描文档发现新接口，自动提交 PR 更新 Spec 和 Client。
+- **强类型保障** — 拒绝 Any 类型，确保开发时的逻辑准确性。
 
-## Configuration
+## 🛠️ 开发者指南
 
-| 变量 | 必填 | 默认值 | 说明 |
-|------|------|--------|------|
-| `WECOM_CORP_ID` | 是 | — | 企业 ID |
-| `WECOM_CORP_SECRET` | 是 | — | 应用 Secret |
-| `WECOM_BASE_URL` | 否 | `https://qyapi.weixin.qq.com` | API 地址 |
-| `WECOM_TIMEOUT_SECONDS` | 否 | `10` | 请求超时（秒） |
-
-优先级：环境变量 > 配置文件。
-
-## Development
+我们使用 `pre-commit` 来保障代码质量。
 
 ```bash
-pip install -e ".[dev]"  # 或 pip install ruff mypy pytest
-ruff check .
-mypy
-pytest -q
+# 安装开发依赖
+pip install -e ".[dev]"
+
+# 安装并激活 pre-commit hooks
+pre-commit install
+
+# 手动运行全量检查
+pre-commit run --all-files
 ```
 
-### Catalog 同步
+### 自动化脚本
+- **Catalog 同步**: `python scripts/run_catalog_sync.py --mode auto-apply`
+- **代码生成**: `python scripts/codegen.py`
+- **覆盖率检查**: `python scripts/check_api_coverage.py`
 
-```bash
-# 查看差异（日常推荐）
-python scripts/run_catalog_sync.py --mode dry-run
-
-# 自动同步（目录 + spec + codegen + 校验）
-python scripts/run_catalog_sync.py --mode auto-apply
-
-# 覆盖率检查
-python scripts/check_api_coverage.py
-```
-
-### Codegen
-
-```bash
-python scripts/codegen.py
-```
-
-从 `specs/wecom/*.yaml` 生成 `apis/generated_client.py` 和 `cli/generated_commands.py`。
-
-## CI & Release
-
-- **CI**（`.github/workflows/ci.yml`）：ruff + mypy + pytest
-- **Catalog Watch**（`.github/workflows/wecom-catalog-watch.yml`）：每日 UTC 01:00 巡检接口变更
-- **Release**（`.github/workflows/release-alpha.yml`）：`v*-alpha*` 标签触发，发布到 PyPI
-
-## Documentation
+## 📚 文档中心
 
 | 文档 | 说明 |
 |------|------|
 | [Architecture](docs/architecture.md) | 分层架构设计 |
-| [CLI UX Spec](docs/cli-ux.md) | 命令命名、输出格式、错误码规范 |
-| [Spec Schema](docs/spec-schema.md) | 接口元数据 YAML Schema |
-| [PRD](docs/prd.md) | v1 产品需求文档 |
-| [Bootstrap](docs/bootstrap.md) | 初始化与快速上手 |
+| [CLI UX Spec](docs/cli-ux.md) | 命令命名、输出格式规范 |
+| [Bootstrap](docs/bootstrap.md) | 环境初始化指南 |
 | [Coverage](docs/coverage.md) | 100% 覆盖率保障机制 |
 | [Sync Playbook](docs/sync-playbook.md) | 接口发现与同步流程 |
-| [Issue Runbook](docs/issue-runbook.md) | 自动 Issue 处理手册 |
-| [Workflow SOP](docs/workflow-sop.md) | 日常 Catalog 同步 SOP |
 
-## Project Structure
+## 🤝 贡献指南
 
-```
-core/       配置、鉴权、请求器、错误处理
-cli/        命令入口、参数解析、路由
-apis/       业务域 API 适配层（codegen 生成）
-models/     共享模型
-scripts/    构建/同步/发现脚本
-specs/      WeCom 接口元数据（YAML）
-tests/      单元测试
-docs/       架构与设计文档
-artifacts/  构建产物
-```
+1. Fork 本仓库并创建特性分支。
+2. 确保所有检查通过：`pre-commit run --all-files`。
+3. 接口变更需更新对应 `specs/wecom/<domain>.yaml` 并重新 codegen。
+4. 提交 PR 并在描述中说明背景。
 
-## Roadmap
+## 📄 开源协议
 
-- **v0.1.x-alpha** — 稳定命令面与错误模型
-- **v0.2.x** — 输出格式（table/json）、分页、重试策略
-- **v0.3.x** — 插件生态、批量编排
-
-## Contributing
-
-1. Fork 本仓库
-2. 创建特性分支：`git checkout -b feature/my-feature`
-3. 提交改动，确保通过检查：`ruff check . && mypy && pytest -q`
-4. 推送并创建 Pull Request
-
-**PR 要求：**
-- 通过 CI（ruff / mypy / pytest）
-- 新功能需附带测试
-- 接口变更需更新对应 `specs/wecom/<domain>.yaml` 并重新 codegen
-
-开发细节见 [Bootstrap](docs/bootstrap.md)，接口同步流程见 [Sync Playbook](docs/sync-playbook.md)。
-
-## Issues
-
-- **Bug 报告**：描述复现步骤、预期行为、实际行为，附上 `wecom --debug` 输出
-- **功能请求**：说明使用场景和期望的命令形式（`wecom <resource> <action> [flags]`）
-- **接口覆盖**：参考 [Coverage](docs/coverage.md) 检查当前状态，缺少的接口会由每日巡检自动跟踪
-
-提交 Issue 前请先搜索已有 Issue，避免重复。
-
-## License
-
-Private. All rights reserved.
+本项目采用 [MIT License](LICENSE) 开源。
