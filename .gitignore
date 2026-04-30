@@ -45,6 +45,7 @@ htmlcov/
 # AI Tools & Artifacts
 artifacts/
 .superpowers/
+docs/superpowers/
 .gstack/
 graphify-out/
 *.stackdump
