@@ -49,10 +49,11 @@ def route(args: argparse.Namespace, command_table: dict[tuple[str, str], Command
 
 
 def main(argv: list[str] | None = None) -> int:
+    effective_argv = argv if argv is not None else sys.argv[1:]
     parser = build_parser()
-    args, _ = parser.parse_known_args(argv)
+    args, _ = parser.parse_known_args(effective_argv)
 
-    remaining = [a for a in (argv or []) if a not in {"--verbose", "--debug"}]
+    remaining = [a for a in effective_argv if a not in {"--verbose", "--debug"}]
     if not remaining:
         parser.print_help()
         return 0
@@ -60,7 +61,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         client = bootstrap(verbose=args.verbose, debug=args.debug)
         command_table = register_domain_commands(parser, client)
-        args = parser.parse_args(argv)
+        args = parser.parse_args(effective_argv)
         payload = route(args, command_table)
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         return 0
