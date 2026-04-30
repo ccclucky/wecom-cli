@@ -25,7 +25,7 @@
         {
           "name": "limit",
           "flag": "--limit",
-          "type": "bool",
+          "type": "int",
           "help": "分页查询的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，须用返回的has_more判断是否继续请求"
         },
         {

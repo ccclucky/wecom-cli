@@ -49,7 +49,15 @@ def _load_specs() -> list[dict[str, Any]]:
     return specs
 
 
-def _signature_type(arg_type: str) -> str:
+_PAGINATION_NAMES = frozenset({
+    "limit", "offset", "count", "page", "size",
+    "pagesize", "page_size", "per_page",
+})
+
+
+def _signature_type(arg_type: str, arg_name: str = "") -> str:
+    if arg_type == "bool" and arg_name in _PAGINATION_NAMES:
+        return "int"
     if arg_type in {"int", "float", "str", "bool"}:
         return arg_type
     if arg_type == "json":
@@ -78,20 +86,24 @@ def _render_client(specs: list[dict[str, Any]]) -> str:
         domain = spec["domain"]
         for op in spec.get("operations", []):
             method_name = f"{domain}_{op['name']}"
-            args = op.get("args", [])
-            signature_parts: list[str] = []
-            for arg in args:
-                arg_type = arg.get("type", "str")
-                signature_type = _signature_type(arg_type)
-                if arg.get("required", False):
-                    signature_parts.append(f"{arg['name']}: {signature_type}")
-                elif "default" in arg:
-                    signature_parts.append(f"{arg['name']}: {signature_type} = {repr(arg['default'])}")
-                else:
-                    signature_parts.append(f"{arg['name']}: {signature_type} | None = None")
-            signature = ", ".join(signature_parts)
-            if signature:
-                signature = ", *, " + signature
+            uses_body = op.get("mode") == "body"
+            if uses_body:
+                signature = ", *, body: dict[str, Any]"
+            else:
+                args = op.get("args", [])
+                signature_parts: list[str] = []
+                for arg in args:
+                    arg_type = arg.get("type", "str")
+                    signature_type = _signature_type(arg_type, arg["name"])
+                    if arg.get("required", False):
+                        signature_parts.append(f"{arg['name']}: {signature_type}")
+                    elif "default" in arg:
+                        signature_parts.append(f"{arg['name']}: {signature_type} = {repr(arg['default'])}")
+                    else:
+                        signature_parts.append(f"{arg['name']}: {signature_type} | None = None")
+                signature = ", ".join(signature_parts)
+                if signature:
+                    signature = ", *, " + signature
 
             lines.extend(
                 [
@@ -101,11 +113,14 @@ def _render_client(specs: list[dict[str, Any]]) -> str:
                     f"            endpoint={repr(op['endpoint'])},",
                 ]
             )
-            request = op.get("request", {})
-            for req_key in ("query", "json_body"):
-                if req_key in request:
-                    expr = _indent_block(_py_expr(request[req_key]), 16).lstrip()
-                    lines.append(f"            {req_key}={expr},")
+            if uses_body:
+                lines.append("            json_body=body,")
+            else:
+                request = op.get("request", {})
+                for req_key in ("query", "json_body"):
+                    if req_key in request:
+                        expr = _indent_block(_py_expr(request[req_key]), 16).lstrip()
+                        lines.append(f"            {req_key}={expr},")
             lines.extend(["        )", ""])
 
     return "\n".join(lines)
@@ -113,15 +128,18 @@ def _render_client(specs: list[dict[str, Any]]) -> str:
 
 def _render_add_argument(line_prefix: str, arg: dict[str, Any], dest: str | None = None) -> list[str]:
     kwargs: list[str] = []
+    effective_type = arg.get("type", "str")
+    if effective_type == "bool" and arg.get("name", "") in _PAGINATION_NAMES:
+        effective_type = "int"
     if arg.get("action"):
         kwargs.append(f"action={repr(arg['action'])}")
-    elif arg.get("type") == "int":
+    elif effective_type == "int":
         kwargs.append("type=int")
-    elif arg.get("type") == "float":
+    elif effective_type == "float":
         kwargs.append("type=float")
-    elif arg.get("type") == "json":
+    elif effective_type == "json":
         kwargs.append("type=json.loads")
-    elif arg.get("type") == "str":
+    elif effective_type == "str":
         kwargs.append("type=str")
 
     if arg.get("required"):
@@ -188,14 +206,16 @@ def _render_cli(specs: list[dict[str, Any]]) -> str:
                 f"        {repr(domain)},",
                 f"        help={repr(domain + ' 域命令')},",
                 "    )",
-                f"    {domain}_sub = {domain}_parser.add_subparsers(dest='action', required=True)",
+                f"    {domain}_sub = {domain}_parser.add_subparsers(dest='__action', required=True)",
                 "",
             ]
         )
         for op in spec.get("operations", []):
             action = op["cli_action"]
             parser_name = f"{domain}_{op['name']}_parser"
-            if op.get("args"):
+            uses_body = op.get("mode") == "body"
+            has_args = bool(op.get("args")) or uses_body
+            if has_args:
                 lines.extend(
                     [
                         f"    {parser_name} = {domain}_sub.add_parser(",
@@ -213,23 +233,37 @@ def _render_cli(specs: list[dict[str, Any]]) -> str:
                         "    )",
                     ]
                 )
-            deduped = _dedup_args(op.get("args", []))
-            for uniq, arg in deduped:
-                dest = uniq if uniq != arg["name"] else None
-                lines.extend(_render_add_argument(parser_name, arg, dest=dest))
+            if uses_body:
+                lines.extend([
+                    f"    {parser_name}.add_argument(",
+                    f"        '--body',",
+                    f"        type=json.loads,",
+                    f"        required=True,",
+                    f"        help='JSON request body',",
+                    f"    )",
+                ])
+            else:
+                deduped = _dedup_args(op.get("args", []))
+                for uniq, arg in deduped:
+                    dest = uniq if uniq != arg["name"] else None
+                    lines.extend(_render_add_argument(parser_name, arg, dest=dest))
 
             lines.append("")
             lines.append(f"    def _handle_{domain}_{op['name']}(a: argparse.Namespace) -> dict:")
-            call_args = [f"{uniq}=a.{uniq}" for uniq, _ in deduped]
-            if call_args:
-                lines.append(
-                    f"        return client.{domain}_{op['name']}("
-                )
-                for part in call_args:
-                    lines.append(f"            {part},")
-                lines.append("        )")
+            if uses_body:
+                lines.append(f"        return client.{domain}_{op['name']}(body=a.body)")
             else:
-                lines.append(f"        return client.{domain}_{op['name']}()")
+                deduped = _dedup_args(op.get("args", []))
+                call_args = [f"{uniq}=a.{uniq}" for uniq, _ in deduped]
+                if call_args:
+                    lines.append(
+                        f"        return client.{domain}_{op['name']}("
+                    )
+                    for part in call_args:
+                        lines.append(f"            {part},")
+                    lines.append("        )")
+                else:
+                    lines.append(f"        return client.{domain}_{op['name']}()")
             lines.append(
                 f"    table[({repr(domain)}, {repr(action)})] = "
                 f"_handle_{domain}_{op['name']}"
@@ -240,10 +274,44 @@ def _render_cli(specs: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+_VALID_TYPES = frozenset({"str", "int", "float", "bool", "json"})
+_VALID_METHODS = frozenset({"GET", "POST"})
+
+
+def _validate_specs(specs: list[dict[str, Any]]) -> None:
+    errors: list[str] = []
+    for spec in specs:
+        domain = spec.get("domain", "<unknown>")
+        for i, op in enumerate(spec.get("operations", [])):
+            op_id = f"{domain}::{op.get('name', f'op[{i}]')}"
+            if not op.get("name"):
+                errors.append(f"{op_id}: missing 'name'")
+            if op.get("method", "") not in _VALID_METHODS:
+                errors.append(f"{op_id}: invalid method {op.get('method')!r}")
+            if not op.get("endpoint", "").startswith("/"):
+                errors.append(f"{op_id}: endpoint must start with '/'")
+            for j, arg in enumerate(op.get("args", [])):
+                if not arg.get("name"):
+                    errors.append(f"{op_id}: arg[{j}] missing 'name'")
+                arg_type = arg.get("type", "str")
+                if arg_type not in _VALID_TYPES:
+                    errors.append(f"{op_id}: arg '{arg.get('name')}' has invalid type {arg_type!r}")
+    if errors:
+        raise ValueError("Spec validation failed:\n" + "\n".join(f"  - {e}" for e in errors))
+
+
 def main() -> None:
     specs = _load_specs()
-    APIS_OUT.write_text(_render_client(specs), encoding="utf-8")
-    CLI_OUT.write_text(_render_cli(specs), encoding="utf-8")
+    _validate_specs(specs)
+
+    client_code = _render_client(specs)
+    cli_code = _render_cli(specs)
+
+    compile(client_code, str(APIS_OUT), "exec")
+    compile(cli_code, str(CLI_OUT), "exec")
+
+    APIS_OUT.write_text(client_code, encoding="utf-8")
+    CLI_OUT.write_text(cli_code, encoding="utf-8")
 
 
 if __name__ == "__main__":

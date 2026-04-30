@@ -32,9 +32,9 @@ def build_parser(
 
 
 def route(args: argparse.Namespace, command_table: dict[tuple[str, str], CommandHandler]) -> dict:
-    key = (args.domain, args.action)
+    key = (args.domain, args.__action)
     if key not in command_table:
-        raise WeComCLIError(f"Unknown command: {args.domain} {args.action}")
+        raise WeComCLIError(f"Unknown command: {args.domain} {args.__action}")
     return command_table[key](args)
 
 
