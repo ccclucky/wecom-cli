@@ -49,6 +49,7 @@ artifacts/
 graphify-out/
 *.stackdump
 .claude/*.local.json
+CLAUDE.local.md
 
 # OS
 .DS_Store
