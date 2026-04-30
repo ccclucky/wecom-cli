@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-import io
-import json
-import urllib.request
-
 import pytest
 
 from cli.generated_commands import register_generated_commands
-from cli.main import bootstrap, build_parser, main, route
+from cli.main import build_parser, main, route
 from core.errors import WeComCLIError
 
 
@@ -147,7 +143,6 @@ def test_main_verbose_prints_request_info(monkeypatch, capsys):
     monkeypatch.setattr("time.sleep", lambda x: None)
 
     # Patch gettoken response so auth succeeds
-    original_urlopen = urllib.request.urlopen
     call_count = {"n": 0}
     def selective_open(*args, **kwargs):
         call_count["n"] += 1
@@ -184,3 +179,35 @@ def test_main_debug_prints_full_request_response(monkeypatch, capsys):
     assert ret == 0
     captured = capsys.readouterr()
     assert "[wecom-cli]" in captured.err
+
+
+def test_build_parser_has_chinese_description():
+    parser = build_parser()
+    assert "企业微信" in parser.description
+
+
+def test_help_shows_domain_list_no_bootstrap(capsys):
+    """wecom --help should show domain list without requiring config/env."""
+    with pytest.raises(SystemExit) as exc_info:
+        main(["--help"])
+    assert exc_info.value.code == 0
+    captured = capsys.readouterr()
+    assert "contacts" in captured.out
+    assert "messages" in captured.out
+    assert "departments" in captured.out
+
+
+def test_help_no_args_shows_domain_list(capsys):
+    """wecom (no args) should show domain list without requiring config/env."""
+    ret = main([])
+    assert ret == 0
+    captured = capsys.readouterr()
+    assert "contacts" in captured.out
+    assert "企业微信" in captured.out
+
+
+def test_help_domain_shows_actions_no_bootstrap(capsys):
+    """wecom contacts --help should show actions without requiring config/env."""
+    with pytest.raises(SystemExit) as exc_info:
+        main(["contacts", "--help"])
+    assert exc_info.value.code == 0
