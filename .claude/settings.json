@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -c \"import os; print('{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"PreToolUse\\\",\\\"additionalContext\\\":\\\"Personal instructions found in CLAUDE.local.md.\\\"}}') if os.path.exists('CLAUDE.local.md') else None\""
+          }
+        ]
+      }
+    ]
+  }
+}
