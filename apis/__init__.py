@@ -1,5 +1,3 @@
-from apis.contacts import ContactsAPI
-from apis.customers import CustomersAPI
-from apis.messages import MessagesAPI
+from apis.generated_client import GeneratedWeComClient
 
-__all__ = ["ContactsAPI", "CustomersAPI", "MessagesAPI"]
+__all__ = ["GeneratedWeComClient"]
