@@ -14,6 +14,8 @@ on:
 jobs:
   validate-and-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       version: ${{ steps.get_version.outputs.VERSION }}
     steps:
@@ -24,6 +26,8 @@ jobs:
       - name: Create tag if missing
         if: github.event_name == 'workflow_dispatch'
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           TAG_NAME="v${{ github.event.inputs.version }}"
           if ! git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
             echo "Creating tag $TAG_NAME"
