@@ -4,13 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "api-wecom-cli"
-version = "0.1.0a3"
+version = "0.1.0-alpha.3"
 description = "WeCom CLI"
 requires-python = ">=3.11"
 dependencies = []
-
-[project.optional-dependencies]
-dev = ["commitizen>=4"]
 
 [project.scripts]
 wecom = "cli.main:main"
@@ -47,10 +44,3 @@ ignore_missing_imports = false
 module = "scripts.*"
 ignore_errors = true
 
-[tool.commitizen]
-name = "cz_conventional_commits"
-version = "0.1.0a3"
-version_files = ["pyproject.toml:^version"]
-tag_format = "v$version"
-update_changelog_on_bump = true
-version_scheme = "pep440"
