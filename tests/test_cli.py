@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import io
+import json
+import urllib.request
+
 import pytest
 
 from cli.generated_commands import register_generated_commands
@@ -93,3 +97,90 @@ def test_debug_flag_in_parser():
     parser = build_parser()
     args = parser.parse_args(["--debug"])
     assert args.debug is True
+
+
+def test_main_unhandled_exception_clean_error(monkeypatch, capsys):
+    monkeypatch.setenv("WECOM_CORP_ID", "x")
+    monkeypatch.setenv("WECOM_CORP_SECRET", "y")
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("kaboom")
+
+    monkeypatch.setattr("cli.main.bootstrap", boom)
+    ret = main(["contacts", "list"])
+    assert ret == 1
+    captured = capsys.readouterr()
+    assert "kaboom" in captured.err
+    assert "--debug" in captured.err
+
+
+def test_main_wecom_cli_error_to_stderr(monkeypatch, capsys):
+    monkeypatch.setenv("WECOM_CORP_ID", "x")
+    monkeypatch.setenv("WECOM_CORP_SECRET", "y")
+
+    def fake_bootstrap(**kwargs):
+        raise WeComCLIError("config broken")
+
+    monkeypatch.setattr("cli.main.bootstrap", fake_bootstrap)
+    ret = main(["contacts", "list"])
+    assert ret == 2
+    captured = capsys.readouterr()
+    assert "[wecom-cli] config broken" in captured.err
+
+
+def test_main_verbose_prints_request_info(monkeypatch, capsys):
+    import io
+    import json
+
+    monkeypatch.setenv("WECOM_CORP_ID", "x")
+    monkeypatch.setenv("WECOM_CORP_SECRET", "y")
+
+    class FakeHttpResponse:
+        def read(self):
+            return json.dumps({"errcode": 0, "errmsg": "ok", "userlist": []}).encode()
+        def __enter__(self):
+            return self
+        def __exit__(self, *a):
+            return False
+
+    monkeypatch.setattr("urllib.request.urlopen", lambda *a, **k: FakeHttpResponse())
+    monkeypatch.setattr("time.sleep", lambda x: None)
+
+    # Patch gettoken response so auth succeeds
+    original_urlopen = urllib.request.urlopen
+    call_count = {"n": 0}
+    def selective_open(*args, **kwargs):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            return io.BytesIO(json.dumps({"errcode": 0, "access_token": "tok", "expires_in": 7200}).encode())
+        return FakeHttpResponse()
+
+    monkeypatch.setattr("urllib.request.urlopen", selective_open)
+
+    ret = main(["--verbose", "contacts", "list", "--department-id", "1"])
+    assert ret == 0
+    captured = capsys.readouterr()
+    assert "[wecom-cli]" in captured.err
+
+
+def test_main_debug_prints_full_request_response(monkeypatch, capsys):
+    import io
+    import json
+
+    monkeypatch.setenv("WECOM_CORP_ID", "x")
+    monkeypatch.setenv("WECOM_CORP_SECRET", "y")
+
+    call_count = {"n": 0}
+    def selective_open(*args, **kwargs):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            return io.BytesIO(json.dumps({"errcode": 0, "access_token": "tok", "expires_in": 7200}).encode())
+        return io.BytesIO(json.dumps({"errcode": 0, "errmsg": "ok", "data": "test"}).encode())
+
+    monkeypatch.setattr("urllib.request.urlopen", selective_open)
+    monkeypatch.setattr("time.sleep", lambda x: None)
+
+    ret = main(["--debug", "contacts", "list", "--department-id", "1"])
+    assert ret == 0
+    captured = capsys.readouterr()
+    assert "[wecom-cli]" in captured.err
