@@ -4,24 +4,81 @@ on:
   push:
     tags:
       - "v*-alpha*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 0.1.0a2)'
+        required: true
+        default: '0.1.0a2'
 
 jobs:
-  build-and-publish:
+  validate-and-build:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
+    outputs:
+      version: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Build package
+          cache: 'pip'
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install build
-          python -m build
-      - name: Publish to PyPI (alpha)
+          pip install ruff mypy pytest build
+          pip install -e .
+
+      - name: Run Lint
+        run: ruff check .
+
+      - name: Run Type Check
+        run: mypy .
+
+      - name: Run Tests
+        run: pytest
+
+      - name: Build package
+        run: python -m build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-and-release:
+    needs: validate-and-build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          verbose: true
+          skip-existing: true
+          # Note: Requires Trusted Publishing configured on PyPI
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+          prerelease: true
+          token: ${{ secrets.GITHUB_TOKEN }}
