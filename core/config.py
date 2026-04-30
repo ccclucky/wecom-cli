@@ -36,7 +36,9 @@ class WeComConfig:
         timeout_raw = os.getenv("WECOM_TIMEOUT_SECONDS") or raw_data.get("timeout_seconds")
 
         if not corp_id or not corp_secret:
-            raise ConfigError("corp_id/corp_secret are required (env or config file)")
+            raise ConfigError(
+                f"corp_id/corp_secret are required (env vars or config file at {path})"
+            )
 
         timeout_seconds = cls.timeout_seconds
         if timeout_raw is not None:
