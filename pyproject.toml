@@ -12,6 +12,9 @@ dependencies = []
 [project.scripts]
 wecom = "cli.main:main"
 
+[tool.setuptools]
+packages = ["core", "cli", "apis", "models"]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
