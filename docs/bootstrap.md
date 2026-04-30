@@ -5,10 +5,13 @@
 ```text
 core/      # 配置、鉴权、请求器、统一错误
 cli/       # 命令入口与路由
-apis/      # 各业务域 API 适配层
+apis/      # 各业务域 API 适配层（codegen 生成）
 models/    # 共享模型
+scripts/   # 构建/同步/发现脚本
+specs/     # WeCom 接口元数据（YAML）
 tests/     # 单元测试
 docs/      # 文档
+artifacts/ # 构建产物
 ```
 
 ## 已实现核心能力

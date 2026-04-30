@@ -89,23 +89,22 @@
 1. 仅允许 `CLI -> Application -> Domain` 与 `Application -> Infrastructure(Port)`。
 2. Infrastructure 通过接口（Port）被 Application 调用。
 3. Domain 不引用 CLI 或 Infrastructure。
-4. 公共类型放在 `spec/schema` 或 `domain/shared`，避免跨模块循环依赖。
+4. 公共类型放在 `models/`，接口元数据放在 `specs/`，避免跨模块循环依赖。
 
 ---
 
-## 5. 推荐目录（示意）
+## 5. 当前目录结构
 
 ```text
-docs/
-  architecture.md
-  cli-ux.md
-  spec-schema.md
-src/
-  cli/
-  app/
-  domain/
-  infra/
-  spec/
+cli/       # CLI Layer — 命令入口、参数解析、路由
+core/      # Infrastructure Layer — 配置、鉴权、请求器、错误处理
+apis/      # Domain/API Layer — 业务域 API 适配层（codegen 生成）
+models/    # 共享模型（公共类型）
+scripts/   # 构建/同步/发现脚本
+specs/     # WeCom 接口元数据（YAML spec）
+tests/     # 单元测试
+docs/      # 架构与设计文档
+artifacts/ # 构建产物（报告、任务清单）
 ```
 
 ---

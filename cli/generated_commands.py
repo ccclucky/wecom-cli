@@ -21,7 +21,7 @@ def register_generated_commands(
         'advanced_feature',
         help='advanced_feature 域命令',
     )
-    advanced_feature_sub = advanced_feature_parser.add_subparsers(dest='action', required=True)
+    advanced_feature_sub = advanced_feature_parser.add_subparsers(dest='__action', required=True)
 
     advanced_feature_get_apply_id_list_parser = advanced_feature_sub.add_parser(
         'get-apply-id-list',
@@ -41,6 +41,7 @@ def register_generated_commands(
     )
     advanced_feature_get_apply_id_list_parser.add_argument(
         '--limit',
+        type=int,
         help='分页查询的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，须用返回的has_more判断是否继续请求',
     )
     advanced_feature_get_apply_id_list_parser.add_argument(
@@ -162,7 +163,7 @@ def register_generated_commands(
         'appchat',
         help='appchat 域命令',
     )
-    appchat_sub = appchat_parser.add_subparsers(dest='action', required=True)
+    appchat_sub = appchat_parser.add_subparsers(dest='__action', required=True)
 
     appchat_get_parser = appchat_sub.add_parser(
         'get',
@@ -226,7 +227,7 @@ def register_generated_commands(
         'auth',
         help='auth 域命令',
     )
-    auth_sub = auth_parser.add_subparsers(dest='action', required=True)
+    auth_sub = auth_parser.add_subparsers(dest='__action', required=True)
 
     auth_get_token_parser = auth_sub.add_parser(
         'get-token',
@@ -282,7 +283,7 @@ def register_generated_commands(
         'batch',
         help='batch 域命令',
     )
-    batch_sub = batch_parser.add_subparsers(dest='action', required=True)
+    batch_sub = batch_parser.add_subparsers(dest='__action', required=True)
 
     batch_invite_parser = batch_sub.add_parser(
         'invite',
@@ -397,7 +398,7 @@ def register_generated_commands(
         'chatdata',
         help='chatdata 域命令',
     )
-    chatdata_sub = chatdata_parser.add_subparsers(dest='action', required=True)
+    chatdata_sub = chatdata_parser.add_subparsers(dest='__action', required=True)
 
     chatdata_async_program_task_parser = chatdata_sub.add_parser(
         'async-program-task',
@@ -657,7 +658,7 @@ def register_generated_commands(
         'checkin',
         help='checkin 域命令',
     )
-    checkin_sub = checkin_parser.add_subparsers(dest='action', required=True)
+    checkin_sub = checkin_parser.add_subparsers(dest='__action', required=True)
 
     checkin_add_checkin_record_parser = checkin_sub.add_parser(
         'add-checkin-record',
@@ -801,7 +802,7 @@ def register_generated_commands(
         'contacts',
         help='contacts 域命令',
     )
-    contacts_sub = contacts_parser.add_subparsers(dest='action', required=True)
+    contacts_sub = contacts_parser.add_subparsers(dest='__action', required=True)
 
     contacts_list_users_parser = contacts_sub.add_parser(
         'list',
@@ -831,7 +832,7 @@ def register_generated_commands(
         'corp',
         help='corp 域命令',
     )
-    corp_sub = corp_parser.add_subparsers(dest='action', required=True)
+    corp_sub = corp_parser.add_subparsers(dest='__action', required=True)
 
     corp_get_join_qrcode_parser = corp_sub.add_parser(
         'get-join-qrcode',
@@ -907,7 +908,7 @@ def register_generated_commands(
         'corpgroup',
         help='corpgroup 域命令',
     )
-    corpgroup_sub = corpgroup_parser.add_subparsers(dest='action', required=True)
+    corpgroup_sub = corpgroup_parser.add_subparsers(dest='__action', required=True)
 
     corpgroup_sub.add_parser(
         'corp-get-chain-list',
@@ -1216,7 +1217,7 @@ def register_generated_commands(
         'customers',
         help='customers 域命令',
     )
-    customers_sub = customers_parser.add_subparsers(dest='action', required=True)
+    customers_sub = customers_parser.add_subparsers(dest='__action', required=True)
 
     customers_add_contact_way_parser = customers_sub.add_parser(
         'add-contact-way',
@@ -2018,7 +2019,7 @@ def register_generated_commands(
         'departments',
         help='departments 域命令',
     )
-    departments_sub = departments_parser.add_subparsers(dest='action', required=True)
+    departments_sub = departments_parser.add_subparsers(dest='__action', required=True)
 
     departments_delete_parser = departments_sub.add_parser(
         'delete',
@@ -2173,7 +2174,7 @@ def register_generated_commands(
         'dial',
         help='dial 域命令',
     )
-    dial_sub = dial_parser.add_subparsers(dest='action', required=True)
+    dial_sub = dial_parser.add_subparsers(dest='__action', required=True)
 
     dial_get_dial_record_parser = dial_sub.add_parser(
         'get-dial-record',
@@ -2213,7 +2214,7 @@ def register_generated_commands(
         'exmail',
         help='exmail 域命令',
     )
-    exmail_sub = exmail_parser.add_subparsers(dest='action', required=True)
+    exmail_sub = exmail_parser.add_subparsers(dest='__action', required=True)
 
     exmail_app_compose_send_parser = exmail_sub.add_parser(
         'app-compose-send',
@@ -2765,7 +2766,7 @@ def register_generated_commands(
         'export',
         help='export 域命令',
     )
-    export_sub = export_parser.add_subparsers(dest='action', required=True)
+    export_sub = export_parser.add_subparsers(dest='__action', required=True)
 
     export_department_parser = export_sub.add_parser(
         'department',
@@ -2887,7 +2888,7 @@ def register_generated_commands(
         'externalpay',
         help='externalpay 域命令',
     )
-    externalpay_sub = externalpay_parser.add_subparsers(dest='action', required=True)
+    externalpay_sub = externalpay_parser.add_subparsers(dest='__action', required=True)
 
     externalpay_get_bill_list_parser = externalpay_sub.add_parser(
         'get-bill-list',
@@ -2994,7 +2995,7 @@ def register_generated_commands(
         'hardware',
         help='hardware 域命令',
     )
-    hardware_sub = hardware_parser.add_subparsers(dest='action', required=True)
+    hardware_sub = hardware_parser.add_subparsers(dest='__action', required=True)
 
     hardware_get_hardware_checkin_data_parser = hardware_sub.add_parser(
         'get-hardware-checkin-data',
@@ -3037,7 +3038,7 @@ def register_generated_commands(
         'health',
         help='health 域命令',
     )
-    health_sub = health_parser.add_subparsers(dest='action', required=True)
+    health_sub = health_parser.add_subparsers(dest='__action', required=True)
 
     health_get_health_report_stat_parser = health_sub.add_parser(
         'get-health-report-stat',
@@ -3142,7 +3143,7 @@ def register_generated_commands(
         'hr',
         help='hr 域命令',
     )
-    hr_sub = hr_parser.add_subparsers(dest='action', required=True)
+    hr_sub = hr_parser.add_subparsers(dest='__action', required=True)
 
     hr_sub.add_parser(
         'get-fields',
@@ -3233,7 +3234,7 @@ def register_generated_commands(
         'idconvert',
         help='idconvert 域命令',
     )
-    idconvert_sub = idconvert_parser.add_subparsers(dest='action', required=True)
+    idconvert_sub = idconvert_parser.add_subparsers(dest='__action', required=True)
 
     idconvert_convert_tmp_external_userid_parser = idconvert_sub.add_parser(
         'convert-tmp-external-userid',
@@ -3270,7 +3271,7 @@ def register_generated_commands(
         'kf',
         help='kf 域命令',
     )
-    kf_sub = kf_parser.add_subparsers(dest='action', required=True)
+    kf_sub = kf_parser.add_subparsers(dest='__action', required=True)
 
     kf_account_add_parser = kf_sub.add_parser(
         'account-add',
@@ -3606,6 +3607,7 @@ def register_generated_commands(
     )
     kf_sync_msg_parser.add_argument(
         '--limit',
+        type=int,
         help='期望请求的数据量，默认值和最大值都为1000。 注意：可能会出现返回条数少于limit的情况，需结合返回的has_more字段判断是否继续请求。',
     )
     kf_sync_msg_parser.add_argument(
@@ -3634,7 +3636,7 @@ def register_generated_commands(
         'living',
         help='living 域命令',
     )
-    living_sub = living_parser.add_subparsers(dest='action', required=True)
+    living_sub = living_parser.add_subparsers(dest='__action', required=True)
 
     living_delete_replay_data_parser = living_sub.add_parser(
         'delete-replay-data',
@@ -3703,7 +3705,7 @@ def register_generated_commands(
         'meeting',
         help='meeting 域命令',
     )
-    meeting_sub = meeting_parser.add_subparsers(dest='action', required=True)
+    meeting_sub = meeting_parser.add_subparsers(dest='__action', required=True)
 
     meeting_cancel_parser = meeting_sub.add_parser(
         'cancel',
@@ -4761,6 +4763,7 @@ def register_generated_commands(
     )
     meeting_vip_list_parser.add_argument(
         '--limit',
+        type=int,
         help='用于分页查询，每次请求返回的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，必须用返回的has_more判断是否继续请求',
     )
 
@@ -5182,7 +5185,7 @@ def register_generated_commands(
         'messages',
         help='messages 域命令',
     )
-    messages_sub = messages_parser.add_subparsers(dest='action', required=True)
+    messages_sub = messages_parser.add_subparsers(dest='__action', required=True)
 
     messages_send_text_parser = messages_sub.add_parser(
         'send-text',
@@ -5296,7 +5299,7 @@ def register_generated_commands(
         'miniapppay',
         help='miniapppay 域命令',
     )
-    miniapppay_sub = miniapppay_parser.add_subparsers(dest='action', required=True)
+    miniapppay_sub = miniapppay_parser.add_subparsers(dest='__action', required=True)
 
     miniapppay_close_order_parser = miniapppay_sub.add_parser(
         'close-order',
@@ -5667,7 +5670,7 @@ def register_generated_commands(
         'miniprogram',
         help='miniprogram 域命令',
     )
-    miniprogram_sub = miniprogram_parser.add_subparsers(dest='action', required=True)
+    miniprogram_sub = miniprogram_parser.add_subparsers(dest='__action', required=True)
 
     miniprogram_transfer_session_parser = miniprogram_sub.add_parser(
         'transfer-session',
@@ -5697,7 +5700,7 @@ def register_generated_commands(
         'msgaudit',
         help='msgaudit 域命令',
     )
-    msgaudit_sub = msgaudit_parser.add_subparsers(dest='action', required=True)
+    msgaudit_sub = msgaudit_parser.add_subparsers(dest='__action', required=True)
 
     msgaudit_check_single_agree_parser = msgaudit_sub.add_parser(
         'check-single-agree',
@@ -5825,7 +5828,7 @@ def register_generated_commands(
         'network',
         help='network 域命令',
     )
-    network_sub = network_parser.add_subparsers(dest='action', required=True)
+    network_sub = network_parser.add_subparsers(dest='__action', required=True)
 
     network_sub.add_parser(
         'get-api-domain-ip',
@@ -5849,7 +5852,7 @@ def register_generated_commands(
         'oa',
         help='oa 域命令',
     )
-    oa_sub = oa_parser.add_subparsers(dest='action', required=True)
+    oa_sub = oa_parser.add_subparsers(dest='__action', required=True)
 
     oa_applyevent_parser = oa_sub.add_parser(
         'applyevent',
@@ -6317,6 +6320,7 @@ def register_generated_commands(
     )
     oa_getapprovalinfo_parser.add_argument(
         '--size',
+        type=int,
         required=True,
         help='一次请求拉取审批单数量，默认值为100，上限值为100。若accesstoken为自建应用，仅允许获取在应用可见范围内申请人提交的表单，返回的sp_no_list个数可能和size不一致，开发者需用next_cursor判断表单记录是否拉取完',
     )
@@ -6846,7 +6850,7 @@ def register_generated_commands(
         'pstncc',
         help='pstncc 域命令',
     )
-    pstncc_sub = pstncc_parser.add_subparsers(dest='action', required=True)
+    pstncc_sub = pstncc_parser.add_subparsers(dest='__action', required=True)
 
     pstncc_call_parser = pstncc_sub.add_parser(
         'call',
@@ -6893,7 +6897,7 @@ def register_generated_commands(
         'school',
         help='school 域命令',
     )
-    school_sub = school_parser.add_subparsers(dest='action', required=True)
+    school_sub = school_parser.add_subparsers(dest='__action', required=True)
 
     school_agent_get_allow_scope_parser = school_sub.add_parser(
         'agent-get-allow-scope',
@@ -7812,7 +7816,7 @@ def register_generated_commands(
         'security',
         help='security 域命令',
     )
-    security_sub = security_parser.add_subparsers(dest='action', required=True)
+    security_sub = security_parser.add_subparsers(dest='__action', required=True)
 
     security_admin_oper_log_list_parser = security_sub.add_parser(
         'admin-oper-log-list',
@@ -7847,6 +7851,7 @@ def register_generated_commands(
     )
     security_admin_oper_log_list_parser.add_argument(
         '--limit',
+        type=int,
         help='最大记录数。不填默认最多获取400个记录 取值范围：1 ~ 400 注意：不保证每次返回的数据刚好为指定limit ，必须用返回的 has_more 判断是否继续请求',
     )
 
@@ -7957,6 +7962,7 @@ def register_generated_commands(
     )
     security_member_oper_log_list_parser.add_argument(
         '--limit',
+        type=int,
         help='最大记录数。不填默认最多获取400个记录 取值范围：1 ~ 400 注意：不保证每次返回的数据刚好为指定limit，必须用返回的 has_more 判断是否继续请求',
     )
 
@@ -8037,6 +8043,7 @@ def register_generated_commands(
     )
     security_vip_list_parser.add_argument(
         '--limit',
+        type=int,
         help='用于分页查询，每次请求返回的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，必须用返回的has_more判断是否继续请求',
     )
 
@@ -8085,7 +8092,7 @@ def register_generated_commands(
         'tags',
         help='tags 域命令',
     )
-    tags_sub = tags_parser.add_subparsers(dest='action', required=True)
+    tags_sub = tags_parser.add_subparsers(dest='__action', required=True)
 
     tags_delete_parser = tags_sub.add_parser(
         'delete',
@@ -8239,7 +8246,7 @@ def register_generated_commands(
         'ticket',
         help='ticket 域命令',
     )
-    ticket_sub = ticket_parser.add_subparsers(dest='action', required=True)
+    ticket_sub = ticket_parser.add_subparsers(dest='__action', required=True)
 
     ticket_sub.add_parser(
         'get',
@@ -8254,7 +8261,7 @@ def register_generated_commands(
         'unknown',
         help='unknown 域命令',
     )
-    unknown_sub = unknown_parser.add_subparsers(dest='action', required=True)
+    unknown_sub = unknown_parser.add_subparsers(dest='__action', required=True)
 
     unknown_sub.add_parser(
         'cgi-bin-get-jsapi-ticket',
@@ -8286,7 +8293,7 @@ def register_generated_commands(
         'users',
         help='users 域命令',
     )
-    users_sub = users_parser.add_subparsers(dest='action', required=True)
+    users_sub = users_parser.add_subparsers(dest='__action', required=True)
 
     users_authsucc_parser = users_sub.add_parser(
         'authsucc',
@@ -8774,7 +8781,7 @@ def register_generated_commands(
         'wedoc',
         help='wedoc 域命令',
     )
-    wedoc_sub = wedoc_parser.add_subparsers(dest='action', required=True)
+    wedoc_sub = wedoc_parser.add_subparsers(dest='__action', required=True)
 
     wedoc_doc_share_parser = wedoc_sub.add_parser(
         'doc-share',
@@ -10189,6 +10196,7 @@ def register_generated_commands(
     )
     wedoc_vip_list_parser.add_argument(
         '--limit',
+        type=int,
         help='用于分页查询，每次请求返回的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，必须用返回的has_more判断是否继续请求',
     )
 
@@ -10203,7 +10211,7 @@ def register_generated_commands(
         'wedrive',
         help='wedrive 域命令',
     )
-    wedrive_sub = wedrive_parser.add_subparsers(dest='action', required=True)
+    wedrive_sub = wedrive_parser.add_subparsers(dest='__action', required=True)
 
     wedrive_file_acl_del_parser = wedrive_sub.add_parser(
         'file-acl-del',
@@ -10836,6 +10844,7 @@ def register_generated_commands(
     )
     wedrive_vip_list_parser.add_argument(
         '--limit',
+        type=int,
         help='用于分页查询，每次请求返回的数据上限。默认100，最大200 注意：不保证每次返回的数据刚好为指定limit，必须用返回的has_more判断是否继续请求',
     )
 

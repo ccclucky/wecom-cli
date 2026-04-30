@@ -2596,7 +2596,7 @@
         {
           "name": "size",
           "flag": "--size",
-          "type": "bool",
+          "type": "int",
           "help": "一次请求拉取审批单数量，默认值为100，上限值为100。若accesstoken为自建应用，仅允许获取在应用可见范围内申请人提交的表单，返回的sp_no_list个数可能和size不一致，开发者需用next_cursor判断表单记录是否拉取完",
           "required": true
         },

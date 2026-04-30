@@ -11,7 +11,7 @@ class GeneratedWeComClient:
     def __init__(self, requester: UnifiedRequester) -> None:
         self._requester = requester
 
-    def advanced_feature_get_apply_id_list(self, *, business_type: str, userid: str, limit: bool | None = None, cursor: str | None = None, req_type: str | None = None) -> dict:
+    def advanced_feature_get_apply_id_list(self, *, business_type: str, userid: str, limit: int | None = None, cursor: str | None = None, req_type: str | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/advanced_feature/get_apply_id_list',
@@ -1214,7 +1214,7 @@ class GeneratedWeComClient:
                 },
         )
 
-    def kf_sync_msg(self, *, cursor: str | None = None, token: str | None = None, limit: bool | None = None, voice_format: str | None = None, open_kfid: str) -> dict:
+    def kf_sync_msg(self, *, cursor: str | None = None, token: str | None = None, limit: int | None = None, voice_format: str | None = None, open_kfid: str) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/kf/sync_msg',
@@ -1609,7 +1609,7 @@ class GeneratedWeComClient:
                 },
         )
 
-    def meeting_vip_list(self, *, cursor: str | None = None, limit: bool | None = None) -> dict:
+    def meeting_vip_list(self, *, cursor: str | None = None, limit: int | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/meeting/vip/list',
@@ -2055,7 +2055,7 @@ class GeneratedWeComClient:
                 },
         )
 
-    def oa_getapprovalinfo(self, *, starttime: str, endtime: str, new_cursor: str, size: bool, filters: str | None = None, key: str | None = None, value: str | None = None) -> dict:
+    def oa_getapprovalinfo(self, *, starttime: str, endtime: str, new_cursor: str, size: int, filters: str | None = None, key: str | None = None, value: str | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/oa/getapprovalinfo',
@@ -2576,7 +2576,7 @@ class GeneratedWeComClient:
                 },
         )
 
-    def security_admin_oper_log_list(self, *, start_time: str, end_time: str, oper_type: str | None = None, userid: str | None = None, cusor: str | None = None, limit: bool | None = None) -> dict:
+    def security_admin_oper_log_list(self, *, start_time: str, end_time: str, oper_type: str | None = None, userid: str | None = None, cusor: str | None = None, limit: int | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/security/admin_oper_log/list',
@@ -2611,7 +2611,7 @@ class GeneratedWeComClient:
             endpoint='/cgi-bin/security/get_server_domain_ip',
         )
 
-    def security_member_oper_log_list(self, *, start_time: str, end_time: str, oper_type: str | None = None, userid: str | None = None, cursor: str | None = None, limit: bool | None = None) -> dict:
+    def security_member_oper_log_list(self, *, start_time: str, end_time: str, oper_type: str | None = None, userid: str | None = None, cursor: str | None = None, limit: int | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/security/member_oper_log/list',
@@ -2640,7 +2640,7 @@ class GeneratedWeComClient:
                 },
         )
 
-    def security_vip_list(self, *, cursor: str | None = None, limit: bool | None = None) -> dict:
+    def security_vip_list(self, *, cursor: str | None = None, limit: int | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/security/vip/list',
@@ -3358,7 +3358,7 @@ class GeneratedWeComClient:
                 },
         )
 
-    def wedoc_vip_list(self, *, cursor: str | None = None, limit: bool | None = None) -> dict:
+    def wedoc_vip_list(self, *, cursor: str | None = None, limit: int | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/wedoc/vip/list',
@@ -3610,7 +3610,7 @@ class GeneratedWeComClient:
                 },
         )
 
-    def wedrive_vip_list(self, *, cursor: str | None = None, limit: bool | None = None) -> dict:
+    def wedrive_vip_list(self, *, cursor: str | None = None, limit: int | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/wedrive/vip/list',
