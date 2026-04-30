@@ -3,7 +3,8 @@ from __future__ import annotations
 import pytest
 
 from cli.generated_commands import register_generated_commands
-from cli.main import route
+from cli.main import bootstrap, build_parser, main, route
+from core.errors import WeComCLIError
 
 
 class DummyClient:
@@ -57,3 +58,38 @@ def test_route_customers():
     args = parser.parse_args(["customers", "list-follow-users"])
     result = route(args, table)
     assert result["user"] == ["zhangsan"]
+
+
+def test_route_unknown_command():
+    parser, table = _build_parser_and_table()
+    # domain "contacts" exists but action "nonexistent" should fail
+    import argparse
+    ns = argparse.Namespace(domain="contacts", __action="nonexistent")
+    with pytest.raises(WeComCLIError, match="Unknown command"):
+        route(ns, table)
+
+
+def test_main_no_args_shows_help(capsys):
+    ret = main([])
+    assert ret == 0
+    captured = capsys.readouterr()
+    assert "wecom" in captured.out
+
+
+def test_main_unknown_domain_returns_error(monkeypatch, capsys):
+    monkeypatch.setenv("WECOM_CORP_ID", "x")
+    monkeypatch.setenv("WECOM_CORP_SECRET", "y")
+    with pytest.raises(SystemExit):
+        main(["--debug", "nonexistent_domain", "action"])
+
+
+def test_verbose_flag_in_parser():
+    parser = build_parser()
+    args = parser.parse_args(["--verbose"])
+    assert args.verbose is True
+
+
+def test_debug_flag_in_parser():
+    parser = build_parser()
+    args = parser.parse_args(["--debug"])
+    assert args.debug is True
