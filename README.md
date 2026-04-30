@@ -3,7 +3,7 @@
 一个面向企业微信（WeCom）开放接口的轻量 CLI 原型，当前版本聚焦：
 
 - **基础设施能力**：配置、鉴权、统一请求器、统一错误处理
-- **全量 API 覆盖**：31 个业务域，309 个 endpoint，100% catalog 覆盖率
+- **全量 API 覆盖**：37 个业务域，309 个 endpoint，100% catalog 覆盖率
 - **工程化基线**：lint / type / test CI，alpha 发布流程，每日 catalog 自动巡检
 
 ---
@@ -13,10 +13,13 @@
 ```text
 core/      # 配置、鉴权、请求器、统一错误
 cli/       # 命令入口、参数解析、路由
-apis/      # 业务域 API 适配层
+apis/      # 业务域 API 适配层（codegen 生成）
 models/    # 共享模型
+scripts/   # 构建/同步/发现脚本
+specs/     # WeCom 接口元数据（YAML）
 tests/     # 单元测试
 docs/      # 架构与设计文档
+artifacts/ # 构建产物（报告、任务清单）
 ```
 
 ---
@@ -196,3 +199,18 @@ python scripts/discover_wecom_apis.py \
 自动 issue 处理手册：`docs/issue-runbook.md`
 
 无脑执行版 SOP：`docs/workflow-sop.md`
+
+### 完整文档索引
+
+| 文档 | 说明 |
+|------|------|
+| `docs/architecture.md` | 分层架构设计（CLI / Application / Domain / Infrastructure） |
+| `docs/cli-ux.md` | CLI 命令命名、输出格式、错误码规范 |
+| `docs/spec-schema.md` | 接口元数据 YAML Schema 定义 |
+| `docs/prd.md` | v1 产品需求文档（覆盖率目标与验收标准） |
+| `docs/bootstrap.md` | 项目初始化与快速上手 |
+| `docs/coverage.md` | 100% 覆盖率保障机制 |
+| `docs/sync-playbook.md` | 接口发现与同步流程说明 |
+| `docs/issue-runbook.md` | 自动 Issue 处理手册 |
+| `docs/workflow-sop.md` | 日常 Catalog 同步 SOP（照抄执行版） |
+| `docs/examples/generated-apis.md` | 生成 API 使用示例 |
