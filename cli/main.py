@@ -99,7 +99,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def route(args: argparse.Namespace, command_table: dict[tuple[str, str], CommandHandler]) -> dict:
-    action = getattr(args, "__action", None) or getattr(args, "action", None)
+    action = str(getattr(args, "__action", None) or getattr(args, "action", ""))
     key = (args.domain, action)
     if key not in command_table:
         raise WeComCLIError(f"Unknown command: {args.domain} {action}")
