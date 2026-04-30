@@ -48,6 +48,7 @@ artifacts/
 .gstack/
 graphify-out/
 *.stackdump
+.claude/*.local.json
 
 # OS
 .DS_Store

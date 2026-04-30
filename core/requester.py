@@ -133,7 +133,14 @@ class UnifiedRequester:
         if self._verbose:
             import sys
 
-            print(f"[wecom-cli] {method} {url}", file=sys.stderr)
+            display_url = url
+            if "access_token=" in url:
+                parsed = urllib.parse.urlparse(url)
+                qs = urllib.parse.parse_qs(parsed.query)
+                if "access_token" in qs:
+                    qs["access_token"] = ["***MASKED***"]
+                display_url = parsed._replace(query=urllib.parse.urlencode(qs, doseq=True)).geturl()
+            print(f"[wecom-cli] {method} {display_url}", file=sys.stderr)
         if self._debug:
             import sys
 
