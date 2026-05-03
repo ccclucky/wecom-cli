@@ -478,7 +478,7 @@
             "type": null
           },
           {
-            "name": "reason_1",
+            "name": "reason",
             "required": null,
             "description": "报销事由",
             "type": null
@@ -508,7 +508,7 @@
             "type": null
           },
           {
-            "name": "reason_2",
+            "name": "reason",
             "required": null,
             "description": "明细事由 (历史单据字段，新申请单据不再提供)",
             "type": null
