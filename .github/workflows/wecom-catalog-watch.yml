@@ -103,6 +103,7 @@ jobs:
       - name: Auto sync specs and generated code
         if: steps.diff.outputs.exit_code == '1'
         run: |
+          set +e
           python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
           python scripts/sync_spec_docs.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
           python scripts/codegen.py
