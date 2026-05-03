@@ -2200,7 +2200,7 @@
             "type": null
           },
           {
-            "name": "userid_1",
+            "name": "userid",
             "required": null,
             "description": "实际申请人userid",
             "type": null
@@ -2212,7 +2212,7 @@
             "type": null
           },
           {
-            "name": "sp_status_1",
+            "name": "sp_status",
             "required": null,
             "description": "审批节点状态：1-审批中；2-已同意；3-已驳回；4-已转审；11-已退回；12-已加签；13-已同意并加签",
             "type": null
@@ -2236,7 +2236,7 @@
             "type": null
           },
           {
-            "name": "userid_2",
+            "name": "userid",
             "required": null,
             "description": "分支审批人userid",
             "type": null
@@ -2248,7 +2248,7 @@
             "type": null
           },
           {
-            "name": "sp_status_2",
+            "name": "sp_status",
             "required": null,
             "description": "分支审批人审批状态：1-审批中；2-已同意；3-已驳回；4-已转审；11-已退回；12-已加签；13-已同意并加签",
             "type": null
@@ -2272,7 +2272,7 @@
             "type": null
           },
           {
-            "name": "userid_3",
+            "name": "userid",
             "required": null,
             "description": "节点抄送人userid",
             "type": null
@@ -2332,7 +2332,7 @@
             "type": null
           },
           {
-            "name": "userid_4",
+            "name": "userid",
             "required": null,
             "description": "备注人userid",
             "type": null
@@ -2356,7 +2356,7 @@
             "type": null
           },
           {
-            "name": "media_id_1",
+            "name": "media_id",
             "required": null,
             "description": "备注附件id，可能有多个，微盘文件无法获取，media_id具体使用请参考：文档-获取临时素材",
             "type": null
@@ -2380,7 +2380,7 @@
             "type": null
           },
           {
-            "name": "sp_status_3",
+            "name": "sp_status",
             "required": null,
             "description": "节点状态 1-审批中；2-同意；3-驳回；4-转审；11-退回给指定审批人；12-加签；13-同意并加签；14-办理；15-转交",
             "type": null
@@ -2398,13 +2398,13 @@
             "type": null
           },
           {
-            "name": "userid_5",
+            "name": "userid",
             "required": null,
             "description": "处理人信息",
             "type": null
           },
           {
-            "name": "speech_1",
+            "name": "speech",
             "required": null,
             "description": "审批/办理意见",
             "type": null
@@ -2416,7 +2416,7 @@
             "type": null
           },
           {
-            "name": "sptime_1",
+            "name": "sptime",
             "required": null,
             "description": "操作时间",
             "type": null

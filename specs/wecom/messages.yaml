@@ -182,8 +182,8 @@
         }
       },
       "doc": {
-        "title": "接口代码参考示例",
-        "source_url": "https://developer.work.weixin.qq.com/document/path/90469",
+        "title": "发送应用消息",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90236",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=ACCESS_TOKEN",
         "request_params": [
           {
@@ -243,7 +243,7 @@
             "type": null
           }
         ],
-        "request_example_text": "public function getAccessToken($corpid,$secret) {      \n        //TODO: access_token 应该全局存储与更新，以下代码以写入到文件中做示例                      \n\t\t//TODO: 每个应用的access_token应独立存储，此处用secret作为区分应用的标识\n        $path = \"../cache/$secret.php\";\n        $data = json_decode(get_php_file($path));\n        \n        if($data->expire_time < time()) {                \n            $url = \"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=$corpid&corpsecret=$secret\";                      \n            $res = json_decode(http_get($url)[\"content\"]);\n\n            $access_token = $res->access_token;\n            \n            if($access_token) {\n                $data->expire_time = time() + 7000;\n                $data->access_token = $access_token;        \n                set_php_file($path, json_encode($data));\n            }\n        } else {\n            $access_token = $data->access_token;\n        }\n        return $access_token;    \n    }",
+        "request_example_text": "{\n   \"touser\" : \"UserID1|UserID2|UserID3\",\n   \"toparty\" : \"PartyID1|PartyID2\",\n   \"totag\" : \"TagID1 | TagID2\",\n   \"msgtype\" : \"text\",\n   \"agentid\" : 1,\n   \"text\" : {\n       \"content\" : \"你的快递已到，请携带工卡前往邮件中心领取。\\n出发前可查看<a href=\\\"https://work.weixin.qq.com\\\">邮件中心视频实况</a>，聪明避开排队。\"\n   },\n   \"safe\":0,\n   \"enable_id_trans\": 0,\n   \"enable_duplicate_check\": 0,\n   \"duplicate_check_interval\": 1800\n}",
         "request_example_json": {
           "touser": "UserID1|UserID2|UserID3",
           "toparty": "PartyID1|PartyID2",

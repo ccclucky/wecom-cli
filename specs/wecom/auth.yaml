@@ -313,17 +313,18 @@
         "wecom auth getuserinfo"
       ],
       "doc": {
-        "title": "获取用户登录身份",
-        "source_url": "https://developer.work.weixin.qq.com/document/path/98176",
+        "title": "获取访问用户身份",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/91707",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo?access_token=ACCESS_TOKEN&code=CODE",
-        "request_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"userid\":\"USERID\"\n}",
+        "request_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"userid\":\"userid\"\n}",
         "request_example_json": {
           "errcode": 0,
           "errmsg": "ok",
-          "userid": "USERID"
+          "userid": "userid"
         },
         "permissions": [
-          "b) 非企业成员时，返回示例如下：",
+          "b) 当用户为学校的家长时，返回示例如下：",
+          "c) 非企业成员或学生家长授权时返回示例如下：",
           "出错返回示例："
         ]
       }

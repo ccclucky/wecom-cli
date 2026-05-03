@@ -13,9 +13,9 @@
         "wecom unknown cgi-bin-get-jsapi-ticket"
       ],
       "doc": {
-        "title": "接口代码参考示例",
-        "source_url": "https://developer.work.weixin.qq.com/document/path/90469",
-        "request_example_text": "public function getAccessToken($corpid,$secret) {      \n        //TODO: access_token 应该全局存储与更新，以下代码以写入到文件中做示例                      \n\t\t//TODO: 每个应用的access_token应独立存储，此处用secret作为区分应用的标识\n        $path = \"../cache/$secret.php\";\n        $data = json_decode(get_php_file($path));\n        \n        if($data->expire_time < time()) {                \n            $url = \"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=$corpid&corpsecret=$secret\";                      \n            $res = json_decode(http_get($url)[\"content\"]);\n\n            $access_token = $res->access_token;\n            \n            if($access_token) {\n                $data->expire_time = time() + 7000;\n                $data->access_token = $access_token;        \n                set_php_file($path, json_encode($data));\n            }\n        } else {\n            $access_token = $data->access_token;\n        }\n        return $access_token;    \n    }",
+        "title": "JS-SDK 签名算法",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/90506",
+        "request_example_text": "jsapi_ticket=JSAPI_TICKET&noncestr=NONCESTR&timestamp=TIMESTAMP&url=URL",
         "request_params": [
           {
             "name": "access_token",
