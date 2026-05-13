@@ -1,6 +1,7 @@
 # WeCom CLI 🚀
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI](https://img.shields.io/pypi/v/api-wecom-cli.svg)](https://pypi.org/project/api-wecom-cli/)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
@@ -21,10 +22,20 @@
 ## 📦 安装
 
 ```bash
-pip install -e .
+pip install api-wecom-cli
 ```
 
 *要求 Python >= 3.11*
+
+<details>
+<summary>开发安装</summary>
+
+```bash
+pip install -e ".[dev]"
+pre-commit install
+```
+
+</details>
 
 ## 🚀 快速上手
 
@@ -68,17 +79,8 @@ wecom customers list-follow-users
 
 ## 🛠️ 开发者指南
 
-我们使用 `pre-commit` 来保障代码质量。
-
 ```bash
-# 安装开发依赖
-pip install -e ".[dev]"
-
-# 安装并激活 pre-commit hooks
-pre-commit install
-
-# 手动运行全量检查
-pre-commit run --all-files
+pre-commit run --all-files  # 提交前必跑
 ```
 
 ### 自动化脚本
