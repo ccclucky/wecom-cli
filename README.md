@@ -108,3 +108,7 @@ pre-commit run --all-files  # 提交前必跑
 ## 📄 开源协议
 
 本项目采用 [MIT License](LICENSE) 开源。
+
+## 🌐 社区
+
+- [LINUX DO](https://linux.do/) — 开发者社区，项目起步于此
