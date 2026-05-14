@@ -9288,7 +9288,7 @@
     "type": 1,
     "status": 2,
     "title": "自建应用与第三方应用的对接",
-    "order_id": 10240,
+    "order_id": 2048,
     "gray_status": 0,
     "gray_info": {
       "level_id": [],
@@ -13802,7 +13802,7 @@
     "type": 1,
     "status": 2,
     "title": "概述",
-    "order_id": 0,
+    "order_id": 1024,
     "gray_status": 0,
     "gray_info": {
       "level_id": [],
@@ -13820,7 +13820,7 @@
     "type": 1,
     "status": 2,
     "title": "tmp_external_userid的转换",
-    "order_id": 11264,
+    "order_id": 4096,
     "gray_status": 0,
     "gray_info": {
       "level_id": [],
