@@ -472,7 +472,7 @@
       ],
       "doc": {
         "title": "获取应用共享信息",
-        "source_url": "https://developer.work.weixin.qq.com/document/path/95813",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93403",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/corp/list_app_share_info?access_token=ACCESS_TOKEN",
         "request_params": [
           {
