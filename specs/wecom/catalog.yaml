@@ -2154,7 +2154,7 @@
       "method": "POST",
       "doc": {
         "title": "获取应用共享信息",
-        "source_url": "https://developer.work.weixin.qq.com/document/path/95813",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/93403",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/corpgroup/corp/list_app_share_info?access_token=ACCESS_TOKEN",
         "request_params": [
           {
@@ -7168,7 +7168,7 @@
           {
             "name": "payment_type",
             "required": null,
-            "description": "收款方式： 0：在聊天中收款 1：收款码收款 2：在直播间收款 3：用产品图册收款 14：转账 15：小程序（仅部分灰度企业可在小程序中接入对外收款账户进行收款）",
+            "description": "收款方式： 0：在聊天中收款 1：收款码收款 2：在直播间收款 3：用产品图册收款 14：转账 15：小程序",
             "type": null
           },
           {
@@ -18495,7 +18495,7 @@
           {
             "name": "access_token",
             "required": true,
-            "description": "调用接口凭证。必须使用第三方应用accesstoken获取，获取方式参考：文档-获取access_token",
+            "description": "调用接口凭证",
             "type": "string"
           },
           {

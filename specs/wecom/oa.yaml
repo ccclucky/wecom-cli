@@ -6287,7 +6287,7 @@
           {
             "name": "access_token",
             "required": true,
-            "description": "调用接口凭证。必须使用第三方应用accesstoken获取，获取方式参考：文档-获取access_token",
+            "description": "调用接口凭证",
             "type": "string"
           },
           {
