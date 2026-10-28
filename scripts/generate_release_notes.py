@@ -45,6 +45,7 @@ CONVENTIONAL_RE = re.compile(
 # Commits that must never appear in the notes.
 SKIP_PATTERNS = (
     re.compile(r"^chore\(release\):"),
+    re.compile(r"^bump: version"),
     re.compile(r"\[skip release\]"),
 )
 
