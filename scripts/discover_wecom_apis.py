@@ -31,6 +31,18 @@ CAPTCHA_SIGNALS = ("TencentCaptcha", "captcha", "verify", "/security/verify")
 CAPTCHA_HTML_MAX = 3000
 CAPTCHA_CONSECUTIVE_LIMIT = 5
 
+# A realistic browser UA reduces the chance of being fingerprinted as a bot.
+# The previous custom UA ("wecom-cli-catalog-discovery/1.0") was trivially
+# identifiable and is a likely contributor to the anti-bot blocks.
+BROWSER_USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+)
+FETCH_MAX_ATTEMPTS = 3
+FETCH_BACKOFF_BASE = 5.0
+# Cooldown applied before retrying a blocked page, to let the rate limiter reset.
+BLOCK_COOLDOWN_BASE = 30.0
+
 
 def _is_captcha_block(html: str) -> bool:
     if len(html) > CAPTCHA_HTML_MAX:
@@ -195,6 +207,8 @@ class CrawlReport:
     failed_pages: int
     blocked_pages: int
     failures: list[CrawlFailure]
+    aborted: bool = False
+    pending_pages: int = 0
 
 
 @dataclass
@@ -351,14 +365,39 @@ def build_seed_urls(
 
 def fetch_html(url: str, timeout: float = 15.0, cookie: str | None = None) -> str:
     headers: dict[str, str] = {
-        "User-Agent": "wecom-cli-catalog-discovery/1.0",
-        "Accept": "text/html,application/xhtml+xml",
+        "User-Agent": BROWSER_USER_AGENT,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+        "Referer": DOC_PATH_PREFIX,
+        "Connection": "keep-alive",
     }
     if cookie:
         headers["Cookie"] = cookie
     req = Request(url, headers=headers)
     with urlopen(req, timeout=timeout) as resp:  # nosec B310 - fixed allowed host via crawl filter
         return resp.read().decode("utf-8", errors="ignore")
+
+
+def fetch_html_with_retry(
+    url: str,
+    timeout: float = 15.0,
+    cookie: str | None = None,
+    max_attempts: int = FETCH_MAX_ATTEMPTS,
+) -> str:
+    """Fetch a page, retrying transient failures with exponential backoff."""
+    last_exc: Exception | None = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return fetch_html(url, timeout=timeout, cookie=cookie)
+        except Exception as exc:  # noqa: BLE001 - network errors vary widely
+            last_exc = exc
+            if attempt >= max_attempts:
+                break
+            backoff = FETCH_BACKOFF_BASE * (2 ** (attempt - 1))
+            logger.warning(f"Fetch attempt {attempt}/{max_attempts} failed for {url}: {exc}. Retrying in {backoff:.0f}s")
+            time.sleep(backoff)
+    assert last_exc is not None
+    raise last_exc
 
 
 def extract_links(base_url: str, html: str) -> list[str]:
@@ -618,6 +657,7 @@ def crawl(
     delay_max: float = 3.0,
     empty_pages_file: Path | None = None,
     cookie: str | None = None,
+    block_cooldown: float = BLOCK_COOLDOWN_BASE,
 ) -> CrawlReport:
     seeds = list(seed_urls)
     seed_set: set[str] = set(seeds)
@@ -631,6 +671,7 @@ def crawl(
     skipped_empty = 0
     blocked_count = 0
     consecutive_blocks = 0
+    aborted = False
 
     total_expected = min(len(seeds), max_pages) if seed_only else max_pages
     logger.info(
@@ -658,7 +699,7 @@ def crawl(
         logger.debug(f"Fetching: {url}")
         time.sleep(random.uniform(delay_min, delay_max))
         try:
-            html = fetch_html(url, cookie=cookie)
+            html = fetch_html_with_retry(url, cookie=cookie)
         except Exception as exc:
             logger.error(f"{progress_prefix} | FAILED | {url} | Error: {exc}")
             failures.append(CrawlFailure(url=url, error=str(exc)))
@@ -681,7 +722,12 @@ def crawl(
                     f"Aborting: {consecutive_blocks} consecutive CAPTCHA blocks. "
                     "Server is rate-limiting. Increase --delay-min/--delay-max or wait and retry."
                 )
+                aborted = True
                 break
+            cooldown = min(block_cooldown * consecutive_blocks, 60.0)
+            if cooldown > 0:
+                logger.info(f"Cooling down {cooldown:.0f}s before next request")
+                time.sleep(cooldown)
             continue
 
         consecutive_blocks = 0
@@ -720,6 +766,8 @@ def crawl(
         failed_pages=len(failures),
         blocked_pages=blocked_count,
         failures=failures,
+        aborted=aborted,
+        pending_pages=len(q),
     )
 
 
@@ -742,6 +790,12 @@ def main() -> int:
         help="Cache file for known-empty pages (skips on re-crawl)",
     )
     parser.add_argument("--cookie", default=None, help="Cookie header to send with each request (bypasses CAPTCHA)")
+    parser.add_argument(
+        "--stats-output",
+        type=Path,
+        default=None,
+        help="Optional path for a machine-readable crawl statistics JSON file",
+    )
     args = parser.parse_args()
 
     setup_logging(args.log_file)
@@ -775,6 +829,8 @@ def main() -> int:
             "visited_pages": crawl_report.visited_pages,
             "failed_pages": crawl_report.failed_pages,
             "blocked_pages": crawl_report.blocked_pages,
+            "aborted": crawl_report.aborted,
+            "pending_pages": crawl_report.pending_pages,
             "failures": [asdict(item) for item in crawl_report.failures],
             "duration_seconds": round(duration, 2),
         },
@@ -783,17 +839,37 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    stats = {
+        "operations_found": len(crawl_report.operations),
+        "visited_pages": crawl_report.visited_pages,
+        "failed_pages": crawl_report.failed_pages,
+        "blocked_pages": crawl_report.blocked_pages,
+        "aborted": crawl_report.aborted,
+        "pending_pages": crawl_report.pending_pages,
+        "duration_seconds": round(duration, 2),
+    }
+    if args.stats_output:
+        args.stats_output.parent.mkdir(parents=True, exist_ok=True)
+        args.stats_output.write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding="utf-8")
+
     logger.info("-" * 40)
     logger.info(f"Discovery completed in {duration / 60:.1f} minutes")
     logger.info(
         "Summary: "
         f"{len(crawl_report.operations)} operations found "
         f"(visited={crawl_report.visited_pages}, failed={crawl_report.failed_pages}, "
-        f"blocked={crawl_report.blocked_pages}) "
+        f"blocked={crawl_report.blocked_pages}, aborted={crawl_report.aborted}) "
     )
     logger.info(f"Output saved to: {args.output}")
     if args.log_file:
         logger.info(f"Full logs available at: {args.log_file}")
+
+    if crawl_report.aborted:
+        logger.error(
+            "Discovery was interrupted by anti-bot protection; the catalog is INCOMPLETE. "
+            "Refusing to report success so downstream diffing cannot treat missing pages as removals."
+        )
+        return 2
     return 0
 
 

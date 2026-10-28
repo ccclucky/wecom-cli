@@ -158,7 +158,7 @@ SEED_C = "https://developer.work.weixin.qq.com/document/path/90003"
 
 def test_crawl_visits_all_seeds():
     pages = {SEED_A: SAMPLE_HTML_WITH_API, SEED_B: SAMPLE_HTML_WITH_API, SEED_C: SAMPLE_HTML_EMPTY}
-    with patch("scripts.discover_wecom_apis.fetch_html", side_effect=lambda u, **kw: pages[u]):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", side_effect=lambda u, **kw: pages[u]):
         report = crawl([SEED_A, SEED_B, SEED_C], max_pages=10, delay_min=0, delay_max=0)
     assert report.visited_pages == 3
     # SEED_A and SEED_B produce same endpoint/method → deduplicated to 1
@@ -168,16 +168,16 @@ def test_crawl_visits_all_seeds():
 def test_crawl_respects_max_pages():
     seeds = [f"https://developer.work.weixin.qq.com/document/path/9000{i}" for i in range(10)]
     pages = {u: SAMPLE_HTML_EMPTY for u in seeds}
-    with patch("scripts.discover_wecom_apis.fetch_html", side_effect=lambda u, **kw: pages[u]):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", side_effect=lambda u, **kw: pages[u]):
         report = crawl(seeds, max_pages=3, delay_min=0, delay_max=0)
     assert report.visited_pages == 3
 
 
 def test_crawl_records_failures():
-    def fetch_fail(url):
+    def fetch_fail(url, **kwargs):
         raise ConnectionError("timeout")
 
-    with patch("scripts.discover_wecom_apis.fetch_html", side_effect=fetch_fail):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", side_effect=fetch_fail):
         report = crawl([SEED_A, SEED_B], max_pages=10, delay_min=0, delay_max=0)
     assert report.failed_pages == 2
     assert len(report.failures) == 2
@@ -186,7 +186,7 @@ def test_crawl_records_failures():
 
 
 def test_crawl_deduplicates_urls():
-    with patch("scripts.discover_wecom_apis.fetch_html", return_value=SAMPLE_HTML_EMPTY):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=SAMPLE_HTML_EMPTY):
         report = crawl([SEED_A, SEED_A, SEED_A], max_pages=10, delay_min=0, delay_max=0)
     assert report.visited_pages == 1
 
@@ -196,7 +196,7 @@ def test_crawl_seed_only_mode_ignores_non_seed_links():
         "</body>",
         '<a href="https://developer.work.weixin.qq.com/document/path/99999">link</a></body>',
     )
-    with patch("scripts.discover_wecom_apis.fetch_html", return_value=html_with_link):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=html_with_link):
         report = crawl([SEED_A], max_pages=100, seed_only=True, delay_min=0, delay_max=0)
     assert report.visited_pages == 1
 
@@ -209,14 +209,14 @@ def test_crawl_free_mode_follows_discovered_links():
     html_b = SAMPLE_HTML_WITH_API
     pages = {SEED_A: html_a, SEED_B: html_b}
 
-    with patch("scripts.discover_wecom_apis.fetch_html", side_effect=lambda u, **kw: pages[u]):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", side_effect=lambda u, **kw: pages[u]):
         report = crawl([SEED_A], max_pages=10, seed_only=False, delay_min=0, delay_max=0)
     assert report.visited_pages == 2
     assert len(report.operations) == 1
 
 
 def test_crawl_deduplicates_operations_by_endpoint_method():
-    with patch("scripts.discover_wecom_apis.fetch_html", return_value=SAMPLE_HTML_WITH_API):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=SAMPLE_HTML_WITH_API):
         report = crawl([SEED_A, SEED_B], max_pages=10, delay_min=0, delay_max=0)
     # Both pages produce same endpoint/method → deduplicated
     assert len(report.operations) == 1
@@ -259,7 +259,7 @@ def test_crawl_skips_cached_empty_pages(tmp_path):
     cache_file = tmp_path / "empty.json"
     cache_file.write_text('["https://developer.work.weixin.qq.com/document/path/91000"]', encoding="utf-8")
 
-    with patch("scripts.discover_wecom_apis.fetch_html") as mock_fetch:
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry") as mock_fetch:
         mock_fetch.return_value = SAMPLE_HTML_WITH_API
         report = crawl(
             [EMPTY_CACHE_SEED],
@@ -277,7 +277,7 @@ def test_crawl_skips_cached_empty_pages(tmp_path):
 def test_crawl_saves_new_empty_pages(tmp_path):
     cache_file = tmp_path / "empty.json"
 
-    with patch("scripts.discover_wecom_apis.fetch_html", return_value=SAMPLE_HTML_EMPTY):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=SAMPLE_HTML_EMPTY):
         report = crawl(
             [EMPTY_CACHE_SEED],
             max_pages=10,
@@ -297,7 +297,7 @@ def test_crawl_empty_cache_merges_with_existing(tmp_path):
     cache_file = tmp_path / "empty.json"
     cache_file.write_text('["https://developer.work.weixin.qq.com/document/path/99999"]', encoding="utf-8")
 
-    with patch("scripts.discover_wecom_apis.fetch_html", return_value=SAMPLE_HTML_EMPTY):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=SAMPLE_HTML_EMPTY):
         crawl(
             [EMPTY_CACHE_SEED],
             max_pages=10,
@@ -343,21 +343,23 @@ def test_is_captcha_block_passes_real_html():
 
 def test_crawl_aborts_after_consecutive_captcha_blocks():
     seeds = [f"https://developer.work.weixin.qq.com/document/path/9200{i}" for i in range(10)]
-    with patch("scripts.discover_wecom_apis.fetch_html", return_value=CAPTCHA_HTML):
-        report = crawl(seeds, max_pages=100, delay_min=0, delay_max=0)
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=CAPTCHA_HTML):
+        report = crawl(seeds, max_pages=100, delay_min=0, delay_max=0, block_cooldown=0)
     assert report.blocked_pages == CAPTCHA_CONSECUTIVE_LIMIT
     assert report.visited_pages == CAPTCHA_CONSECUTIVE_LIMIT
+    assert report.aborted is True
 
 
 def test_crawl_does_not_cache_captcha_pages(tmp_path):
     cache_file = tmp_path / "empty.json"
-    with patch("scripts.discover_wecom_apis.fetch_html", return_value=CAPTCHA_HTML):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=CAPTCHA_HTML):
         crawl(
             [CAPTCHA_SEED],
             max_pages=100,
             delay_min=0,
             delay_max=0,
             empty_pages_file=cache_file,
+            block_cooldown=0,
         )
     # CAPTCHA pages must NOT be cached as empty
     saved = _load_empty_pages(cache_file)
@@ -367,12 +369,13 @@ def test_crawl_does_not_cache_captcha_pages(tmp_path):
 def test_crawl_recovers_after_isolated_captcha():
     """Single CAPTCHA followed by real page — should not abort."""
     responses = [CAPTCHA_HTML, SAMPLE_HTML_WITH_API]
-    with patch("scripts.discover_wecom_apis.fetch_html", side_effect=responses):
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", side_effect=responses):
         report = crawl(
             [CAPTCHA_SEED, SEED_A],
             max_pages=10,
             delay_min=0,
             delay_max=0,
+            block_cooldown=0,
         )
     # One blocked page, but should continue and find the API
     assert report.blocked_pages == 1

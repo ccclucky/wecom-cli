@@ -9,6 +9,14 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  actions: write
+
+concurrency:
+  group: wecom-catalog-watch
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: '3.11'
 
 jobs:
   watch-catalog:
@@ -16,11 +24,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pytest
 
       - name: Restore empty pages cache
         uses: actions/cache@v4
@@ -45,10 +60,31 @@ jobs:
             --menu-tree-file specs/wecom/menu_tree.json \
             --empty-pages-file specs/wecom/empty_pages.json \
             --max-pages 1500 \
-            --delay-min 2.0 \
-            --delay-max 4.0 \
+            --delay-min 3.0 \
+            --delay-max 7.0 \
             --output artifacts/catalog.discovery.yaml \
+            --stats-output artifacts/crawl-stats.json \
             "${COOKIE_ARG[@]}"
+
+      # A crawl cut short by anti-bot protection produces a snapshot that looks
+      # like "230 APIs were deleted". Fail here so the diff never runs against
+      # a partial catalog.
+      - name: Verify crawl completeness
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          stats = json.loads(Path("artifacts/crawl-stats.json").read_text(encoding="utf-8"))
+          print(json.dumps(stats, indent=2))
+          if stats.get("aborted"):
+              print("::error::Crawl aborted by anti-bot protection; refusing to diff an incomplete snapshot.")
+              sys.exit(1)
+          if stats.get("operations_found", 0) == 0:
+              print("::error::Crawl discovered zero operations.")
+              sys.exit(1)
+          PY
 
       - name: Build diff report
         id: diff
@@ -61,13 +97,22 @@ jobs:
             --diff-output artifacts/catalog.diff.yaml \
             --sync-output artifacts/catalog.synced.yaml \
             --apply-baseline specs/wecom/catalog.yaml
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" -eq 3 ]; then
+            echo "::error::Coverage gate failed - the crawl did not re-cover enough of the baseline."
+            exit 1
+          fi
+          echo "diff exit code: $code"
 
       - name: Upload report artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: wecom-catalog-report
           path: artifacts/
+          retention-days: 14
 
       - name: Create or update tracking issue
         if: steps.diff.outputs.exit_code == '1'
@@ -100,48 +145,49 @@ jobs:
               core.info(`Created issue #${created.data.number}`);
             }
 
-      - name: Auto sync specs and generated code
+      - name: Apply catalog sync and regenerate code
         if: steps.diff.outputs.exit_code == '1'
         run: |
-          set +e
           python scripts/scaffold_from_catalog.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
           python scripts/sync_spec_docs.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --apply
           python scripts/codegen.py
-          python scripts/check_api_coverage.py
-          python scripts/catalog_diff_report.py \
-            --baseline specs/wecom/catalog.yaml \
-            --discovered artifacts/catalog.discovery.yaml \
-            --report artifacts/wecom-catalog-report.md \
-            --diff-output artifacts/catalog.diff.yaml \
-            --sync-output artifacts/catalog.synced.yaml
           python scripts/build_agent_tasks.py --catalog specs/wecom/catalog.yaml --spec-dir specs/wecom --diff artifacts/catalog.diff.yaml
-          python - <<'PY'
-          import json
-          from pathlib import Path
 
-          diff_payload = json.loads(Path("artifacts/catalog.diff.yaml").read_text(encoding="utf-8"))
-          tasks_payload = json.loads(Path("artifacts/implementation.tasks.yaml").read_text(encoding="utf-8"))
-          summary = diff_payload.get("summary", {})
-          counts = {
-              "added": int(summary.get("added", 0)),
-              "removed": int(summary.get("removed", 0)),
-              "modified": int(summary.get("modified", 0)),
-              "task_count": int(tasks_payload.get("task_count", 0)),
-          }
-          if any(counts.values()):
-              print(f"Workflow sync completed with pending tasks: {counts}")
-          else:
-              print("Workflow reached clean state.")
-          print(json.dumps(counts, indent=2))
-          PY
-
-      - name: Create sync PR draft when changes detected
+      # Generated code must at least lint and pass the existing test suite
+      # before it is allowed onto main.
+      - name: Quality gate
         if: steps.diff.outputs.exit_code == '1'
-        continue-on-error: true
+        run: |
+          ruff check .
+          pytest -q
+
+      - name: Create or update sync PR
+        id: pr
+        if: steps.diff.outputs.exit_code == '1'
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "chore: sync discovered wecom catalog snapshot"
           branch: chore/sync-wecom-catalog
           title: "chore: sync discovered WeCom catalog snapshot"
           body-path: artifacts/wecom-catalog-report.md
-          draft: true
+          draft: false
+
+      # The PR is a review trail, not a gate: lint and tests already ran above.
+      # GitHub does not start workflows for pull requests opened with
+      # GITHUB_TOKEN, so waiting on the PR's own CI would stall forever.
+      - name: Merge sync PR
+        if: steps.pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.pr.outputs.pull-request-number }}
+        run: |
+          gh pr ready "$PR_NUMBER" || true
+          gh pr merge "$PR_NUMBER" --squash --delete-branch
+
+      # Pushes performed with GITHUB_TOKEN do not trigger other workflows, so
+      # the release pipeline is dispatched explicitly.
+      - name: Trigger release workflow
+        if: steps.pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run auto-release.yml --ref main

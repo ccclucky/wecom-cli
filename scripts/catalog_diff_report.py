@@ -59,6 +59,37 @@ def build_diff(baseline: dict[str, Any], discovered: dict[str, Any]) -> dict[str
     return {"added": added, "removed": removed, "modified": modified}
 
 
+def build_coverage(baseline: dict[str, Any], discovered: dict[str, Any]) -> dict[str, Any]:
+    """Compute how much of the baseline the crawl managed to re-discover.
+
+    A partial crawl (anti-bot interruption, network failures) makes every
+    unvisited page look like a removal. Without this ratio the diff cannot
+    distinguish "the API was deleted upstream" from "we never fetched the page".
+    """
+    baseline_items = _as_items(baseline)
+    discovered_items = _as_items(discovered)
+
+    # Diffing is endpoint-based, so coverage must be measured the same way.
+    baseline_endpoints = {v.endpoint for v in baseline_items.values()}
+    discovered_endpoints = {v.endpoint for v in discovered_items.values()}
+
+    baseline_total = len(baseline_endpoints)
+    discovered_total = len(discovered_endpoints)
+    matched = 0
+    if baseline_total == 0:
+        ratio = 1.0 if discovered_total == 0 else 0.0
+    else:
+        matched = len(baseline_endpoints & discovered_endpoints)
+        ratio = matched / baseline_total
+
+    return {
+        "baseline_total": baseline_total,
+        "discovered_total": discovered_total,
+        "matched": matched,
+        "ratio": round(ratio, 4),
+    }
+
+
 def _serialize_item(item: ApiItem) -> dict[str, Any]:
     payload = {
         "endpoint": item.endpoint,
@@ -77,10 +108,12 @@ def build_diff_payload(
     diff: dict[str, list[ApiItem]],
     baseline: dict[str, Any],
     discovered: dict[str, Any],
+    coverage: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return {
         "baseline_snapshot": baseline.get("snapshot_date"),
         "discovery_snapshot": discovered.get("snapshot_date"),
+        "coverage": coverage or {},
         "summary": {
             "added": len(diff["added"]),
             "removed": len(diff["removed"]),
@@ -228,33 +261,57 @@ def to_markdown(
     diff: dict[str, list[ApiItem]],
     baseline: dict[str, Any],
     discovered: dict[str, Any],
+    coverage: dict[str, Any] | None = None,
+    min_coverage: float = 0.9,
 ) -> str:
+    coverage = coverage or {}
+    ratio = coverage.get("ratio", 1.0)
+    incomplete = ratio < min_coverage
+
     lines: list[str] = [
         "# WeCom API Catalog Daily Report",
         "",
         f"- Baseline snapshot: `{baseline.get('snapshot_date', 'unknown')}`",
         f"- Discovery snapshot: `{discovered.get('snapshot_date', 'unknown')}`",
-        f"- Baseline total: **{len(baseline.get('operations', []))}**",
-        f"- Discovered total: **{len(discovered.get('operations', []))}**",
-        "",
-        "## Summary",
-        "",
-        f"- Added: **{len(diff['added'])}**",
-        f"- Removed: **{len(diff['removed'])}**",
-        f"- Modified(method): **{len(diff['modified'])}**",
-        "",
-        "## How to fix",
-        "",
-        "- Review `Added/Removed/Modified` below.",
-        "- If confirmed, run `python scripts/catalog_diff_report.py` with:",
-        "  - `--baseline specs/wecom/catalog.yaml`",
-        "  - `--discovered artifacts/catalog.discovery.yaml`",
-        "  - `--report artifacts/wecom-catalog-report.md`",
-        "  - `--apply-baseline specs/wecom/catalog.yaml`",
-        "- Then update `specs/wecom/<domain>.yaml`,",
-        "  run `python scripts/codegen.py`, and add tests/examples.",
+        f"- Baseline total: **{coverage.get('baseline_total', len(baseline.get('operations', [])))}**",
+        f"- Discovered total: **{coverage.get('discovered_total', len(discovered.get('operations', [])))}**",
+        f"- Coverage: **{ratio:.1%}** (threshold {min_coverage:.0%})",
         "",
     ]
+
+    if incomplete:
+        lines.extend(
+            [
+                "> **WARNING — crawl incomplete.** The discovery run re-covered only "
+                f"{ratio:.1%} of the baseline, below the {min_coverage:.0%} threshold.",
+                "> The `Removed` section has been suppressed because missing pages are far more",
+                "> likely to indicate an anti-bot block or network failure than real API deletions.",
+                "> Fix the crawl before trusting any diff in this report.",
+                "",
+            ]
+        )
+
+    lines.extend(
+        [
+            "## Summary",
+            "",
+            f"- Added: **{len(diff['added'])}**",
+            f"- Removed: **{len(diff['removed'])}**",
+            f"- Modified(method): **{len(diff['modified'])}**",
+            "",
+            "## How to fix",
+            "",
+            "- Review `Added/Removed/Modified` below.",
+            "- If confirmed, run `python scripts/catalog_diff_report.py` with:",
+            "  - `--baseline specs/wecom/catalog.yaml`",
+            "  - `--discovered artifacts/catalog.discovery.yaml`",
+            "  - `--report artifacts/wecom-catalog-report.md`",
+            "  - `--apply-baseline specs/wecom/catalog.yaml`",
+            "- Then update `specs/wecom/<domain>.yaml`,",
+            "  run `python scripts/codegen.py`, and add tests/examples.",
+            "",
+        ]
+    )
 
     for section in ("added", "removed", "modified"):
         lines.append(f"## {section.title()}")
@@ -281,20 +338,51 @@ def main() -> int:
     parser.add_argument("--sync-output", type=Path, help="Optional synced catalog output path")
     parser.add_argument("--diff-output", type=Path, help="Optional machine-readable diff output path")
     parser.add_argument("--apply-baseline", type=Path, help="Write reconciled catalog to this path")
+    parser.add_argument(
+        "--min-coverage",
+        type=float,
+        default=0.9,
+        help="Minimum fraction of the baseline that must be re-discovered before removals are trusted",
+    )
+    parser.add_argument(
+        "--allow-incomplete",
+        action="store_true",
+        help="Proceed even when coverage is below the threshold (disables the gate)",
+    )
     args = parser.parse_args()
 
     baseline = _load_json_yaml(args.baseline)
     discovered = _load_json_yaml(args.discovered)
-    diff = build_diff(baseline, discovered)
+    coverage = build_coverage(baseline, discovered)
+    incomplete = coverage["ratio"] < args.min_coverage and not args.allow_incomplete
 
-    report_text = to_markdown(diff, baseline, discovered)
+    diff = build_diff(baseline, discovered)
+    if incomplete:
+        # Missing pages almost always mean a blocked or failed crawl, not a
+        # real upstream deletion. Suppress removals so a partial snapshot can
+        # never propagate destructive edits downstream.
+        diff["removed"] = []
+
+    report_text = to_markdown(diff, baseline, discovered, coverage=coverage, min_coverage=args.min_coverage)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(report_text, encoding="utf-8")
     if args.diff_output:
         args.diff_output.write_text(
-            json.dumps(build_diff_payload(diff, baseline, discovered), ensure_ascii=False, indent=2),
+            json.dumps(
+                build_diff_payload(diff, baseline, discovered, coverage=coverage),
+                ensure_ascii=False,
+                indent=2,
+            ),
             encoding="utf-8",
         )
+
+    if incomplete:
+        print(
+            f"COVERAGE GATE FAILED: re-discovered {coverage['ratio']:.1%} of baseline "
+            f"({coverage['matched']}/{coverage['baseline_total']}), "
+            f"threshold {args.min_coverage:.0%}. Removals suppressed; aborting."
+        )
+        return 3
 
     reconciled = build_reconciled_catalog(baseline, discovered)
     if args.sync_output:

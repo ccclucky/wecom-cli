@@ -29,6 +29,8 @@ ENV/
 # Testing
 .pytest_cache/
 .pytest-tmp/
+.pytest_tmp/
+.tmp/
 .tmp-pytest-agentflow/
 pytest-cache-files-*/
 .coverage
@@ -44,6 +46,7 @@ htmlcov/
 
 # AI Tools & Artifacts
 artifacts/
+.workbuddy-ai/
 .superpowers/
 docs/superpowers/
 .gstack/
