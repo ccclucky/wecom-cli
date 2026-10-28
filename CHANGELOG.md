@@ -8,7 +8,7 @@ appears in `pyproject.toml`, in the Git tag (prefixed with `v`) and on PyPI.
 
 | Stage | `pyproject.toml` | Git tag | PyPI |
 | --- | --- | --- | --- |
-| Alpha | `0.1.0a5` | `v0.1.0a5` | `0.1.0a5` |
+| Alpha | `0.1.0a6` | `v0.1.0a6` | `0.1.0a6` |
 | Beta | `0.1.0b1` | `v0.1.0b1` | `0.1.0b1` |
 | Release candidate | `0.1.0rc1` | `v0.1.0rc1` | `0.1.0rc1` |
 | Stable | `0.1.0` | `v0.1.0` | `0.1.0` |
@@ -18,7 +18,7 @@ Releases are cut from `main` by the **Auto Release** workflow. Entries below
 
 > Tags `v0.1.0-alpha.1`, `v0.1.0a2`, `v0.1.0a3` and `v0.1.0-alpha.4` predate this
 > convention and mix two spellings. They are left untouched because they are
-> already published; every tag from `v0.1.0a5` onward is PEP 440 only.
+> already published; every tag from `v0.1.0a6` onward is PEP 440 only.
 
 ## [Unreleased]
 
