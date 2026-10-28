@@ -22,6 +22,14 @@ Releases are cut from `main` by the **Auto Release** workflow. Entries below
 
 ## [Unreleased]
 
+## [0.1.0a6] - 2026-10-28
+
+### Bug Fixes
+
+- **release:** filter legacy version bump commits from release notes
+
+**Full Changelog**: https://github.com/ccclucky/wecom-cli/compare/v0.1.0-alpha.5...v0.1.0a6
+
 ## [0.1.0a5] - 2026-10-28
 
 ### Added
