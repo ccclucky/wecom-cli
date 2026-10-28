@@ -16,10 +16,38 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Release notes are built from the commit range since the previous
+          # tag, which needs the full history.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      # pyproject.toml is the single source of truth for the version; the tag
+      # is derived from it so the two can never disagree.
+      - name: Resolve version metadata
+        id: meta
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          text = Path("pyproject.toml").read_text(encoding="utf-8")
+          version = re.search(r'^version\s*=\s*"([^"]+)"', text, re.MULTILINE).group(1)
+          prerelease = bool(re.search(r"(a|b|rc)\d+$", version))
+          tag = f"v{version}"
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+              handle.write(f"version={version}\n")
+              handle.write(f"tag={tag}\n")
+              handle.write(f"prerelease={'true' if prerelease else 'false'}\n")
+              handle.write(f"channel={'prerelease' if prerelease else 'stable'}\n")
+
+          print(f"version={version} tag={tag} prerelease={prerelease}")
+          PY
 
       - name: Install build
         run: pip install build
@@ -33,9 +61,20 @@ jobs:
           password: ${{ secrets.PYPI_API_TOKEN }}
           skip-existing: true
 
+      # Grouped by conventional-commit type instead of GitHub's flat
+      # "What's Changed" list, which mixes docs and CI chores together.
+      - name: Generate release notes
+        run: |
+          python scripts/generate_release_notes.py \
+            --tag "${{ steps.meta.outputs.tag }}" \
+            --output release-notes.md
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          name: ${{ steps.meta.outputs.version }}
+          tag_name: ${{ steps.meta.outputs.tag }}
+          body_path: release-notes.md
+          prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}

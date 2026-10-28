@@ -4,6 +4,20 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+    inputs:
+      bump:
+        description: "Which part of the version to advance"
+        type: choice
+        options:
+          - auto
+          - alpha
+          - beta
+          - rc
+          - stable
+          - patch
+          - minor
+          - major
+        default: auto
 
 permissions:
   contents: write
@@ -29,9 +43,28 @@ jobs:
         with:
           python-version: "3.11"
 
+      # "auto" stays in the current channel (alpha keeps incrementing alpha,
+      # stable advances the patch). Pass an explicit value to promote, e.g.
+      # --bump beta to move 0.1.0a6 -> 0.1.0b1.
       - name: Decide and bump version
         id: bump
-        run: python scripts/bump_version.py
+        env:
+          BUMP_KIND: ${{ inputs.bump || 'auto' }}
+        run: python scripts/bump_version.py --bump "${BUMP_KIND}"
+
+      # The changelog entry is generated from the same commit range that the
+      # release notes use, so both stay in sync without manual editing.
+      - name: Generate release notes and update changelog
+        if: steps.bump.outputs.should_release == 'true'
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+          TAG: ${{ steps.bump.outputs.tag }}
+        run: |
+          python scripts/generate_release_notes.py \
+            --tag "${TAG}" \
+            --version "${VERSION}" \
+            --output release-notes.md \
+            --update-changelog CHANGELOG.md
 
       - name: Commit, tag and push
         if: steps.bump.outputs.should_release == 'true'
@@ -41,7 +74,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pyproject.toml
+          git add pyproject.toml CHANGELOG.md
           git commit -m "chore(release): ${VERSION} [skip release]"
           git tag "${TAG}"
           git push origin HEAD:main
@@ -55,3 +88,18 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.bump.outputs.tag }}
         run: gh workflow run release.yml --ref "${TAG}"
+
+      - name: Summarize
+        if: steps.bump.outputs.should_release == 'true'
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+          CHANNEL: ${{ steps.bump.outputs.channel }}
+          TAG: ${{ steps.bump.outputs.tag }}
+        run: |
+          {
+            echo "### Released ${VERSION}"
+            echo ""
+            echo "- Channel: \`${CHANNEL}\`"
+            echo "- Tag: \`${TAG}\`"
+            echo "- Publish workflow: dispatched"
+          } >> "$GITHUB_STEP_SUMMARY"

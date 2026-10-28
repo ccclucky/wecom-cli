@@ -48,6 +48,26 @@ pre-commit run --all-files
 - `docs:` 文档更新
 - `chore:` 构建过程或辅助工具的变动
 
+提交标题会直接成为发布说明，请写清楚「改了什么」。`update`、`fix bug`、`调整` 这类无信息量的描述不会进入发布说明。
+
+## 🏷️ 版本与发布
+
+版本号遵循 [PEP 440](https://peps.python.org/pep-0440/)，同一字符串出现在三处，不允许各自为政：
+
+| 阶段 | `pyproject.toml` | Git tag | PyPI |
+| --- | --- | --- | --- |
+| Alpha | `0.1.0a5` | `v0.1.0a5` | `0.1.0a5` |
+| Beta | `0.1.0b1` | `v0.1.0b1` | `0.1.0b1` |
+| RC | `0.1.0rc1` | `v0.1.0rc1` | `0.1.0rc1` |
+| 正式 | `0.1.0` | `v0.1.0` | `0.1.0` |
+
+发布由 `Auto Release` 工作流自动完成，无需手动打 tag：
+
+1. 合并到 `main` 后，若变更涉及 `core/`、`cli/`、`apis/`、`models/` 或 `pyproject.toml`，自动递增版本并打 tag。
+2. `--bump auto` 保持当前通道（alpha 继续递增 alpha）；晋级时手动触发工作流并指定 `beta`、`rc` 或 `stable`。
+3. 发布说明由 conventional commits 自动分类生成，同时追加到 `CHANGELOG.md`。
+4. 提交信息含 `[skip release]` 时跳过发布，仅用于纯规范化改动。
+
 ## 🚀 提交 PR
 - 在 PR 描述中详细说明改动的动机。
 - 如果是修复接口，请附上对应的企业微信文档链接。

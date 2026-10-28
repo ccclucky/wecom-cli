@@ -33,6 +33,7 @@ ENV/
 .tmp/
 .tmp-pytest-agentflow/
 pytest-cache-files-*/
+release-notes.md
 .coverage
 htmlcov/
 .mypy_cache/

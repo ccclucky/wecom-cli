@@ -166,9 +166,11 @@ jobs:
         if: steps.diff.outputs.exit_code == '1'
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore: sync discovered wecom catalog snapshot"
+          # Catalog changes alter the generated client and CLI, so they are a
+          # feature from the package's point of view, not a chore.
+          commit-message: "feat(catalog): sync discovered WeCom API catalog"
           branch: chore/sync-wecom-catalog
-          title: "chore: sync discovered WeCom catalog snapshot"
+          title: "feat(catalog): sync discovered WeCom API catalog"
           body-path: artifacts/wecom-catalog-report.md
           draft: false
 
