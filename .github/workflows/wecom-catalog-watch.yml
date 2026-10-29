@@ -2,7 +2,8 @@ name: WeCom Catalog Watch
 
 on:
   schedule:
-    - cron: '0 1 * * *'
+    # 22:00 UTC = 06:00 Beijing time.
+    - cron: '0 22 * * *'
   workflow_dispatch:
 
 permissions:

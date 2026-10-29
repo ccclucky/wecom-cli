@@ -9,7 +9,7 @@ name: Cookie Health Probe
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 1 * * *'   # daily, shortly after the main sweep
+    - cron: '30 22 * * *'  # daily, 30 min after the main sweep (06:30 Beijing)
 
 permissions:
   contents: read
