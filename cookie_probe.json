@@ -1,8 +1,14 @@
 {
   "probe_url": "https://developer.work.weixin.qq.com/document/path/90200",
   "cookie_supplied": true,
-  "status": "expired",
-  "is_login": false,
-  "profile_keys": [],
-  "response_bytes": 1700851
+  "status": "valid",
+  "is_login": true,
+  "profile_keys": [
+    "alias",
+    "avatar",
+    "name",
+    "original_uid",
+    "uid"
+  ],
+  "response_bytes": 1707051
 }
