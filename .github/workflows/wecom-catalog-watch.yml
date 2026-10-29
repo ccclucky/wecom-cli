@@ -37,6 +37,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff pytest
 
+      # Cheap, fast liveness check for the doc-site login cookie. It must never
+      # block the sweep: a dead cookie only means the crawl runs unauthenticated
+      # (slower), and the resumable sweep still finishes. The result is written
+      # to the step summary so every scheduled run self-reports cookie health.
+      - name: Probe cookie health
+        if: always()
+        continue-on-error: true
+        env:
+          WECOM_DOC_COOKIE: ${{ secrets.WECOM_DOC_COOKIE }}
+        run: |
+          cd scripts
+          python check_doc_cookie.py --cookie "$WECOM_DOC_COOKIE" --output ../cookie_probe.json || true
+          cd ..
+          if [ -f cookie_probe.json ]; then
+            {
+              echo "### Cookie health"
+              echo
+              echo '```json'
+              cat cookie_probe.json
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       # The doc site stops serving a runner after roughly 25 minutes of
       # crawling regardless of how many requests it made: runs that sent 354
       # requests and runs that sent 198 were cut off at the same wall clock

@@ -1,0 +1,74 @@
+name: Cookie Health Probe
+
+# One-page liveness check for the doc-site login cookie. A valid cookie is the
+# difference between finishing a sweep in a couple of passes and being cut off
+# by anti-bot protection after ~25 minutes. The crawl does NOT depend on it
+# (the resumable sweep still finishes unauthenticated), but knowing its state
+# explains why a run stalled.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 1 * * *'   # daily, shortly after the main sweep
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Probe cookie
+        id: probe
+        env:
+          WECOM_DOC_COOKIE: ${{ secrets.WECOM_DOC_COOKIE }}
+        run: |
+          cd scripts
+          python check_doc_cookie.py \
+            --cookie "$WECOM_DOC_COOKIE" \
+            --output ../cookie_probe.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" -eq 0 ]; then
+            echo "::notice::WECOM_DOC_COOKIE is valid (isLogin=true)."
+          elif [ "$code" -eq 2 ]; then
+            echo "::warning::WECOM_DOC_COOKIE is expired (isLogin=false). The crawl will run unauthenticated and may be cut off by anti-bot protection."
+          elif [ "$code" -eq 1 ]; then
+            echo "::warning::WECOM_DOC_COOKIE is not set; the crawl will run unauthenticated."
+          else
+            echo "::warning::Cookie probe returned an unknown result (exit $code)."
+          fi
+
+      - name: Show result
+        if: always()
+        run: |
+          if [ -f cookie_probe.json ]; then
+            echo "### Cookie health"
+            echo
+            echo '```json'
+            cat cookie_probe.json
+            echo '```'
+            {
+              echo "### Cookie health"
+              echo
+              echo '```json'
+              cat cookie_probe.json
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cookie-probe
+          path: cookie_probe.json
+          retention-days: 14
