@@ -22,6 +22,26 @@ Releases are cut from `main` by the **Auto Release** workflow. Entries below
 
 ## [Unreleased]
 
+## [0.1.0a7] - 2026-10-29
+
+### Features
+
+- **catalog:** sync discovered WeCom API catalog (#20)
+- **ci:** open a tracking issue when the doc cookie goes stale
+- **ci:** add cookie health probe and self-report in watch run
+
+### Bug Fixes
+
+- **catalog:** report the sweep pause without naming a specific budget
+- **catalog:** bound the sweep by wall clock, not request count
+- **catalog:** make the catalog sweep resumable across runs
+
+### Documentation
+
+- correct the PEP 440 cut-over tag in CHANGELOG
+
+**Full Changelog**: https://github.com/ccclucky/wecom-cli/compare/v0.1.0a6...v0.1.0a7
+
 ## [0.1.0a6] - 2026-10-28
 
 ### Bug Fixes
