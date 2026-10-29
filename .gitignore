@@ -56,6 +56,9 @@ graphify-out/
 .claude/*.local.json
 CLAUDE.local.md
 
+# Crawl progress for the in-flight catalog sweep (persisted through Actions cache)
+specs/wecom/crawl_state.json
+
 # OS
 .DS_Store
 Thumbs.db

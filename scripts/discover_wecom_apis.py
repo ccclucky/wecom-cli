@@ -20,6 +20,7 @@ import time
 from collections import deque
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass
+from datetime import UTC, date, datetime, timedelta
 from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
@@ -209,6 +210,9 @@ class CrawlReport:
     failures: list[CrawlFailure]
     aborted: bool = False
     pending_pages: int = 0
+    partial: bool = False
+    budget_used: int = 0
+    pass_complete: bool = True
 
 
 @dataclass
@@ -630,23 +634,114 @@ def extract_operations(source_url: str, html: str) -> list[DiscoveredOperation]:
     ]
 
 
-def _load_empty_pages(path: Path | None) -> set[str]:
+# A page that produced no API is skipped on later sweeps, but not forever: the
+# documentation is edited in place, so an empty page can gain an endpoint later.
+EMPTY_PAGE_TTL_DAYS = 14
+
+
+def _load_empty_page_dates(path: Path | None) -> dict[str, str]:
     if not path or not path.exists():
-        return set()
+        return {}
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-        if isinstance(data, list):
-            return set(data)
-    except Exception as e:
+    except (OSError, json.JSONDecodeError) as e:
         logger.warning(f"Failed to load empty pages cache: {e}")
-    return set()
+        return {}
+    if isinstance(data, list):
+        # Legacy format: a plain list with no timestamps.
+        return {str(url): "" for url in data}
+    if isinstance(data, dict):
+        return {str(url): str(checked) for url, checked in data.items()}
+    return {}
 
 
-def _save_empty_pages(path: Path | None, empty_set: set[str]) -> None:
+def _load_empty_pages(path: Path | None) -> set[str]:
+    """URLs that produced no API recently enough to still be worth skipping."""
+    cutoff = datetime.now(UTC).date() - timedelta(days=EMPTY_PAGE_TTL_DAYS)
+    fresh: set[str] = set()
+    for url, checked in _load_empty_page_dates(path).items():
+        if not checked:
+            fresh.add(url)
+            continue
+        try:
+            if date.fromisoformat(checked) >= cutoff:
+                fresh.add(url)
+        except ValueError:
+            fresh.add(url)
+    return fresh
+
+
+def _save_empty_pages(path: Path | None, empty: dict[str, str] | set[str]) -> None:
+    if not path:
+        return
+    today = datetime.now(UTC).date().isoformat()
+    if isinstance(empty, dict):
+        payload = {url: empty[url] or today for url in sorted(empty)}
+    else:
+        payload = {url: today for url in sorted(empty)}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+CRAWL_STATE_VERSION = 1
+
+
+def _operation_to_payload(op: DiscoveredOperation) -> dict[str, object]:
+    return asdict(op)
+
+
+def _operation_from_payload(payload: dict[str, object]) -> DiscoveredOperation:
+    def _fields(raw: object) -> tuple[DiscoveredField, ...]:
+        return tuple(DiscoveredField(**item) for item in raw or ())  # type: ignore[arg-type]
+
+    return DiscoveredOperation(
+        endpoint=str(payload["endpoint"]),
+        method=payload.get("method"),  # type: ignore[arg-type]
+        source_url=str(payload.get("source_url", "")),
+        title=payload.get("title"),  # type: ignore[arg-type]
+        request_url=payload.get("request_url"),  # type: ignore[arg-type]
+        request_params=_fields(payload.get("request_params")),
+        response_params=_fields(payload.get("response_params")),
+        request_example_text=payload.get("request_example_text"),  # type: ignore[arg-type]
+        request_example_json=payload.get("request_example_json"),
+        response_example_text=payload.get("response_example_text"),  # type: ignore[arg-type]
+        response_example_json=payload.get("response_example_json"),
+        permissions=tuple(payload.get("permissions") or ()),  # type: ignore[arg-type]
+        notes=tuple(payload.get("notes") or ()),  # type: ignore[arg-type]
+    )
+
+
+def _new_crawl_state() -> dict[str, object]:
+    return {
+        "version": CRAWL_STATE_VERSION,
+        "pages": {},
+        "pass_started_at": datetime.now(UTC).isoformat(timespec="seconds"),
+    }
+
+
+def load_crawl_state(path: Path | None) -> dict[str, object]:
+    """Load the progress of the current sweep, or start a fresh one."""
+    if not path or not path.exists():
+        return _new_crawl_state()
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning(f"Unreadable crawl state ({exc}); starting a fresh sweep")
+        return _new_crawl_state()
+    if data.get("version") != CRAWL_STATE_VERSION:
+        logger.warning("Crawl state version changed; starting a fresh sweep")
+        return _new_crawl_state()
+    data.setdefault("pages", {})
+    data.setdefault("pass_started_at", datetime.now(UTC).isoformat(timespec="seconds"))
+    return data
+
+
+def save_crawl_state(path: Path | None, state: dict[str, object]) -> None:
     if not path:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(sorted(empty_set), ensure_ascii=False, indent=2), encoding="utf-8")
+    state["updated_at"] = datetime.now(UTC).isoformat(timespec="seconds")
+    path.write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
 
 
 def crawl(
@@ -658,43 +753,67 @@ def crawl(
     empty_pages_file: Path | None = None,
     cookie: str | None = None,
     block_cooldown: float = BLOCK_COOLDOWN_BASE,
+    crawl_state_file: Path | None = None,
+    request_budget: int | None = None,
+    state_save_interval: int = 25,
 ) -> CrawlReport:
     seeds = list(seed_urls)
     seed_set: set[str] = set(seeds)
-    q: deque[str] = deque(seeds)
-    seen: set[str] = set()
-    discovered: dict[tuple[str, str | None], DiscoveredOperation] = {}
-    failures: list[CrawlFailure] = []
-    new_empty: set[str] = set()
 
     known_empty = _load_empty_pages(empty_pages_file)
-    skipped_empty = 0
+    state = load_crawl_state(crawl_state_file) if crawl_state_file else None
+    pages: dict[str, dict[str, object]] = dict(state.get("pages", {})) if state else {}  # type: ignore[arg-type]
+
+    # A page known to be empty needs no request at all, in this sweep or any later one.
+    for url in known_empty:
+        pages.setdefault(url, {"empty": True, "operations": []})
+
+    discovered: dict[tuple[str, str | None], DiscoveredOperation] = {}
+    for record in pages.values():
+        for payload in record.get("operations", []):  # type: ignore[union-attr]
+            op = _operation_from_payload(payload)  # type: ignore[arg-type]
+            discovered[(op.endpoint, op.method)] = op
+
+    q: deque[str] = deque(seeds)
+    seen: set[str] = set()
+    failures: list[CrawlFailure] = []
+    new_empty: set[str] = set()
     blocked_count = 0
     consecutive_blocks = 0
     aborted = False
+    partial = False
+    used = 0
 
     total_expected = min(len(seeds), max_pages) if seed_only else max_pages
     logger.info(
-        f"Starting crawl: {len(seeds)} seeds, max_pages={max_pages}, "
-        f"seed_only={seed_only}, cached_empty={len(known_empty)}"
+        f"Starting crawl: {len(seeds)} seeds, {len(pages)} already resolved, "
+        f"max_pages={max_pages}, seed_only={seed_only}, "
+        f"cached_empty={len(known_empty)}, budget={request_budget if request_budget else 'unlimited'}"
     )
 
     while q and len(seen) < max_pages:
         url = q.popleft()
         if url in seen:
             continue
-
-        if url in known_empty:
-            logger.debug(f"Skipping cached-empty: {url}")
-            seen.add(url)
-            skipped_empty += 1
-            continue
-
         seen.add(url)
 
-        curr_idx = len(seen) + skipped_empty
-        percent = (curr_idx / total_expected) * 100 if total_expected > 0 else 0
-        progress_prefix = f"[{curr_idx}/{total_expected}] {percent:5.1f}%"
+        if url in pages:
+            logger.debug(f"Already resolved in this sweep: {url}")
+            continue
+
+        # Stop before the anti-bot quota, not after it. The page goes back on the
+        # queue so the next run picks it up instead of redoing the whole sweep.
+        if request_budget is not None and used >= request_budget:
+            q.appendleft(url)
+            seen.discard(url)
+            partial = True
+            logger.info(f"Request budget of {request_budget} spent; pausing the sweep here")
+            break
+
+        used += 1
+        resolved = len(pages)
+        percent = (resolved / total_expected) * 100 if total_expected > 0 else 0
+        progress_prefix = f"[{resolved}/{total_expected}] {percent:5.1f}%"
 
         logger.debug(f"Fetching: {url}")
         time.sleep(random.uniform(delay_min, delay_max))
@@ -703,6 +822,10 @@ def crawl(
         except Exception as exc:
             logger.error(f"{progress_prefix} | FAILED | {url} | Error: {exc}")
             failures.append(CrawlFailure(url=url, error=str(exc)))
+            # Retries are already exhausted. Record the page so one dead URL
+            # cannot stall the whole sweep; it is not cached as empty, so the
+            # next sweep tries again.
+            pages[url] = {"empty": False, "operations": [], "failed": True}
             consecutive_blocks = 0
             continue
 
@@ -728,11 +851,16 @@ def crawl(
             if cooldown > 0:
                 logger.info(f"Cooling down {cooldown:.0f}s before next request")
                 time.sleep(cooldown)
+            # The page stays unresolved, so a later sweep retries it.
             continue
 
         consecutive_blocks = 0
 
         ops = extract_operations(url, html)
+        pages[url] = {
+            "empty": not ops,
+            "operations": [_operation_to_payload(op) for op in ops],
+        }
         if ops:
             for op in ops:
                 key = (op.endpoint, op.method)
@@ -742,6 +870,11 @@ def crawl(
         else:
             logger.info(f"{progress_prefix} | EMPTY    | No API found on page")
             new_empty.add(url)
+
+        if crawl_state_file and used % state_save_interval == 0:
+            state = state or _new_crawl_state()
+            state["pages"] = pages
+            save_crawl_state(crawl_state_file, state)
 
         if not seed_only:
             for child in extract_links(url, html):
@@ -753,12 +886,32 @@ def crawl(
                     q.append(child)
 
     if new_empty and empty_pages_file:
-        merged = known_empty | new_empty
+        existing = _load_empty_page_dates(empty_pages_file)
+        today = datetime.now(UTC).date().isoformat()
+        merged: dict[str, str] = {url: existing.get(url) or today for url in known_empty}
+        merged.update({url: today for url in new_empty})
         _save_empty_pages(empty_pages_file, merged)
         logger.info(f"Cached {len(new_empty)} new empty pages ({len(merged)} total)")
 
     if blocked_count:
         logger.warning(f"Crawl blocked {blocked_count} times by anti-bot protection")
+
+    pending = [u for u in seeds if u not in pages]
+    pass_complete = not pending and not aborted and not partial
+
+    if crawl_state_file:
+        if pass_complete:
+            # The sweep is consumed: the next run starts a fresh one, so newly
+            # added documentation pages are picked up rather than skipped.
+            state = _new_crawl_state()
+            state["last_completed_at"] = datetime.now(UTC).isoformat(timespec="seconds")
+            state["pages"] = {}
+        else:
+            state = state or _new_crawl_state()
+            state["pages"] = pages
+            state["pending"] = pending
+            state["seed_count"] = len(seeds)
+        save_crawl_state(crawl_state_file, state)
 
     return CrawlReport(
         operations=sorted(discovered.values(), key=lambda x: (x.endpoint, x.method or "")),
@@ -767,7 +920,10 @@ def crawl(
         blocked_pages=blocked_count,
         failures=failures,
         aborted=aborted,
-        pending_pages=len(q),
+        pending_pages=len(pending),
+        partial=partial,
+        budget_used=used,
+        pass_complete=pass_complete,
     )
 
 
@@ -790,6 +946,18 @@ def main() -> int:
         help="Cache file for known-empty pages (skips on re-crawl)",
     )
     parser.add_argument("--cookie", default=None, help="Cookie header to send with each request (bypasses CAPTCHA)")
+    parser.add_argument(
+        "--crawl-state-file",
+        type=Path,
+        default=Path("specs/wecom/crawl_state.json"),
+        help="Resumable sweep progress; lets a crawl span several runs",
+    )
+    parser.add_argument(
+        "--request-budget",
+        type=int,
+        default=None,
+        help="Maximum pages to fetch in this run; the sweep resumes on the next one",
+    )
     parser.add_argument(
         "--stats-output",
         type=Path,
@@ -818,11 +986,13 @@ def main() -> int:
         delay_max=args.delay_max,
         empty_pages_file=args.empty_pages_file,
         cookie=args.cookie,
+        crawl_state_file=args.crawl_state_file,
+        request_budget=args.request_budget,
     )
     duration = time.time() - start_time
 
     payload = {
-        "snapshot_date": "2026-04-23",
+        "snapshot_date": datetime.now(UTC).date().isoformat(),
         "source": ALLOWED_HOST,
         "seed_urls": seeds,
         "crawl": {
@@ -830,7 +1000,10 @@ def main() -> int:
             "failed_pages": crawl_report.failed_pages,
             "blocked_pages": crawl_report.blocked_pages,
             "aborted": crawl_report.aborted,
+            "partial": crawl_report.partial,
+            "pass_complete": crawl_report.pass_complete,
             "pending_pages": crawl_report.pending_pages,
+            "budget_used": crawl_report.budget_used,
             "failures": [asdict(item) for item in crawl_report.failures],
             "duration_seconds": round(duration, 2),
         },
@@ -839,13 +1012,21 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    pages_total = len(seeds)
+    pages_done = pages_total - crawl_report.pending_pages
     stats = {
         "operations_found": len(crawl_report.operations),
         "visited_pages": crawl_report.visited_pages,
         "failed_pages": crawl_report.failed_pages,
         "blocked_pages": crawl_report.blocked_pages,
         "aborted": crawl_report.aborted,
+        "partial": crawl_report.partial,
+        "pass_complete": crawl_report.pass_complete,
         "pending_pages": crawl_report.pending_pages,
+        "pages_done": pages_done,
+        "pages_total": pages_total,
+        "progress_pct": round(pages_done / pages_total * 100, 1) if pages_total else 0.0,
+        "budget_used": crawl_report.budget_used,
         "duration_seconds": round(duration, 2),
     }
     if args.stats_output:
@@ -858,7 +1039,8 @@ def main() -> int:
         "Summary: "
         f"{len(crawl_report.operations)} operations found "
         f"(visited={crawl_report.visited_pages}, failed={crawl_report.failed_pages}, "
-        f"blocked={crawl_report.blocked_pages}, aborted={crawl_report.aborted}) "
+        f"blocked={crawl_report.blocked_pages}, aborted={crawl_report.aborted}, "
+        f"sweep={pages_done}/{pages_total}) "
     )
     logger.info(f"Output saved to: {args.output}")
     if args.log_file:
@@ -868,6 +1050,17 @@ def main() -> int:
         logger.error(
             "Discovery was interrupted by anti-bot protection; the catalog is INCOMPLETE. "
             "Refusing to report success so downstream diffing cannot treat missing pages as removals."
+        )
+        return 2
+    if crawl_report.partial:
+        logger.info(
+            f"Sweep paused at the request budget with {crawl_report.pending_pages} pages left. "
+            "Progress is saved; the next run continues from here."
+        )
+        return 4
+    if not crawl_report.pass_complete:
+        logger.error(
+            f"Sweep ended with {crawl_report.pending_pages} pages unresolved; refusing to diff an incomplete snapshot."
         )
         return 2
     return 0

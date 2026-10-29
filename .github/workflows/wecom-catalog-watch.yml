@@ -37,14 +37,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff pytest
 
-      - name: Restore empty pages cache
-        uses: actions/cache@v4
+      # A full sweep needs ~840 requests, but the doc site cuts the runner off
+      # after roughly 350. Both files therefore have to survive a run that ends
+      # early: empty_pages.json remembers pages that never yield an API, and
+      # crawl_state.json remembers where the current sweep stopped.
+      - name: Restore crawl state
+        uses: actions/cache/restore@v4
         with:
-          path: specs/wecom/empty_pages.json
-          key: wecom-empty-pages-${{ github.run_id }}
-          restore-keys: wecom-empty-pages-
+          path: |
+            specs/wecom/crawl_state.json
+            specs/wecom/empty_pages.json
+          key: wecom-crawl-state-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: wecom-crawl-state-
 
       - name: Discover latest API catalog
+        id: discover
         env:
           WECOM_DOC_COOKIE: ${{ secrets.WECOM_DOC_COOKIE }}
         run: |
@@ -55,21 +62,61 @@ jobs:
           python scripts/update_menu_tree.py \
             --output specs/wecom/menu_tree.json \
             "${COOKIE_ARG[@]}"
+          set +e
           python scripts/discover_wecom_apis.py \
             --seed-file specs/wecom/seeds.txt \
             --menu-tree-file specs/wecom/menu_tree.json \
             --empty-pages-file specs/wecom/empty_pages.json \
+            --crawl-state-file specs/wecom/crawl_state.json \
+            --request-budget 300 \
             --max-pages 1500 \
             --delay-min 3.0 \
             --delay-max 7.0 \
             --output artifacts/catalog.discovery.yaml \
             --stats-output artifacts/crawl-stats.json \
             "${COOKIE_ARG[@]}"
+          code=$?
+          set -e
+          if [ "$code" -eq 4 ]; then
+            echo "partial=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Sweep paused at the request budget; progress is saved and the next run continues."
+            exit 0
+          fi
+          exit "$code"
+
+      - name: Persist crawl state
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            specs/wecom/crawl_state.json
+            specs/wecom/empty_pages.json
+          key: wecom-crawl-state-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Report sweep progress
+        if: steps.discover.outputs.partial == 'true'
+        run: |
+          SUMMARY=$(python - <<'PY'
+          import json
+          from pathlib import Path
+
+          stats = json.loads(Path("artifacts/crawl-stats.json").read_text(encoding="utf-8"))
+          print(
+              f"Sweep progress: **{stats['pages_done']}/{stats['pages_total']}** pages "
+              f"({stats['progress_pct']}%), {stats['pending_pages']} left, "
+              f"{stats['operations_found']} operations collected so far."
+          )
+          PY
+          )
+          echo "$SUMMARY"
+          echo "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
 
       # A crawl cut short by anti-bot protection produces a snapshot that looks
       # like "230 APIs were deleted". Fail here so the diff never runs against
       # a partial catalog.
       - name: Verify crawl completeness
+        if: steps.discover.outputs.partial != 'true'
         run: |
           python - <<'PY'
           import json
@@ -88,6 +135,7 @@ jobs:
 
       - name: Build diff report
         id: diff
+        if: steps.discover.outputs.partial != 'true'
         run: |
           set +e
           python scripts/catalog_diff_report.py \

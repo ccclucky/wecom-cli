@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+from datetime import date, timedelta
 from unittest.mock import patch
 
 from scripts.discover_wecom_apis import (
@@ -247,8 +249,21 @@ def test_load_empty_pages_nonexistent_file(tmp_path):
 def test_save_empty_pages_writes_sorted(tmp_path):
     cache_file = tmp_path / "empty.json"
     _save_empty_pages(cache_file, {"https://example.com/b", "https://example.com/a"})
-    data = cache_file.read_text(encoding="utf-8")
-    assert data == '[\n  "https://example.com/a",\n  "https://example.com/b"\n]'
+    payload = json.loads(cache_file.read_text(encoding="utf-8"))
+    assert list(payload) == ["https://example.com/a", "https://example.com/b"]
+    assert all(payload.values())
+
+
+def test_load_empty_pages_expires_stale_entries(tmp_path):
+    """An empty page must be re-checked eventually: docs are edited in place."""
+    cache_file = tmp_path / "empty.json"
+    stale = (date.today() - timedelta(days=30)).isoformat()
+    fresh = (date.today() - timedelta(days=1)).isoformat()
+    cache_file.write_text(
+        json.dumps({"https://example.com/stale": stale, "https://example.com/fresh": fresh}),
+        encoding="utf-8",
+    )
+    assert _load_empty_pages(cache_file) == {"https://example.com/fresh"}
 
 
 def test_save_empty_pages_none_is_noop():
@@ -310,6 +325,55 @@ def test_crawl_empty_cache_merges_with_existing(tmp_path):
     assert EMPTY_CACHE_SEED in saved
     assert "https://developer.work.weixin.qq.com/document/path/99999" in saved
     assert len(saved) == 2
+
+
+def test_crawl_pauses_at_request_budget_and_resumes(tmp_path):
+    """A sweep too large for one run must continue where the previous one stopped."""
+    state_file = tmp_path / "crawl_state.json"
+    seeds = [f"https://developer.work.weixin.qq.com/document/path/9300{i}" for i in range(6)]
+
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=SAMPLE_HTML_EMPTY) as mock_fetch:
+        first = crawl(
+            seeds,
+            20,
+            seed_only=True,
+            delay_min=0,
+            delay_max=0,
+            crawl_state_file=state_file,
+            request_budget=2,
+        )
+        assert first.partial is True
+        assert first.pass_complete is False
+        assert first.budget_used == 2
+        assert first.pending_pages == 4
+        assert mock_fetch.call_count == 2
+
+        second = crawl(
+            seeds,
+            20,
+            seed_only=True,
+            delay_min=0,
+            delay_max=0,
+            crawl_state_file=state_file,
+            request_budget=10,
+        )
+        # Only the four unresolved pages are fetched; the first two are not redone.
+        assert mock_fetch.call_count == 6
+        assert second.pass_complete is True
+        assert second.pending_pages == 0
+
+        # A finished sweep is consumed, so the next run starts a fresh one.
+        third = crawl(
+            seeds,
+            20,
+            seed_only=True,
+            delay_min=0,
+            delay_max=0,
+            crawl_state_file=state_file,
+            request_budget=1,
+        )
+        assert third.partial is True
+        assert mock_fetch.call_count == 7
 
 
 def test_strip_tree_prefix_removes_box_drawing_chars():
