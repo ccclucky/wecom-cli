@@ -60,6 +60,72 @@ jobs:
             } >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      # A dead cookie is invisible in the run's own outcome: the sweep still
+      # succeeds anonymously, just slower. Turn the probe result into a
+      # tracking issue so staleness has a durable record, and auto-close it
+      # once the secret is refreshed and the probe turns valid again.
+      - name: Track stale cookie in issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('cookie_probe.json')) {
+              core.warning('No cookie probe result was produced; skipping cookie issue tracking.');
+              return;
+            }
+            const probe = JSON.parse(fs.readFileSync('cookie_probe.json', 'utf8'));
+            const healthy = probe.status === 'valid' && probe.is_login === true;
+            const { owner, repo } = context.repo;
+            const title = '[WeCom Catalog Watch] WECOM_DOC_COOKIE needs refresh';
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              labels: 'wecom,catalog-watch',
+              per_page: 100,
+            });
+            const existing = issues.find((i) => i.title === title);
+            if (healthy) {
+              if (existing) {
+                await github.rest.issues.update({ owner, repo, issue_number: existing.number, state: 'closed' });
+                core.info(`Cookie is valid again; closed issue #${existing.number}`);
+              }
+              return;
+            }
+            const body = [
+              '`WECOM_DOC_COOKIE` no longer authenticates against the WeCom doc site.',
+              'Without it the crawl runs unauthenticated and gets cut off after ~25 minutes,',
+              'so a full sweep takes several scheduled runs instead of one.',
+              '',
+              'Probe result:',
+              '',
+              '```json',
+              JSON.stringify(probe, null, 2),
+              '```',
+              '',
+              'Fix: sign in to developer.work.weixin.qq.com, copy the full Cookie header, then run:',
+              '',
+              '```',
+              'gh secret set WECOM_DOC_COOKIE',
+              '```',
+              '',
+              'This issue closes automatically on the next watch run whose probe reports a valid cookie.',
+            ].join('\n');
+            if (existing) {
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, body });
+              core.info(`Updated issue #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: ['wecom', 'catalog-watch'],
+              });
+              core.info(`Created issue #${created.data.number}`);
+            }
+
       # The doc site stops serving a runner after roughly 25 minutes of
       # crawling regardless of how many requests it made: runs that sent 354
       # requests and runs that sent 198 were cut off at the same wall clock
