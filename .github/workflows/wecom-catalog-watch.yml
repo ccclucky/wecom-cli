@@ -37,9 +37,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff pytest
 
-      # A full sweep needs ~840 requests, but the doc site cuts the runner off
-      # after roughly 350. Both files therefore have to survive a run that ends
-      # early: empty_pages.json remembers pages that never yield an API, and
+      # The doc site stops serving a runner after roughly 25 minutes of
+      # crawling regardless of how many requests it made: runs that sent 354
+      # requests and runs that sent 198 were cut off at the same wall clock
+      # point. Both files therefore have to survive a run that ends early:
+      # empty_pages.json remembers pages that never yield an API, and
       # crawl_state.json remembers where the current sweep stopped.
       - name: Restore crawl state
         uses: actions/cache/restore@v4
@@ -68,10 +70,11 @@ jobs:
             --menu-tree-file specs/wecom/menu_tree.json \
             --empty-pages-file specs/wecom/empty_pages.json \
             --crawl-state-file specs/wecom/crawl_state.json \
-            --request-budget 300 \
+            --time-budget 1080 \
+            --request-budget 500 \
             --max-pages 1500 \
-            --delay-min 3.0 \
-            --delay-max 7.0 \
+            --delay-min 1.0 \
+            --delay-max 2.0 \
             --output artifacts/catalog.discovery.yaml \
             --stats-output artifacts/crawl-stats.json \
             "${COOKIE_ARG[@]}"
@@ -79,7 +82,7 @@ jobs:
           set -e
           if [ "$code" -eq 4 ]; then
             echo "partial=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::Sweep paused at the request budget; progress is saved and the next run continues."
+            echo "::notice::Sweep paused before the site's cutoff; progress is saved and the next run continues."
             exit 0
           fi
           exit "$code"

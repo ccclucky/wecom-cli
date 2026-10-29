@@ -213,6 +213,7 @@ class CrawlReport:
     partial: bool = False
     budget_used: int = 0
     pass_complete: bool = True
+    elapsed_seconds: float = 0.0
 
 
 @dataclass
@@ -755,6 +756,7 @@ def crawl(
     block_cooldown: float = BLOCK_COOLDOWN_BASE,
     crawl_state_file: Path | None = None,
     request_budget: int | None = None,
+    time_budget: float | None = None,
     state_save_interval: int = 25,
 ) -> CrawlReport:
     seeds = list(seed_urls)
@@ -783,12 +785,13 @@ def crawl(
     aborted = False
     partial = False
     used = 0
+    started = time.monotonic()
 
     total_expected = min(len(seeds), max_pages) if seed_only else max_pages
     logger.info(
         f"Starting crawl: {len(seeds)} seeds, {len(pages)} already resolved, "
-        f"max_pages={max_pages}, seed_only={seed_only}, "
-        f"cached_empty={len(known_empty)}, budget={request_budget if request_budget else 'unlimited'}"
+        f"max_pages={max_pages}, seed_only={seed_only}, cached_empty={len(known_empty)}, "
+        f"request_budget={request_budget or 'unlimited'}, time_budget={time_budget or 'unlimited'}s"
     )
 
     while q and len(seen) < max_pages:
@@ -801,8 +804,19 @@ def crawl(
             logger.debug(f"Already resolved in this sweep: {url}")
             continue
 
-        # Stop before the anti-bot quota, not after it. The page goes back on the
-        # queue so the next run picks it up instead of redoing the whole sweep.
+        # The doc site stops serving a runner after roughly 25 minutes of
+        # crawling, regardless of how many requests it made, so the wall is a
+        # session lifetime rather than a request quota. Stop short of it and let
+        # the next run continue; the page goes back on the queue so nothing is
+        # redone.
+        elapsed = time.monotonic() - started
+        if time_budget is not None and elapsed >= time_budget:
+            q.appendleft(url)
+            seen.discard(url)
+            partial = True
+            logger.info(f"Time budget of {time_budget:.0f}s reached after {used} requests; pausing the sweep")
+            break
+
         if request_budget is not None and used >= request_budget:
             q.appendleft(url)
             seen.discard(url)
@@ -843,7 +857,7 @@ def crawl(
             if consecutive_blocks >= CAPTCHA_CONSECUTIVE_LIMIT:
                 logger.error(
                     f"Aborting: {consecutive_blocks} consecutive CAPTCHA blocks. "
-                    "Server is rate-limiting. Increase --delay-min/--delay-max or wait and retry."
+                    "The site stopped serving this runner; the next run continues from here."
                 )
                 aborted = True
                 break
@@ -924,6 +938,7 @@ def crawl(
         partial=partial,
         budget_used=used,
         pass_complete=pass_complete,
+        elapsed_seconds=round(time.monotonic() - started, 1),
     )
 
 
@@ -959,6 +974,12 @@ def main() -> int:
         help="Maximum pages to fetch in this run; the sweep resumes on the next one",
     )
     parser.add_argument(
+        "--time-budget",
+        type=float,
+        default=None,
+        help="Maximum seconds to spend fetching in this run; the sweep resumes on the next one",
+    )
+    parser.add_argument(
         "--stats-output",
         type=Path,
         default=None,
@@ -988,6 +1009,7 @@ def main() -> int:
         cookie=args.cookie,
         crawl_state_file=args.crawl_state_file,
         request_budget=args.request_budget,
+        time_budget=args.time_budget,
     )
     duration = time.time() - start_time
 
@@ -1027,6 +1049,7 @@ def main() -> int:
         "pages_total": pages_total,
         "progress_pct": round(pages_done / pages_total * 100, 1) if pages_total else 0.0,
         "budget_used": crawl_report.budget_used,
+        "elapsed_seconds": crawl_report.elapsed_seconds,
         "duration_seconds": round(duration, 2),
     }
     if args.stats_output:

@@ -327,6 +327,27 @@ def test_crawl_empty_cache_merges_with_existing(tmp_path):
     assert len(saved) == 2
 
 
+def test_crawl_pauses_when_time_budget_is_spent(tmp_path):
+    """The doc site cuts a runner off on wall clock, not on request count."""
+    state_file = tmp_path / "crawl_state.json"
+    seeds = [f"https://developer.work.weixin.qq.com/document/path/9400{i}" for i in range(3)]
+
+    with patch("scripts.discover_wecom_apis.fetch_html_with_retry", return_value=SAMPLE_HTML_EMPTY) as mock_fetch:
+        report = crawl(
+            seeds,
+            10,
+            seed_only=True,
+            delay_min=0,
+            delay_max=0,
+            crawl_state_file=state_file,
+            time_budget=0,
+        )
+    assert report.partial is True
+    assert report.pass_complete is False
+    assert report.pending_pages == 3
+    assert mock_fetch.call_count == 0
+
+
 def test_crawl_pauses_at_request_budget_and_resumes(tmp_path):
     """A sweep too large for one run must continue where the previous one stopped."""
     state_file = tmp_path / "crawl_state.json"
