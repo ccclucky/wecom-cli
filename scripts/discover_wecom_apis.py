@@ -1077,7 +1077,7 @@ def main() -> int:
         return 2
     if crawl_report.partial:
         logger.info(
-            f"Sweep paused at the request budget with {crawl_report.pending_pages} pages left. "
+            f"Sweep paused with {crawl_report.pending_pages} pages left. "
             "Progress is saved; the next run continues from here."
         )
         return 4
