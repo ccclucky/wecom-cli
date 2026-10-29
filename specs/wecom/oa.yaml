@@ -713,13 +713,13 @@
             "type": null
           },
           {
-            "name": "text_1",
+            "name": "text",
             "required": true,
             "description": "控件名称。需满足以下条件：1-控件名称不得和现有控件名称重复；2-长度不得超过40个字符。3-Attendance-外出/出差/加班控件title固定为外出/出差/加班，暂不支持自定义",
             "type": null
           },
           {
-            "name": "lang_1",
+            "name": "lang",
             "required": true,
             "description": "显示语言，中文：zh_CN（注意不是zh-CN）",
             "type": null
@@ -731,13 +731,13 @@
             "type": null
           },
           {
-            "name": "text_2",
+            "name": "text",
             "required": false,
             "description": "控件说明。需满足以下条件：长度不得超过80个字符。",
             "type": null
           },
           {
-            "name": "lang_2",
+            "name": "lang",
             "required": false,
             "description": "显示语言，中文：zh_CN（注意不是zh-CN）；若text填写，则该项为必填",
             "type": null
@@ -5029,8 +5029,14 @@
           {
             "name": "schedule_list_attendees_response_status",
             "required": null,
-            "description": "日程参与者的接受状态。 0 - 未处理 1 - 待定 2 - 全部接受 3 - 仅接受一次 4 - 拒绝",
+            "description": "日程参与者的接受状态。 0 - 未处理 1 - 待定 2 - 全部接受 3 - 接受单次 4 - 拒绝 5 - 接受本次及未来 6 - 待定单次 7 - 待定本次及未来 8 - 拒绝单次 9 - 拒绝本次及未来",
             "type": "uint32"
+          },
+          {
+            "name": "schedule_list_attendees_event_time",
+            "required": null,
+            "description": "对该时间点日程做出的决策，配合response_status使用",
+            "type": "uint64"
           },
           {
             "name": "schedule_list_summary",
@@ -5171,7 +5177,7 @@
             "17c7d2bd9f20d652840f72f59e796AAA"
           ]
         },
-        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"schedule_list\": [{\n\t\t\"schedule_id\": \"17c7d2bd9f20d652840f72f59e796AAA\",\n\t\t\"admins\":[\n\t\t\t\t\"admin1\",\n\t\t\t\t\"admin2\"\n\t\t],\n\t\t\"attendees\": [{\n\t\t\t\"userid\": \"userid2\",\n\t\t\t\"response_status\": 1\n\t\t}],\n\t\t\"summary\": \"test_summary\",\n\t\t\"description\": \"test_content\",\n\t\t\"reminders\": {\n\t\t\t\"is_remind\": 1,\n\t\t\t\"is_repeat\": 1,\n\t\t\t\"remind_before_event_secs\": 3600,\n\t\t\t\"remind_time_diffs\": [-3600],\n\t\t\t\"repeat_type\": 7,\n\t\t\t\"repeat_until\": 1606976813,\n\t\t\t\"is_custom_repeat\": 1,\n\t\t\t\"repeat_interval\": 1,\n\t\t\t\"repeat_day_of_week\": [3, 7],\n\t\t\t\"repeat_day_of_month\": [10, 21],\n\t\t\t\"timezone\": 8,\n\t\t\t\"exclude_time_list\": [{\n\t\t\t\t\"start_time\": 1571361000\n\t\t\t}]\n\t\t},\n\t\t\"location\": \"test_place\",\n\t\t\"cal_id\": \"wcjgewCwAAqeJcPI1d8Pwbjt7nttzAAA\",\n\t\t\"start_time\": 1571274600,\n\t\t\"end_time\": 1571579410,\n\t\t\"status\": 1,\n\t\t\"is_whole_day\":1\n\t}]\n}",
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"schedule_list\": [{\n\t\t\"schedule_id\": \"17c7d2bd9f20d652840f72f59e796AAA\",\n\t\t\"admins\":[\n\t\t\t\t\"admin1\",\n\t\t\t\t\"admin2\"\n\t\t],\n\t\t\"attendees\": [{\n\t\t\t\"userid\": \"userid2\",\n\t\t\t\"response_status\": 1,\n\t\t\t\"event_time\": 1571274600\n\t\t}],\n\t\t\"summary\": \"test_summary\",\n\t\t\"description\": \"test_content\",\n\t\t\"reminders\": {\n\t\t\t\"is_remind\": 1,\n\t\t\t\"is_repeat\": 1,\n\t\t\t\"remind_before_event_secs\": 3600,\n\t\t\t\"remind_time_diffs\": [-3600],\n\t\t\t\"repeat_type\": 7,\n\t\t\t\"repeat_until\": 1606976813,\n\t\t\t\"is_custom_repeat\": 1,\n\t\t\t\"repeat_interval\": 1,\n\t\t\t\"repeat_day_of_week\": [3, 7],\n\t\t\t\"repeat_day_of_month\": [10, 21],\n\t\t\t\"timezone\": 8,\n\t\t\t\"exclude_time_list\": [{\n\t\t\t\t\"start_time\": 1571361000\n\t\t\t}]\n\t\t},\n\t\t\"location\": \"test_place\",\n\t\t\"cal_id\": \"wcjgewCwAAqeJcPI1d8Pwbjt7nttzAAA\",\n\t\t\"start_time\": 1571274600,\n\t\t\"end_time\": 1571579410,\n\t\t\"status\": 1,\n\t\t\"is_whole_day\":1\n\t}]\n}",
         "response_example_json": {
           "errcode": 0,
           "errmsg": "ok",
@@ -5185,7 +5191,8 @@
               "attendees": [
                 {
                   "userid": "userid2",
-                  "response_status": 1
+                  "response_status": 1,
+                  "event_time": 1571274600
                 }
               ],
               "summary": "test_summary",
@@ -6287,7 +6294,7 @@
           {
             "name": "access_token",
             "required": true,
-            "description": "调用接口凭证。必须使用第三方应用accesstoken获取，获取方式参考：文档-获取access_token",
+            "description": "调用接口凭证",
             "type": "string"
           },
           {

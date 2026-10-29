@@ -1,0 +1,174 @@
+{
+  "domain": "docdata",
+  "operations": [
+    {
+      "name": "get_auth_user_list",
+      "cli_action": "get-auth-user-list",
+      "summary": "获取文件内容存档授权成员列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/docdata/get_auth_user_list",
+      "args": [
+        {
+          "name": "cursor",
+          "flag": "--cursor",
+          "type": "str",
+          "help": "上一次调用时返回的next_cursor，第一次拉取可以不填"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "本次查询返回的最大条数。不超过1000，默认200条"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "cursor": {
+            "from_arg": "cursor"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom docdata get-auth-user-list [--cursor <cursor>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "auth_user_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "userid": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userid"
+                ]
+              },
+              "description": "生效成员列表，详见AuthUser"
+            },
+            "next_cursor": {
+              "type": "string",
+              "description": "下一次查询时使用，将值填到请求包的cursor字段中"
+            },
+            "has_more": {
+              "type": "boolean",
+              "description": "是否还有更多未拉取的数据，1：是；0：否"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "auth_user_list",
+            "next_cursor",
+            "has_more"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取文件内容存档授权成员列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101873",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/docdata/get_auth_user_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "String"
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "上一次调用时返回的next_cursor，第一次拉取可以不填",
+            "type": "String"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "本次查询返回的最大条数。不超过1000，默认200条",
+            "type": "Interger"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "Integer"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "String"
+          },
+          {
+            "name": "auth_user_list",
+            "required": null,
+            "description": "生效成员列表，详见AuthUser",
+            "type": "Object数组"
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "下一次查询时使用，将值填到请求包的cursor字段中",
+            "type": "String"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有更多未拉取的数据，1：是；0：否",
+            "type": "Integer"
+          }
+        ],
+        "request_example_text": "{\n\t\"cursor\":\"JMgigeong\",\n\t\"limit\":2\n}",
+        "request_example_json": {
+          "cursor": "JMgigeong",
+          "limit": 2
+        },
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"auth_user_list\": [\n    {\n      \"userid\": \"woxxxjigegen\"\n    },\n    {\n      \"userid\": \"woaaaaaaaaaa\"\n    }\n  ],\n  \"next_cursor\": \"xjigeojgeigwj\",\n  \"has_more\": true\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "auth_user_list": [
+            {
+              "userid": "woxxxjigegen"
+            },
+            {
+              "userid": "woaaaaaaaaaa"
+            }
+          ],
+          "next_cursor": "xjigeojgeigwj",
+          "has_more": true
+        },
+        "permissions": [
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/docdata/get_auth_user_list?access_token=ACCESS_TOKEN",
+          "请求包体"
+        ],
+        "notes": [
+          "分析企业文档数据权限需要企业管理员二次授权\n企业或服务商需已灰度文件内容存档功能"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    }
+  ]
+}

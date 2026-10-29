@@ -394,6 +394,23 @@ def register_generated_commands(
         )
     table[('batch', 'syncuser')] = _handle_batch_syncuser
 
+    batch_openuserid_to_userid_parser = batch_sub.add_parser(
+        'openuserid-to-userid',
+        help='自建应用与智能机器人的对接',
+    )
+    batch_openuserid_to_userid_parser.add_argument(
+        '--open-userid-list',
+        type=str,
+        required=True,
+        help='企业主体下加密的userid列表，最多不超过1000个。',
+    )
+
+    def _handle_batch_openuserid_to_userid(a: argparse.Namespace) -> dict:
+        return client.batch_openuserid_to_userid(
+            open_userid_list=a.open_userid_list,
+        )
+    table[('batch', 'openuserid-to-userid')] = _handle_batch_openuserid_to_userid
+
     chatdata_parser = subparsers.add_parser(
         'chatdata',
         help='chatdata',
@@ -2209,6 +2226,34 @@ def register_generated_commands(
             limit=a.limit,
         )
     table[('dial', 'get-dial-record')] = _handle_dial_get_dial_record
+
+    docdata_parser = subparsers.add_parser(
+        'docdata',
+        help='docdata',
+    )
+    docdata_sub = docdata_parser.add_subparsers(dest='__action', required=True)
+
+    docdata_get_auth_user_list_parser = docdata_sub.add_parser(
+        'get-auth-user-list',
+        help='获取文件内容存档授权成员列表',
+    )
+    docdata_get_auth_user_list_parser.add_argument(
+        '--cursor',
+        type=str,
+        help='上一次调用时返回的next_cursor，第一次拉取可以不填',
+    )
+    docdata_get_auth_user_list_parser.add_argument(
+        '--limit',
+        type=str,
+        help='本次查询返回的最大条数。不超过1000，默认200条',
+    )
+
+    def _handle_docdata_get_auth_user_list(a: argparse.Namespace) -> dict:
+        return client.docdata_get_auth_user_list(
+            cursor=a.cursor,
+            limit=a.limit,
+        )
+    table[('docdata', 'get-auth-user-list')] = _handle_docdata_get_auth_user_list
 
     exmail_parser = subparsers.add_parser(
         'exmail',
@@ -8257,6 +8302,72 @@ def register_generated_commands(
         return client.ticket_get()
     table[('ticket', 'get')] = _handle_ticket_get
 
+    todo_parser = subparsers.add_parser(
+        'todo',
+        help='todo',
+    )
+    todo_sub = todo_parser.add_subparsers(dest='__action', required=True)
+
+    todo_get_parser = todo_sub.add_parser(
+        'get',
+        help='获取待办详情',
+    )
+    todo_get_parser.add_argument(
+        '--todo-id',
+        type=str,
+        required=True,
+        help='待办ID',
+    )
+
+    def _handle_todo_get(a: argparse.Namespace) -> dict:
+        return client.todo_get(
+            todo_id=a.todo_id,
+        )
+    table[('todo', 'get')] = _handle_todo_get
+
+    todo_update_parser = todo_sub.add_parser(
+        'update',
+        help='更新待办状态',
+    )
+    todo_update_parser.add_argument(
+        '--todo-id',
+        type=str,
+        required=True,
+        help='待办ID',
+    )
+    todo_update_parser.add_argument(
+        '--status',
+        type=str,
+        help='待办整体状态。 0 - 完成 1 - 进行中',
+    )
+    todo_update_parser.add_argument(
+        '--attendees',
+        type=str,
+        help='待办参与人列表，最多支持20个参与人。可不传或传空数组；不传或为空时不修改参与人列表',
+    )
+    todo_update_parser.add_argument(
+        '--attendees-userid',
+        type=str,
+        required=True,
+        help='待办参与人ID。当传入attendees时，该字段必填',
+    )
+    todo_update_parser.add_argument(
+        '--attendees-status',
+        type=str,
+        required=True,
+        help='参与人的待办状态。当传入attendees时，该字段必填。0 - 完成 1 - 进行中',
+    )
+
+    def _handle_todo_update(a: argparse.Namespace) -> dict:
+        return client.todo_update(
+            todo_id=a.todo_id,
+            status=a.status,
+            attendees=a.attendees,
+            attendees_userid=a.attendees_userid,
+            attendees_status=a.attendees_status,
+        )
+    table[('todo', 'update')] = _handle_todo_update
+
     unknown_parser = subparsers.add_parser(
         'unknown',
         help='unknown',
@@ -9801,6 +9912,10 @@ def register_generated_commands(
         type=str,
         help='过滤设置，不支持和sort一起使用',
     )
+    wedoc_smartsheet_get_records_parser.add_argument(
+        '--need-formula-result',
+        help='是否返回公式、引用的结果',
+    )
 
     def _handle_wedoc_smartsheet_get_records(a: argparse.Namespace) -> dict:
         return client.wedoc_smartsheet_get_records(
@@ -9816,6 +9931,7 @@ def register_generated_commands(
             limit=a.limit,
             ver=a.ver,
             filter_spec=a.filter_spec,
+            need_formula_result=a.need_formula_result,
         )
     table[('wedoc', 'smartsheet-get-records')] = _handle_wedoc_smartsheet_get_records
 
@@ -10206,6 +10322,648 @@ def register_generated_commands(
             limit=a.limit,
         )
     table[('wedoc', 'vip-list')] = _handle_wedoc_vip_list
+
+    wedoc_file_upload_parser = wedoc_sub.add_parser(
+        'file-upload',
+        help='上传文档文件',
+    )
+    wedoc_file_upload_parser.add_argument(
+        '--docid',
+        type=str,
+        help='TODO: docid',
+    )
+    wedoc_file_upload_parser.add_argument(
+        '--file-name',
+        type=str,
+        help='TODO: file_name',
+    )
+    wedoc_file_upload_parser.add_argument(
+        '--file-base64-content',
+        type=str,
+        help='TODO: file_base64_content',
+    )
+
+    def _handle_wedoc_file_upload(a: argparse.Namespace) -> dict:
+        return client.wedoc_file_upload(
+            docid=a.docid,
+            file_name=a.file_name,
+            file_base64_content=a.file_base64_content,
+        )
+    table[('wedoc', 'file-upload')] = _handle_wedoc_file_upload
+
+    wedoc_file_upload_init_parser = wedoc_sub.add_parser(
+        'file-upload-init',
+        help='分块上传文档文件',
+    )
+    wedoc_file_upload_init_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='文档id，通过新建文档接口创建后获得',
+    )
+    wedoc_file_upload_init_parser.add_argument(
+        '--file-name',
+        type=str,
+        required=True,
+        help='文件名字',
+    )
+    wedoc_file_upload_init_parser.add_argument(
+        '--size',
+        type=str,
+        required=True,
+        help='文件大小。最大支持20G',
+    )
+    wedoc_file_upload_init_parser.add_argument(
+        '--block-sha',
+        type=str,
+        required=True,
+        help='文件分块累积sha值，按分块顺序填入数组。参考附录-分块累积sha说明',
+    )
+
+    def _handle_wedoc_file_upload_init(a: argparse.Namespace) -> dict:
+        return client.wedoc_file_upload_init(
+            docid=a.docid,
+            file_name=a.file_name,
+            size=a.size,
+            block_sha=a.block_sha,
+        )
+    table[('wedoc', 'file-upload-init')] = _handle_wedoc_file_upload_init
+
+    wedoc_smartdoc_add_blocks_parser = wedoc_sub.add_parser(
+        'smartdoc-add-blocks',
+        help='添加内容块',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id，可通过 新建文档 接口创建',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--page-id',
+        type=str,
+        required=True,
+        help='页面的id',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--blocks',
+        type=str,
+        required=True,
+        help='需要添加的 Block 列表',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--blocks-type',
+        type=str,
+        required=True,
+        help='Block 类型，参见 BlockType',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--blocks-title',
+        type=str,
+        help='Block 的文本内容',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--blocks-parent-id',
+        type=str,
+        help='父节点 Block ID',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--blocks-after-id',
+        type=str,
+        help='插入位置，表示排在哪个 Block 之后，为空表示插入到最前',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--blocks-children',
+        type=str,
+        help='子节点 ID 列表',
+    )
+    wedoc_smartdoc_add_blocks_parser.add_argument(
+        '--blocks-props',
+        type=str,
+        help='Block 属性',
+    )
+
+    def _handle_wedoc_smartdoc_add_blocks(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_add_blocks(
+            docid=a.docid,
+            page_id=a.page_id,
+            blocks=a.blocks,
+            blocks_type=a.blocks_type,
+            blocks_title=a.blocks_title,
+            blocks_parent_id=a.blocks_parent_id,
+            blocks_after_id=a.blocks_after_id,
+            blocks_children=a.blocks_children,
+            blocks_props=a.blocks_props,
+        )
+    table[('wedoc', 'smartdoc-add-blocks')] = _handle_wedoc_smartdoc_add_blocks
+
+    wedoc_smartdoc_add_page_parser = wedoc_sub.add_parser(
+        'smartdoc-add-page',
+        help='添加页面',
+    )
+    wedoc_smartdoc_add_page_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id，可通过 新建文档 接口创建',
+    )
+    wedoc_smartdoc_add_page_parser.add_argument(
+        '--info',
+        type=str,
+        required=True,
+        help='需要添加的页面信息',
+    )
+    wedoc_smartdoc_add_page_parser.add_argument(
+        '--info-title',
+        type=str,
+        help='页面标题',
+    )
+    wedoc_smartdoc_add_page_parser.add_argument(
+        '--info-parent-id',
+        type=str,
+        help='父页面 ID，用于创建子页面，为空标识第一层页面',
+    )
+    wedoc_smartdoc_add_page_parser.add_argument(
+        '--info-after-id',
+        type=str,
+        help='插入位置，表示排在哪个页面之后，为空表示插入到最前',
+    )
+    wedoc_smartdoc_add_page_parser.add_argument(
+        '--info-layout-mode',
+        type=str,
+        help='页面布局模式，参见 PageLayoutMode',
+    )
+
+    def _handle_wedoc_smartdoc_add_page(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_add_page(
+            docid=a.docid,
+            info=a.info,
+            info_title=a.info_title,
+            info_parent_id=a.info_parent_id,
+            info_after_id=a.info_after_id,
+            info_layout_mode=a.info_layout_mode,
+        )
+    table[('wedoc', 'smartdoc-add-page')] = _handle_wedoc_smartdoc_add_page
+
+    wedoc_smartdoc_add_smartsheet_parser = wedoc_sub.add_parser(
+        'smartdoc-add-smartsheet',
+        help='添加数据表',
+    )
+    wedoc_smartdoc_add_smartsheet_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_add_smartsheet_parser.add_argument(
+        '--info',
+        type=str,
+        required=True,
+        help='数据表信息',
+    )
+    wedoc_smartdoc_add_smartsheet_parser.add_argument(
+        '--info-title',
+        type=str,
+        help='数据表标题',
+    )
+    wedoc_smartdoc_add_smartsheet_parser.add_argument(
+        '--info-after-id',
+        type=str,
+        help='数据表的block_id。不支持非数据表类型的block_id',
+    )
+
+    def _handle_wedoc_smartdoc_add_smartsheet(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_add_smartsheet(
+            docid=a.docid,
+            info=a.info,
+            info_title=a.info_title,
+            info_after_id=a.info_after_id,
+        )
+    table[('wedoc', 'smartdoc-add-smartsheet')] = _handle_wedoc_smartdoc_add_smartsheet
+
+    wedoc_smartdoc_cancel_publish_parser = wedoc_sub.add_parser(
+        'smartdoc-cancel-publish',
+        help='取消发布智能文档',
+    )
+    wedoc_smartdoc_cancel_publish_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+
+    def _handle_wedoc_smartdoc_cancel_publish(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_cancel_publish(
+            docid=a.docid,
+        )
+    table[('wedoc', 'smartdoc-cancel-publish')] = _handle_wedoc_smartdoc_cancel_publish
+
+    wedoc_smartdoc_delete_blocks_parser = wedoc_sub.add_parser(
+        'smartdoc-delete-blocks',
+        help='删除内容块',
+    )
+    wedoc_smartdoc_delete_blocks_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_delete_blocks_parser.add_argument(
+        '--page-id',
+        type=str,
+        required=True,
+        help='页面的id',
+    )
+    wedoc_smartdoc_delete_blocks_parser.add_argument(
+        '--ids',
+        type=str,
+        required=True,
+        help='需要删除的 Block ID 列表',
+    )
+
+    def _handle_wedoc_smartdoc_delete_blocks(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_delete_blocks(
+            docid=a.docid,
+            page_id=a.page_id,
+            ids=a.ids,
+        )
+    table[('wedoc', 'smartdoc-delete-blocks')] = _handle_wedoc_smartdoc_delete_blocks
+
+    wedoc_smartdoc_delete_page_parser = wedoc_sub.add_parser(
+        'smartdoc-delete-page',
+        help='删除页面',
+    )
+    wedoc_smartdoc_delete_page_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_delete_page_parser.add_argument(
+        '--page-id',
+        type=str,
+        required=True,
+        help='要删除的页面 ID',
+    )
+
+    def _handle_wedoc_smartdoc_delete_page(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_delete_page(
+            docid=a.docid,
+            page_id=a.page_id,
+        )
+    table[('wedoc', 'smartdoc-delete-page')] = _handle_wedoc_smartdoc_delete_page
+
+    wedoc_smartdoc_delete_smartsheet_parser = wedoc_sub.add_parser(
+        'smartdoc-delete-smartsheet',
+        help='删除数据表',
+    )
+    wedoc_smartdoc_delete_smartsheet_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_delete_smartsheet_parser.add_argument(
+        '--block-id',
+        type=str,
+        required=True,
+        help='要删除的数据表 Block ID',
+    )
+
+    def _handle_wedoc_smartdoc_delete_smartsheet(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_delete_smartsheet(
+            docid=a.docid,
+            block_id=a.block_id,
+        )
+    table[('wedoc', 'smartdoc-delete-smartsheet')] = _handle_wedoc_smartdoc_delete_smartsheet
+
+    wedoc_smartdoc_export_task_parser = wedoc_sub.add_parser(
+        'smartdoc-export-task',
+        help='导出内容块',
+    )
+    wedoc_smartdoc_export_task_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_export_task_parser.add_argument(
+        '--content-type',
+        type=str,
+        required=True,
+        help='期望返回的内容格式类型：1-Markdown 格式（目前仅支持此格式）',
+    )
+    wedoc_smartdoc_export_task_parser.add_argument(
+        '--page-id',
+        type=str,
+        help='指定要导出的 Page ID。若提供，则仅导出该 Page 及其所有子 Block 的内容；若不提供，则导出整个文档',
+    )
+
+    def _handle_wedoc_smartdoc_export_task(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_export_task(
+            docid=a.docid,
+            content_type=a.content_type,
+            page_id=a.page_id,
+        )
+    table[('wedoc', 'smartdoc-export-task')] = _handle_wedoc_smartdoc_export_task
+
+    wedoc_smartdoc_get_block_list_parser = wedoc_sub.add_parser(
+        'smartdoc-get-block-list',
+        help='获取内容块列表',
+    )
+    wedoc_smartdoc_get_block_list_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_get_block_list_parser.add_argument(
+        '--page-id',
+        type=str,
+        required=True,
+        help='页面的 id',
+    )
+    wedoc_smartdoc_get_block_list_parser.add_argument(
+        '--ids',
+        type=str,
+        help='需要获取的 Block ID 列表',
+    )
+    wedoc_smartdoc_get_block_list_parser.add_argument(
+        '--start',
+        type=str,
+        help='分批起始点，最小为0',
+    )
+    wedoc_smartdoc_get_block_list_parser.add_argument(
+        '--limit',
+        type=str,
+        help='分批大小，最大为200，默认为200',
+    )
+
+    def _handle_wedoc_smartdoc_get_block_list(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_get_block_list(
+            docid=a.docid,
+            page_id=a.page_id,
+            ids=a.ids,
+            start=a.start,
+            limit=a.limit,
+        )
+    table[('wedoc', 'smartdoc-get-block-list')] = _handle_wedoc_smartdoc_get_block_list
+
+    wedoc_smartdoc_get_page_hierarchy_parser = wedoc_sub.add_parser(
+        'smartdoc-get-page-hierarchy',
+        help='获取页面结构',
+    )
+    wedoc_smartdoc_get_page_hierarchy_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id，可通过 新建文档 接口创建',
+    )
+
+    def _handle_wedoc_smartdoc_get_page_hierarchy(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_get_page_hierarchy(
+            docid=a.docid,
+        )
+    table[('wedoc', 'smartdoc-get-page-hierarchy')] = _handle_wedoc_smartdoc_get_page_hierarchy
+
+    wedoc_smartdoc_get_smartsheet_info_parser = wedoc_sub.add_parser(
+        'smartdoc-get-smartsheet-info',
+        help='获取数据源',
+    )
+    wedoc_smartdoc_get_smartsheet_info_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id，可通过 新建文档 接口创建',
+    )
+
+    def _handle_wedoc_smartdoc_get_smartsheet_info(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_get_smartsheet_info(
+            docid=a.docid,
+        )
+    table[('wedoc', 'smartdoc-get-smartsheet-info')] = _handle_wedoc_smartdoc_get_smartsheet_info
+
+    wedoc_smartdoc_publish_parser = wedoc_sub.add_parser(
+        'smartdoc-publish',
+        help='发布智能文档',
+    )
+    wedoc_smartdoc_publish_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id，可通过 新建文档 接口创建',
+    )
+    wedoc_smartdoc_publish_parser.add_argument(
+        '--publish-range',
+        type=str,
+        help='发布可见范围。1：企业内可见；3：企业内外可见；4：指定成员可见。不传时默认为1（企业内可见）',
+    )
+    wedoc_smartdoc_publish_parser.add_argument(
+        '--auth-list',
+        type=str,
+        help='指定可见成员列表，publish_range为4时必填',
+    )
+    wedoc_smartdoc_publish_parser.add_argument(
+        '--auth-list-type',
+        type=str,
+        required=True,
+        help='成员类型。1：企业成员；2：部门',
+    )
+    wedoc_smartdoc_publish_parser.add_argument(
+        '--auth-list-userid',
+        type=str,
+        help='企业成员的userid，type为1时必填',
+    )
+    wedoc_smartdoc_publish_parser.add_argument(
+        '--auth-list-departmentid',
+        type=str,
+        help='部门id，type为2时必填',
+    )
+
+    def _handle_wedoc_smartdoc_publish(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_publish(
+            docid=a.docid,
+            publish_range=a.publish_range,
+            auth_list=a.auth_list,
+            auth_list_type=a.auth_list_type,
+            auth_list_userid=a.auth_list_userid,
+            auth_list_departmentid=a.auth_list_departmentid,
+        )
+    table[('wedoc', 'smartdoc-publish')] = _handle_wedoc_smartdoc_publish
+
+    wedoc_smartdoc_publish_setting_parser = wedoc_sub.add_parser(
+        'smartdoc-publish-setting',
+        help='修改发布页可查看范围',
+    )
+    wedoc_smartdoc_publish_setting_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_publish_setting_parser.add_argument(
+        '--publish-range',
+        type=str,
+        help='发布可见范围。1：企业内可见；3：企业内外可见；4：指定成员可见',
+    )
+    wedoc_smartdoc_publish_setting_parser.add_argument(
+        '--auth-list',
+        type=str,
+        help='指定可见成员列表，publish_range为4时必填',
+    )
+    wedoc_smartdoc_publish_setting_parser.add_argument(
+        '--auth-list-type',
+        type=str,
+        required=True,
+        help='成员类型。1：企业成员；2：部门',
+    )
+    wedoc_smartdoc_publish_setting_parser.add_argument(
+        '--auth-list-userid',
+        type=str,
+        help='企业成员的userid，type为1时必填',
+    )
+    wedoc_smartdoc_publish_setting_parser.add_argument(
+        '--auth-list-departmentid',
+        type=str,
+        help='部门id，type为2时必填',
+    )
+
+    def _handle_wedoc_smartdoc_publish_setting(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_publish_setting(
+            docid=a.docid,
+            publish_range=a.publish_range,
+            auth_list=a.auth_list,
+            auth_list_type=a.auth_list_type,
+            auth_list_userid=a.auth_list_userid,
+            auth_list_departmentid=a.auth_list_departmentid,
+        )
+    table[('wedoc', 'smartdoc-publish-setting')] = _handle_wedoc_smartdoc_publish_setting
+
+    wedoc_smartdoc_update_blocks_parser = wedoc_sub.add_parser(
+        'smartdoc-update-blocks',
+        help='更新内容块',
+    )
+    wedoc_smartdoc_update_blocks_parser.add_argument(
+        '--docid',
+        type=str,
+        help='TODO: docid',
+    )
+    wedoc_smartdoc_update_blocks_parser.add_argument(
+        '--page-id',
+        type=str,
+        help='TODO: page_id',
+    )
+    wedoc_smartdoc_update_blocks_parser.add_argument(
+        '--blocks',
+        type=json.loads,
+        help='TODO: blocks',
+    )
+
+    def _handle_wedoc_smartdoc_update_blocks(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_update_blocks(
+            docid=a.docid,
+            page_id=a.page_id,
+            blocks=a.blocks,
+        )
+    table[('wedoc', 'smartdoc-update-blocks')] = _handle_wedoc_smartdoc_update_blocks
+
+    wedoc_smartdoc_update_page_parser = wedoc_sub.add_parser(
+        'smartdoc-update-page',
+        help='更新页面',
+    )
+    wedoc_smartdoc_update_page_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_update_page_parser.add_argument(
+        '--info',
+        type=str,
+        required=True,
+        help='需要更新的页面信息',
+    )
+    wedoc_smartdoc_update_page_parser.add_argument(
+        '--info-page-id',
+        type=str,
+        required=True,
+        help='要更新的页面 ID',
+    )
+    wedoc_smartdoc_update_page_parser.add_argument(
+        '--info-title',
+        type=str,
+        help='新的页面标题',
+    )
+    wedoc_smartdoc_update_page_parser.add_argument(
+        '--info-layout-mode',
+        type=str,
+        help='页面布局模式，参见 PageLayoutMode',
+    )
+    wedoc_smartdoc_update_page_parser.add_argument(
+        '--info-after-id',
+        type=str,
+        help='新的排序位置，表示排在哪个页面之后，为空表示移到最后',
+    )
+    wedoc_smartdoc_update_page_parser.add_argument(
+        '--info-parent-id',
+        type=str,
+        help='父页面 ID，用于移动页面到其他父节点下',
+    )
+
+    def _handle_wedoc_smartdoc_update_page(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_update_page(
+            docid=a.docid,
+            info=a.info,
+            info_page_id=a.info_page_id,
+            info_title=a.info_title,
+            info_layout_mode=a.info_layout_mode,
+            info_after_id=a.info_after_id,
+            info_parent_id=a.info_parent_id,
+        )
+    table[('wedoc', 'smartdoc-update-page')] = _handle_wedoc_smartdoc_update_page
+
+    wedoc_smartdoc_update_smartsheet_parser = wedoc_sub.add_parser(
+        'smartdoc-update-smartsheet',
+        help='更新数据表',
+    )
+    wedoc_smartdoc_update_smartsheet_parser.add_argument(
+        '--docid',
+        type=str,
+        required=True,
+        help='智能文档的文档 id',
+    )
+    wedoc_smartdoc_update_smartsheet_parser.add_argument(
+        '--info',
+        type=str,
+        required=True,
+        help='数据表信息',
+    )
+    wedoc_smartdoc_update_smartsheet_parser.add_argument(
+        '--info-block-id',
+        type=str,
+        required=True,
+        help='要更新的 Block ID',
+    )
+    wedoc_smartdoc_update_smartsheet_parser.add_argument(
+        '--info-title',
+        type=str,
+        help='数据表标题',
+    )
+    wedoc_smartdoc_update_smartsheet_parser.add_argument(
+        '--info-after-id',
+        type=str,
+        help='数据表的block_id。新的排序位置，表示排在哪个 Block 之后，为空表示移到最后。不支持非数据表类型的block_id',
+    )
+
+    def _handle_wedoc_smartdoc_update_smartsheet(a: argparse.Namespace) -> dict:
+        return client.wedoc_smartdoc_update_smartsheet(
+            docid=a.docid,
+            info=a.info,
+            info_block_id=a.info_block_id,
+            info_title=a.info_title,
+            info_after_id=a.info_after_id,
+        )
+    table[('wedoc', 'smartdoc-update-smartsheet')] = _handle_wedoc_smartdoc_update_smartsheet
 
     wedrive_parser = subparsers.add_parser(
         'wedrive',

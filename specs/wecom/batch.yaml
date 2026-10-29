@@ -621,6 +621,166 @@
           "jobid": "xxxxx"
         }
       }
+    },
+    {
+      "name": "openuserid_to_userid",
+      "cli_action": "openuserid-to-userid",
+      "summary": "自建应用与智能机器人的对接",
+      "method": "POST",
+      "endpoint": "/cgi-bin/batch/openuserid_to_userid",
+      "args": [
+        {
+          "name": "open_userid_list",
+          "flag": "--open-userid-list",
+          "type": "str",
+          "help": "企业主体下加密的userid列表，最多不超过1000个。",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "open_userid_list": {
+            "from_arg": "open_userid_list"
+          }
+        }
+      },
+      "examples": [
+        "wecom batch openuserid-to-userid --open-userid-list <open_userid_list>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "对返回码的文本描述内容"
+            },
+            "userid_list": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "open_userid": {
+                    "type": "string"
+                  },
+                  "userid": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "open_userid",
+                  "userid"
+                ]
+              },
+              "description": "明文userid"
+            },
+            "invalid_open_userid_list": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "不合法的open_userid列表。如果传入的已是明文的userid，也会在该列表返回"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "userid_list",
+            "invalid_open_userid_list"
+          ]
+        }
+      },
+      "doc": {
+        "title": "自建应用与智能机器人的对接",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101521",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/batch/openuserid_to_userid?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "企业自建应用的调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "open_userid_list",
+            "required": true,
+            "description": "企业主体下加密的userid列表，最多不超过1000个。",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": null,
+            "description": "明文userid",
+            "type": null
+          },
+          {
+            "name": "userid_list_open_userid",
+            "required": null,
+            "description": "转换成功的open_userid",
+            "type": null
+          },
+          {
+            "name": "userid_list_userid",
+            "required": null,
+            "description": "转换成功的open_userid对应的userid",
+            "type": null
+          },
+          {
+            "name": "invalid_open_userid_list",
+            "required": null,
+            "description": "不合法的open_userid列表。如果传入的已是明文的userid，也会在该列表返回",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"open_userid_list\":[\"xxx\", \"yyy\"]\n}",
+        "request_example_json": {
+          "open_userid_list": [
+            "xxx",
+            "yyy"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"userid_list\": [\n        {\n            \"open_userid\": \"xxx\",\n            \"userid\": \"aaa\"\n        }\n    ],\n    \"invalid_open_userid_list\":[\"yyy\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "userid_list": [
+            {
+              "open_userid": "xxx",
+              "userid": "aaa"
+            }
+          ],
+          "invalid_open_userid_list": [
+            "yyy"
+          ]
+        },
+        "notes": [
+          "需要使用自建应用的access_token\n成员需要在access_token所对应应用的可见范围内"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
     }
   ]
 }

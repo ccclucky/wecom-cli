@@ -1,5 +1,5 @@
 {
-  "snapshot_date": "2026-04-23",
+  "snapshot_date": "2026-10-29",
   "source": "developer.work.weixin.qq.com",
   "operations": [
     {
@@ -623,18 +623,18 @@
       "endpoint": "/cgi-bin/auth/getuserinfo",
       "method": "GET",
       "doc": {
-        "title": "获取访问用户身份",
-        "source_url": "https://developer.work.weixin.qq.com/document/path/91707",
+        "title": "获取用户登录身份",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/98176",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo?access_token=ACCESS_TOKEN&code=CODE",
-        "request_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"userid\":\"userid\"\n}",
+        "request_example_text": "{\n   \"errcode\": 0,\n   \"errmsg\": \"ok\",\n   \"userid\":\"USERID\",\n   \"user_doc_ticket\":\"USER_DOC_TICKET\"\n}",
         "request_example_json": {
           "errcode": 0,
           "errmsg": "ok",
-          "userid": "userid"
+          "userid": "USERID",
+          "user_doc_ticket": "USER_DOC_TICKET"
         },
         "permissions": [
-          "b) 当用户为学校的家长时，返回示例如下：",
-          "c) 非企业成员或学生家长授权时返回示例如下：",
+          "b) 非企业成员时，返回示例如下：",
           "出错返回示例："
         ]
       }
@@ -645,6 +645,94 @@
       "name": "invite",
       "endpoint": "/cgi-bin/batch/invite",
       "method": "POST"
+    },
+    {
+      "id": "batch.openuserid_to_userid",
+      "domain": "batch",
+      "name": "openuserid_to_userid",
+      "endpoint": "/cgi-bin/batch/openuserid_to_userid",
+      "method": "POST",
+      "doc": {
+        "title": "自建应用与智能机器人的对接",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101521",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/batch/openuserid_to_userid?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "企业自建应用的调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "open_userid_list",
+            "required": true,
+            "description": "企业主体下加密的userid列表，最多不超过1000个。",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": null
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "对返回码的文本描述内容",
+            "type": null
+          },
+          {
+            "name": "userid_list",
+            "required": null,
+            "description": "明文userid",
+            "type": null
+          },
+          {
+            "name": "userid_list_open_userid",
+            "required": null,
+            "description": "转换成功的open_userid",
+            "type": null
+          },
+          {
+            "name": "userid_list_userid",
+            "required": null,
+            "description": "转换成功的open_userid对应的userid",
+            "type": null
+          },
+          {
+            "name": "invalid_open_userid_list",
+            "required": null,
+            "description": "不合法的open_userid列表。如果传入的已是明文的userid，也会在该列表返回",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"open_userid_list\":[\"xxx\", \"yyy\"]\n}",
+        "request_example_json": {
+          "open_userid_list": [
+            "xxx",
+            "yyy"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"userid_list\": [\n        {\n            \"open_userid\": \"xxx\",\n            \"userid\": \"aaa\"\n        }\n    ],\n    \"invalid_open_userid_list\":[\"yyy\"]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "userid_list": [
+            {
+              "open_userid": "xxx",
+              "userid": "aaa"
+            }
+          ],
+          "invalid_open_userid_list": [
+            "yyy"
+          ]
+        },
+        "notes": [
+          "需要使用自建应用的access_token\n成员需要在access_token所对应应用的可见范围内"
+        ]
+      }
     },
     {
       "id": "batch.replaceparty",
@@ -844,7 +932,7 @@
       "endpoint": "/cgi-bin/chatdata/get_auth_user_list",
       "method": "POST",
       "doc": {
-        "title": "获取授权存档的成员列表",
+        "title": "获取会话存档授权成员列表",
         "source_url": "https://developer.work.weixin.qq.com/document/path/99962",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/get_auth_user_list?access_token=ACCESS_TOKEN",
         "request_params": [
@@ -3001,6 +3089,97 @@
         ],
         "notes": [
           "应用可见范围外用户相关的record会被过滤掉，不会返回"
+        ]
+      }
+    },
+    {
+      "id": "docdata.get_auth_user_list",
+      "domain": "docdata",
+      "name": "get_auth_user_list",
+      "endpoint": "/cgi-bin/docdata/get_auth_user_list",
+      "method": "POST",
+      "doc": {
+        "title": "获取文件内容存档授权成员列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101873",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/docdata/get_auth_user_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证",
+            "type": "String"
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "description": "上一次调用时返回的next_cursor，第一次拉取可以不填",
+            "type": "String"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "本次查询返回的最大条数。不超过1000，默认200条",
+            "type": "Interger"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "Integer"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "String"
+          },
+          {
+            "name": "auth_user_list",
+            "required": null,
+            "description": "生效成员列表，详见AuthUser",
+            "type": "Object数组"
+          },
+          {
+            "name": "next_cursor",
+            "required": null,
+            "description": "下一次查询时使用，将值填到请求包的cursor字段中",
+            "type": "String"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "是否还有更多未拉取的数据，1：是；0：否",
+            "type": "Integer"
+          }
+        ],
+        "request_example_text": "{\n\t\"cursor\":\"JMgigeong\",\n\t\"limit\":2\n}",
+        "request_example_json": {
+          "cursor": "JMgigeong",
+          "limit": 2
+        },
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"auth_user_list\": [\n    {\n      \"userid\": \"woxxxjigegen\"\n    },\n    {\n      \"userid\": \"woaaaaaaaaaa\"\n    }\n  ],\n  \"next_cursor\": \"xjigeojgeigwj\",\n  \"has_more\": true\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "auth_user_list": [
+            {
+              "userid": "woxxxjigegen"
+            },
+            {
+              "userid": "woaaaaaaaaaa"
+            }
+          ],
+          "next_cursor": "xjigeojgeigwj",
+          "has_more": true
+        },
+        "permissions": [
+          "请求方式： POST（HTTPS）\n请求地址： https://qyapi.weixin.qq.com/cgi-bin/docdata/get_auth_user_list?access_token=ACCESS_TOKEN",
+          "请求包体"
+        ],
+        "notes": [
+          "分析企业文档数据权限需要企业管理员二次授权\n企业或服务商需已灰度文件内容存档功能"
         ]
       }
     },
@@ -7168,7 +7347,7 @@
           {
             "name": "payment_type",
             "required": null,
-            "description": "收款方式： 0：在聊天中收款 1：收款码收款 2：在直播间收款 3：用产品图册收款 14：转账 15：小程序（仅部分灰度企业可在小程序中接入对外收款账户进行收款）",
+            "description": "收款方式： 0：在聊天中收款 1：收款码收款 2：在直播间收款 3：用产品图册收款 14：转账 15：小程序",
             "type": null
           },
           {
@@ -9330,7 +9509,7 @@
             "type": "obj[]"
           },
           {
-            "name": "answers_attachments_1",
+            "name": "answers_attachments",
             "required": true,
             "description": "回答附件。具体见附录-问答附件类型",
             "type": "obj"
@@ -15483,13 +15662,13 @@
             "type": null
           },
           {
-            "name": "text_1",
+            "name": "text",
             "required": true,
             "description": "控件名称。需满足以下条件：1-控件名称不得和现有控件名称重复；2-长度不得超过40个字符。3-Attendance-外出/出差/加班控件title固定为外出/出差/加班，暂不支持自定义",
             "type": null
           },
           {
-            "name": "lang_1",
+            "name": "lang",
             "required": true,
             "description": "显示语言，中文：zh_CN（注意不是zh-CN）",
             "type": null
@@ -15501,13 +15680,13 @@
             "type": null
           },
           {
-            "name": "text_2",
+            "name": "text",
             "required": false,
             "description": "控件说明。需满足以下条件：长度不得超过80个字符。",
             "type": null
           },
           {
-            "name": "lang_2",
+            "name": "lang",
             "required": false,
             "description": "显示语言，中文：zh_CN（注意不是zh-CN）；若text填写，则该项为必填",
             "type": null
@@ -17782,8 +17961,14 @@
           {
             "name": "schedule_list_attendees_response_status",
             "required": null,
-            "description": "日程参与者的接受状态。 0 - 未处理 1 - 待定 2 - 全部接受 3 - 仅接受一次 4 - 拒绝",
+            "description": "日程参与者的接受状态。 0 - 未处理 1 - 待定 2 - 全部接受 3 - 接受单次 4 - 拒绝 5 - 接受本次及未来 6 - 待定单次 7 - 待定本次及未来 8 - 拒绝单次 9 - 拒绝本次及未来",
             "type": "uint32"
+          },
+          {
+            "name": "schedule_list_attendees_event_time",
+            "required": null,
+            "description": "对该时间点日程做出的决策，配合response_status使用",
+            "type": "uint64"
           },
           {
             "name": "schedule_list_summary",
@@ -17924,7 +18109,7 @@
             "17c7d2bd9f20d652840f72f59e796AAA"
           ]
         },
-        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"schedule_list\": [{\n\t\t\"schedule_id\": \"17c7d2bd9f20d652840f72f59e796AAA\",\n\t\t\"admins\":[\n\t\t\t\t\"admin1\",\n\t\t\t\t\"admin2\"\n\t\t],\n\t\t\"attendees\": [{\n\t\t\t\"userid\": \"userid2\",\n\t\t\t\"response_status\": 1\n\t\t}],\n\t\t\"summary\": \"test_summary\",\n\t\t\"description\": \"test_content\",\n\t\t\"reminders\": {\n\t\t\t\"is_remind\": 1,\n\t\t\t\"is_repeat\": 1,\n\t\t\t\"remind_before_event_secs\": 3600,\n\t\t\t\"remind_time_diffs\": [-3600],\n\t\t\t\"repeat_type\": 7,\n\t\t\t\"repeat_until\": 1606976813,\n\t\t\t\"is_custom_repeat\": 1,\n\t\t\t\"repeat_interval\": 1,\n\t\t\t\"repeat_day_of_week\": [3, 7],\n\t\t\t\"repeat_day_of_month\": [10, 21],\n\t\t\t\"timezone\": 8,\n\t\t\t\"exclude_time_list\": [{\n\t\t\t\t\"start_time\": 1571361000\n\t\t\t}]\n\t\t},\n\t\t\"location\": \"test_place\",\n\t\t\"cal_id\": \"wcjgewCwAAqeJcPI1d8Pwbjt7nttzAAA\",\n\t\t\"start_time\": 1571274600,\n\t\t\"end_time\": 1571579410,\n\t\t\"status\": 1,\n\t\t\"is_whole_day\":1\n\t}]\n}",
+        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"schedule_list\": [{\n\t\t\"schedule_id\": \"17c7d2bd9f20d652840f72f59e796AAA\",\n\t\t\"admins\":[\n\t\t\t\t\"admin1\",\n\t\t\t\t\"admin2\"\n\t\t],\n\t\t\"attendees\": [{\n\t\t\t\"userid\": \"userid2\",\n\t\t\t\"response_status\": 1,\n\t\t\t\"event_time\": 1571274600\n\t\t}],\n\t\t\"summary\": \"test_summary\",\n\t\t\"description\": \"test_content\",\n\t\t\"reminders\": {\n\t\t\t\"is_remind\": 1,\n\t\t\t\"is_repeat\": 1,\n\t\t\t\"remind_before_event_secs\": 3600,\n\t\t\t\"remind_time_diffs\": [-3600],\n\t\t\t\"repeat_type\": 7,\n\t\t\t\"repeat_until\": 1606976813,\n\t\t\t\"is_custom_repeat\": 1,\n\t\t\t\"repeat_interval\": 1,\n\t\t\t\"repeat_day_of_week\": [3, 7],\n\t\t\t\"repeat_day_of_month\": [10, 21],\n\t\t\t\"timezone\": 8,\n\t\t\t\"exclude_time_list\": [{\n\t\t\t\t\"start_time\": 1571361000\n\t\t\t}]\n\t\t},\n\t\t\"location\": \"test_place\",\n\t\t\"cal_id\": \"wcjgewCwAAqeJcPI1d8Pwbjt7nttzAAA\",\n\t\t\"start_time\": 1571274600,\n\t\t\"end_time\": 1571579410,\n\t\t\"status\": 1,\n\t\t\"is_whole_day\":1\n\t}]\n}",
         "response_example_json": {
           "errcode": 0,
           "errmsg": "ok",
@@ -17938,7 +18123,8 @@
               "attendees": [
                 {
                   "userid": "userid2",
-                  "response_status": 1
+                  "response_status": 1,
+                  "event_time": 1571274600
                 }
               ],
               "summary": "test_summary",
@@ -18495,7 +18681,7 @@
           {
             "name": "access_token",
             "required": true,
-            "description": "调用接口凭证。必须使用第三方应用accesstoken获取，获取方式参考：文档-获取access_token",
+            "description": "调用接口凭证",
             "type": "string"
           },
           {
@@ -22267,6 +22453,24 @@
             "required": null,
             "description": "企业用户的操作系统，目前支持返回的类型：iOS、iPad",
             "type": "string"
+          },
+          {
+            "name": "record_list_operation_type",
+            "required": null,
+            "description": "操作类型 0：截屏 1：录屏",
+            "type": "int"
+          },
+          {
+            "name": "record_list_device_info",
+            "required": null,
+            "description": "设备信息，详见DeviceInfo",
+            "type": "object"
+          },
+          {
+            "name": "record_list_ip",
+            "required": null,
+            "description": "设备IP和地址",
+            "type": "string"
           }
         ],
         "request_example_text": "{\n\t\"start_time\": 166666666,\n\t\"end_time\": 166666667,\n\t\"userid_list\": [\"zhangsan\", \"lisi\"],\n\t\"department_id_list\" : [2, 3],\n\t\"screen_shot_type\": 1,\n\t\"cursor\":\"ngLgjieajgieo\",\n\t\"limit\":100\n}",
@@ -22285,7 +22489,7 @@
           "cursor": "ngLgjieajgieo",
           "limit": 100
         },
-        "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"has_more\": true,\n\t\"next_cursor\": \"gejMjgLjgeigoejg\",\n\t\"record_list\": [{\n\t\t\"time\": 16666666666,\n\t\t\"userid\": \"zhangsan\",\n\t\t\"department_id\" : 2,\n\t\t\"screen_shot_type\" : 1,\n\t\t\"screen_shot_content\" : \"聊天\",\n\t\t\"system\" : \"iPad\"\n\t}, {\n\t\t\"time\": 16666666666,\n\t\t\"userid\": \"lisi\",\n\t\t\"department_id\" : 3,\n\t\t\"screen_shot_type\" : 4,\n\t\t\"screen_shot_content\" : \"文件（防泄露文件：test.pdf）\",\n\t\t\"system\" : \"iOS\"\n\t}]\n}",
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"has_more\": true,\n  \"next_cursor\": \"gejMjgLjgeigoejg\",\n  \"record_list\": [{\n      \"time\": 16666666666,\n      \"userid\": \"zhangsan\",\n      \"department_id\": 2,\n      \"screen_shot_type\": 1,\n      \"screen_shot_content\": \"聊天\",\n      \"system\": \"iPad\"\n    }, {\n      \"time\": 16666666666,\n      \"userid\": \"lisi\",\n      \"department_id\": 3,\n      \"screen_shot_type\": 4,\n      \"screen_shot_content\": \"文件（防泄露文件：test.pdf）\",\n      \"system\": \"iOS\"\n    }, {\n      \"time\": 1788164413,\n      \"userid\": \"12345678i90-\",\n      \"department_id\": 1,\n      \"screen_shot_type\": 6,\n      \"screen_shot_content\": \"其他\",\n      \"system\": \"other\",\n      \"operation_type\": 2,\n      \"device_info\": {\n        \"platform\": \"Mac\",\n        \"device_code\": \"FR2LXK6W7J417b370e3e2642849748a181459b1e76\",\n        \"device_model\": \"Mac16,7\",\n        \"mac\": {\n          \"mac_addr\": [\"36:99:71:2a:29:40\", \"36:99:71:2a:29:44\", \"36:99:71:2a:29:48\", \"4a:e8:d7:80:a3:ca\", \"4a:e8:d7:80:a3:cb\", \"4a:e8:d7:80:a3:cc\", \"4a:e8:d7:80:a3:ea\", \"4a:e8:d7:80:a3:eb\", \"4a:e8:d7:80:a3:ec\", \"84:2f:57:a1:10:48\"],\n          \"seq_no\": \"FR2LXK6W7J\"\n        }\n      },\n      \"ip\": \"14.22.11.188(广州市)\"\n  }]\n}",
         "response_example_json": {
           "errcode": 0,
           "errmsg": "ok",
@@ -22307,6 +22511,36 @@
               "screen_shot_type": 4,
               "screen_shot_content": "文件（防泄露文件：test.pdf）",
               "system": "iOS"
+            },
+            {
+              "time": 1788164413,
+              "userid": "12345678i90-",
+              "department_id": 1,
+              "screen_shot_type": 6,
+              "screen_shot_content": "其他",
+              "system": "other",
+              "operation_type": 2,
+              "device_info": {
+                "platform": "Mac",
+                "device_code": "FR2LXK6W7J417b370e3e2642849748a181459b1e76",
+                "device_model": "Mac16,7",
+                "mac": {
+                  "mac_addr": [
+                    "36:99:71:2a:29:40",
+                    "36:99:71:2a:29:44",
+                    "36:99:71:2a:29:48",
+                    "4a:e8:d7:80:a3:ca",
+                    "4a:e8:d7:80:a3:cb",
+                    "4a:e8:d7:80:a3:cc",
+                    "4a:e8:d7:80:a3:ea",
+                    "4a:e8:d7:80:a3:eb",
+                    "4a:e8:d7:80:a3:ec",
+                    "84:2f:57:a1:10:48"
+                  ],
+                  "seq_no": "FR2LXK6W7J"
+                }
+              },
+              "ip": "14.22.11.188(广州市)"
             }
           ]
         }
@@ -23059,6 +23293,188 @@
       }
     },
     {
+      "id": "todo.get",
+      "domain": "todo",
+      "name": "get",
+      "endpoint": "/cgi-bin/todo/get",
+      "method": "POST",
+      "doc": {
+        "title": "获取待办详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101524",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/todo/get?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "todo_id",
+            "required": true,
+            "description": "待办ID",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "required": null,
+            "description": "待办内容",
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "required": null,
+            "description": "待办创建人ID",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "required": null,
+            "description": "待办状态。 0 - 已完成 1 - 进行中",
+            "type": "int32"
+          },
+          {
+            "name": "create_time",
+            "required": null,
+            "description": "待办创建时间戳",
+            "type": "int32"
+          },
+          {
+            "name": "attendees_userid",
+            "required": null,
+            "description": "待办参与人ID",
+            "type": "string"
+          },
+          {
+            "name": "attendees_status",
+            "required": null,
+            "description": "参与人的待办状态 0 - 完成 1 - 进行中",
+            "type": "int32"
+          },
+          {
+            "name": "end_time",
+            "required": null,
+            "description": "待办截止时间戳",
+            "type": "int32"
+          },
+          {
+            "name": "reminders_remind_time",
+            "required": null,
+            "description": "提醒时间戳",
+            "type": "int32"
+          }
+        ],
+        "request_example_text": "{\n\t\"todo_id\": \"17c7d2bd9f20d652840f72f59e796AAA\"\n}",
+        "request_example_json": {
+          "todo_id": "17c7d2bd9f20d652840f72f59e796AAA"
+        },
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"content\": \"完成述职PPT\",\n  \"creator\": \"zhangsan\",\n  \"status\": 1,\n  \"create_time\": 177777777,\n  \"attendees\": [\n    {\n      \"userid\": \"lisi\",\n      \"status\": 0\n    },\n    {\n      \"userid\": \"zhangsan\",\n      \"status\": 1\n    }\n  ],\n  \"end_time\": 17777777,\n  \"reminders\": [\n    {\n      \"remind_time\": 17777777\n    }\n  ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "content": "完成述职PPT",
+          "creator": "zhangsan",
+          "status": 1,
+          "create_time": 177777777,
+          "attendees": [
+            {
+              "userid": "lisi",
+              "status": 0
+            },
+            {
+              "userid": "zhangsan",
+              "status": 1
+            }
+          ],
+          "end_time": 17777777,
+          "reminders": [
+            {
+              "remind_time": 17777777
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "todo.update",
+      "domain": "todo",
+      "name": "update",
+      "endpoint": "/cgi-bin/todo/update",
+      "method": "POST",
+      "doc": {
+        "title": "更新待办状态",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101534",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/todo/update?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "todo_id",
+            "required": true,
+            "description": "待办ID",
+            "type": null
+          },
+          {
+            "name": "status",
+            "required": false,
+            "description": "待办整体状态。 0 - 完成 1 - 进行中",
+            "type": null
+          },
+          {
+            "name": "attendees",
+            "required": false,
+            "description": "待办参与人列表，最多支持20个参与人。可不传或传空数组；不传或为空时不修改参与人列表",
+            "type": null
+          },
+          {
+            "name": "attendees_userid",
+            "required": true,
+            "description": "待办参与人ID。当传入attendees时，该字段必填",
+            "type": null
+          },
+          {
+            "name": "attendees_status",
+            "required": true,
+            "description": "参与人的待办状态。当传入attendees时，该字段必填。0 - 完成 1 - 进行中",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"todo_id\": \"17c7d2bd9f20d652840f72f59e796AAA\",\n  \"status\": 1,\n  \"attendees\": [\n    {\n      \"userid\": \"lisi\",\n      \"status\": 2\n    },\n    {\n      \"userid\": \"zhangsan\",\n      \"status\": 1\n    }\n  ]\n}",
+        "request_example_json": {
+          "todo_id": "17c7d2bd9f20d652840f72f59e796AAA",
+          "status": 1,
+          "attendees": [
+            {
+              "userid": "lisi",
+              "status": 2
+            },
+            {
+              "userid": "zhangsan",
+              "status": 1
+            }
+          ]
+        }
+      }
+    },
+    {
       "id": "users.authsucc",
       "domain": "users",
       "name": "authsucc",
@@ -23598,6 +24014,124 @@
           "docid": "DOCID"
         },
         "response_example_text": "{\n\t\"errcode\": 0,\n\t\"errmsg\": \"ok\",\n\t\"version\": 10,\n\t\"document\": {\n\t\t...\n\t}\n}"
+      }
+    },
+    {
+      "id": "wedoc.file_upload",
+      "domain": "wedoc",
+      "name": "file_upload",
+      "endpoint": "/cgi-bin/wedoc/file_upload",
+      "method": "POST",
+      "doc": {
+        "title": "上传文档文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101870",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/file_upload?access_token=ACCESS_TOKEN",
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"file_name\": \"FILE_NAME\",\n    \"file_base64_content\": \"FILE_BASE64_CONTENT\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "file_name": "FILE_NAME",
+          "file_base64_content": "FILE_BASE64_CONTENT"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file_url\": \"FILE_URL\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "file_url": "FILE_URL"
+        }
+      }
+    },
+    {
+      "id": "wedoc.file_upload_init",
+      "domain": "wedoc",
+      "name": "file_upload_init",
+      "endpoint": "/cgi-bin/wedoc/file_upload_init",
+      "method": "POST",
+      "doc": {
+        "title": "分块上传文档文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101871",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/file_upload_init?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "文档id，通过新建文档接口创建后获得",
+            "type": "string"
+          },
+          {
+            "name": "file_name",
+            "required": true,
+            "description": "文件名字",
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "required": true,
+            "description": "文件大小。最大支持20G",
+            "type": "uint64"
+          },
+          {
+            "name": "block_sha",
+            "required": true,
+            "description": "文件分块累积sha值，按分块顺序填入数组。参考附录-分块累积sha说明",
+            "type": "string[]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "hit_exist",
+            "required": null,
+            "description": "是否命中秒传",
+            "type": "bool"
+          },
+          {
+            "name": "upload_key",
+            "required": null,
+            "description": "文件上传凭证。不命中秒传时返回，作为file_upload_part参数",
+            "type": "string"
+          },
+          {
+            "name": "file_url",
+            "required": null,
+            "description": "文件file_url。命中秒传时返回，此时上传流程完成",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"file_name\": \"FILE_NAME\",\n    \"size\": 123,\n    \"block_sha\": [\n        \"STATE1\",\n        \"STATE2\"\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "file_name": "FILE_NAME",
+          "size": 123,
+          "block_sha": [
+            "STATE1",
+            "STATE2"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"hit_exist\": false,\n    \"upload_key\": \"UPLOAD_KEY\",\n    \"file_url\": \"FILE_URL\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "hit_exist": false,
+          "upload_key": "UPLOAD_KEY",
+          "file_url": "FILE_URL"
+        },
+        "permissions": [
+          "分块上传初始化",
+          "请求分块上传初始化接口，如果命中秒传，则流程结束，完成上传。",
+          "请求方式：POST（HTTPS）\n请求地址:  https://qyapi.weixin.qq.com/cgi-bin/wedoc/file_upload_init?access_token=ACCESS_TOKEN",
+          "请求包体"
+        ]
       }
     },
     {
@@ -24243,7 +24777,7 @@
             "type": "string"
           },
           {
-            "name": "userid_1",
+            "name": "userid",
             "required": null,
             "description": "企业内成员的id，匿名填写不返回",
             "type": "string"
@@ -24255,13 +24789,13 @@
             "type": "object[]"
           },
           {
-            "name": "user_name_1",
+            "name": "user_name",
             "required": null,
             "description": "名字",
             "type": "string"
           },
           {
-            "name": "userid_2",
+            "name": "userid",
             "required": null,
             "description": "企业内成员的id",
             "type": "string"
@@ -24543,12 +25077,6 @@
             "type": "string"
           },
           {
-            "name": "placeholder",
-            "required": false,
-            "description": "编辑提示",
-            "type": "string"
-          },
-          {
             "name": "question_extend_setting",
             "required": false,
             "description": "问题的额外设置。不同问题类型有相应的设置，详见question_extend_setting字段描述",
@@ -24573,7 +25101,7 @@
             "type": "string"
           },
           {
-            "name": "status_1",
+            "name": "status",
             "required": true,
             "description": "选项状态。1：正常；2：被删除",
             "type": "uint32"
@@ -24701,7 +25229,7 @@
             "type": "string"
           }
         ],
-        "request_example_text": "{\n  \"oper\": 1,\n  \"formid\": \"FORMID\",\n  \"form_info\": {\n    \"form_title\": \"FORM_TITLE\",\n    \"form_desc\": \"FORM_DESC\",\n    \"form_header\": \"FORM_HEADER\",\n    \"form_question\": {\n      \"items\": [\n        {\n          \"question_id\": 1,\n          \"title\": \"TITLE\",\n          \"pos\": 1,\n          \"status\": 1,\n          \"reply_type\": 1,\n          \"must_reply\": false,\n          \"note\": \"NOTE\",\n          \"option_item\": [\n            {\n              \"key\": 1,\n              \"value\": \"VALUE\",\n              \"status\": 1\n            }\n          ],\n          \"placeholder\": \"PLACEHOLDER\",\n          \"question_extend_setting\": {}\n        }\n      ]\n    },\n    \"form_setting\": {\n      \"fill_out_auth\": 0,\n      \"fill_in_range\": {\n        \"userids\": [\n          \"USER_1\",\n          \"USER_2\",\n          \"USER_3\"\n        ],\n        \"departmentids\": [\n          10001,\n          10002,\n          10003\n        ]\n      },\n      \"setting_manager_range\": {\n        \"userids\": [\n          \"USER_4\",\n          \"USER_5\",\n          \"USER_6\"\n        ]\n      },\n      \"timed_repeat_info\": {\n        \"enable\": false,\n        \"week_flag\": 0,\n        \"remind_time\": 0,\n        \"repeat_type\": 0,\n        \"skip_holiday\": false,\n        \"day_of_month\": 1,\n        \"fork_finish_type\": 0\n      },\n      \"allow_multi_fill\": false,\n      \"timed_finish\": 0,\n      \"can_anonymous\": false,\n      \"can_notify_submit\": false\n    }\n  }\n}",
+        "request_example_text": "{\n  \"oper\": 1,\n  \"formid\": \"FORMID\",\n  \"form_info\": {\n    \"form_title\": \"FORM_TITLE\",\n    \"form_desc\": \"FORM_DESC\",\n    \"form_header\": \"FORM_HEADER\",\n    \"form_question\": {\n      \"items\": [\n        {\n          \"question_id\": 1,\n          \"title\": \"TITLE\",\n          \"pos\": 1,\n          \"status\": 1,\n          \"reply_type\": 1,\n          \"must_reply\": false,\n          \"note\": \"NOTE\",\n          \"option_item\": [\n            {\n              \"key\": 1,\n              \"value\": \"VALUE\",\n              \"status\": 1\n            }\n          ],\n          \"question_extend_setting\": {}\n        }\n      ]\n    },\n    \"form_setting\": {\n      \"fill_out_auth\": 0,\n      \"fill_in_range\": {\n        \"userids\": [\n          \"USER_1\",\n          \"USER_2\",\n          \"USER_3\"\n        ],\n        \"departmentids\": [\n          10001,\n          10002,\n          10003\n        ]\n      },\n      \"setting_manager_range\": {\n        \"userids\": [\n          \"USER_4\",\n          \"USER_5\",\n          \"USER_6\"\n        ]\n      },\n      \"timed_repeat_info\": {\n        \"enable\": false,\n        \"week_flag\": 0,\n        \"remind_time\": 0,\n        \"repeat_type\": 0,\n        \"skip_holiday\": false,\n        \"day_of_month\": 1,\n        \"fork_finish_type\": 0\n      },\n      \"allow_multi_fill\": false,\n      \"timed_finish\": 0,\n      \"can_anonymous\": false,\n      \"can_notify_submit\": false\n    }\n  }\n}",
         "request_example_json": {
           "oper": 1,
           "formid": "FORMID",
@@ -24726,7 +25254,6 @@
                       "status": 1
                     }
                   ],
-                  "placeholder": "PLACEHOLDER",
                   "question_extend_setting": {}
                 }
               ]
@@ -24773,6 +25300,1275 @@
           "errcode": 0,
           "errmsg": "ok"
         }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_add_blocks",
+      "domain": "wedoc",
+      "name": "smartdoc_add_blocks",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/add_blocks",
+      "method": "POST",
+      "doc": {
+        "title": "添加内容块",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101623",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/add_blocks?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          },
+          {
+            "name": "page_id",
+            "required": true,
+            "description": "页面的id",
+            "type": "string"
+          },
+          {
+            "name": "blocks",
+            "required": true,
+            "description": "需要添加的 Block 列表",
+            "type": "object[](BlockInfo)"
+          },
+          {
+            "name": "blocks_type",
+            "required": true,
+            "description": "Block 类型，参见 BlockType",
+            "type": "string"
+          },
+          {
+            "name": "blocks_title",
+            "required": false,
+            "description": "Block 的文本内容",
+            "type": "string"
+          },
+          {
+            "name": "blocks_parent_id",
+            "required": false,
+            "description": "父节点 Block ID",
+            "type": "string"
+          },
+          {
+            "name": "blocks_after_id",
+            "required": false,
+            "description": "插入位置，表示排在哪个 Block 之后，为空表示插入到最前",
+            "type": "string"
+          },
+          {
+            "name": "blocks_children",
+            "required": false,
+            "description": "子节点 ID 列表",
+            "type": "string[]"
+          },
+          {
+            "name": "blocks_props",
+            "required": false,
+            "description": "Block 属性",
+            "type": "object"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\",\n    \"blocks\": [\n        {\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"title\": \"Hello World\",\n            \"parent_id\": \"PARENT_BLOCK_ID\",\n            \"after_id\": \"AFTER_BLOCK_ID\",\n            \"props\": {}\n        }\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID",
+          "blocks": [
+            {
+              "type": "BLOCK_TYPE_TEXT",
+              "title": "Hello World",
+              "parent_id": "PARENT_BLOCK_ID",
+              "after_id": "AFTER_BLOCK_ID",
+              "props": {}
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"blocks\": [\n        {\n            \"id\": \"BLOCK_ID\",\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"title\": \"Hello World\",\n            \"parent_id\": \"PARENT_BLOCK_ID\",\n            \"after_id\": \"AFTER_BLOCK_ID\",\n            \"children\": [],\n            \"props\": {}\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "blocks": [
+            {
+              "id": "BLOCK_ID",
+              "type": "BLOCK_TYPE_TEXT",
+              "title": "Hello World",
+              "parent_id": "PARENT_BLOCK_ID",
+              "after_id": "AFTER_BLOCK_ID",
+              "children": [],
+              "props": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_add_page",
+      "domain": "wedoc",
+      "name": "smartdoc_add_page",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/add_page",
+      "method": "POST",
+      "doc": {
+        "title": "添加页面",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101620",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/add_page?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "需要添加的页面信息",
+            "type": "object"
+          },
+          {
+            "name": "info_title",
+            "required": false,
+            "description": "页面标题",
+            "type": "string"
+          },
+          {
+            "name": "info_parent_id",
+            "required": false,
+            "description": "父页面 ID，用于创建子页面，为空标识第一层页面",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": false,
+            "description": "插入位置，表示排在哪个页面之后，为空表示插入到最前",
+            "type": "string"
+          },
+          {
+            "name": "info_layout_mode",
+            "required": false,
+            "description": "页面布局模式，参见 PageLayoutMode",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": null,
+            "description": "添加成功后返回的页面信息（含生成的 page_id）",
+            "type": "PageInfo"
+          },
+          {
+            "name": "info_page_id",
+            "required": null,
+            "description": "页面 ID（系统生成）",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": null,
+            "description": "页面标题",
+            "type": "string"
+          },
+          {
+            "name": "info_parent_id",
+            "required": null,
+            "description": "父页面 ID",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": null,
+            "description": "排序位置（在哪个页面之后）",
+            "type": "string"
+          },
+          {
+            "name": "info_layout_mode",
+            "required": null,
+            "description": "页面布局模式",
+            "type": "uint32"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"info\": {\n        \"title\": \"页面标题\",\n        \"parent_id\": \"PARENT_PAGE_ID\",\n        \"after_id\": \"AFTER_PAGE_ID\",\n        \"layout_mode\": 1\n    }\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "info": {
+            "title": "页面标题",
+            "parent_id": "PARENT_PAGE_ID",
+            "after_id": "AFTER_PAGE_ID",
+            "layout_mode": 1
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"info\": {\n        \"page_id\": \"PAGE_ID\",\n        \"title\": \"页面标题\",\n        \"parent_id\": \"PARENT_PAGE_ID\",\n        \"after_id\": \"AFTER_PAGE_ID\",\n        \"layout_mode\": 1\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "info": {
+            "page_id": "PAGE_ID",
+            "title": "页面标题",
+            "parent_id": "PARENT_PAGE_ID",
+            "after_id": "AFTER_PAGE_ID",
+            "layout_mode": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_add_smartsheet",
+      "domain": "wedoc",
+      "name": "smartdoc_add_smartsheet",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/add_smartsheet",
+      "method": "POST",
+      "doc": {
+        "title": "添加数据表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101629",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/add_smartsheet?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "数据表信息",
+            "type": "object"
+          },
+          {
+            "name": "info_title",
+            "required": false,
+            "description": "数据表标题",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": false,
+            "description": "数据表的block_id。不支持非数据表类型的block_id",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": null,
+            "description": "添加成功后返回的数据表信息",
+            "type": "object"
+          },
+          {
+            "name": "info_block_id",
+            "required": null,
+            "description": "Block ID（系统生成）",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": null,
+            "description": "数据表标题",
+            "type": "string"
+          },
+          {
+            "name": "info_sheet_id",
+            "required": null,
+            "description": "数据表 sheet_id",
+            "type": "string"
+          },
+          {
+            "name": "info_ss_docid",
+            "required": null,
+            "description": "智能文档 docid",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": null,
+            "description": "排序位置（在哪个 Block 之后）",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"info\": {\n        \"title\": \"数据表标题\",\n        \"after_id\": \"数据表的block_id\"\n    }\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "info": {
+            "title": "数据表标题",
+            "after_id": "数据表的block_id"
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"info\": {\n       \"block_id\": \"BLOCK_ID\",\n       \"title\": \"数据表标题\",\n       \"sheet_id\": \"数据表sheet_id\",\n       \"ss_docid\": \"智能文档docid\",\n       \"after_id\": \"BLOCK_ID\"\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "info": {
+            "block_id": "BLOCK_ID",
+            "title": "数据表标题",
+            "sheet_id": "数据表sheet_id",
+            "ss_docid": "智能文档docid",
+            "after_id": "BLOCK_ID"
+          }
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_cancel_publish",
+      "domain": "wedoc",
+      "name": "smartdoc_cancel_publish",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/cancel_publish",
+      "method": "POST",
+      "doc": {
+        "title": "取消发布智能文档",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101617",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/cancel_publish?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOCID\"\n}",
+        "request_example_json": {
+          "docid": "DOCID"
+        },
+        "response_example_text": "{\n\"errcode\": 0,\n\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_delete_blocks",
+      "domain": "wedoc",
+      "name": "smartdoc_delete_blocks",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/delete_blocks",
+      "method": "POST",
+      "doc": {
+        "title": "删除内容块",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101625",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/delete_blocks?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "page_id",
+            "required": true,
+            "description": "页面的id",
+            "type": "string"
+          },
+          {
+            "name": "ids",
+            "required": true,
+            "description": "需要删除的 Block ID 列表",
+            "type": "string[]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\",\n    \"ids\": [\"BLOCK_ID_1\", \"BLOCK_ID_2\"]\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID",
+          "ids": [
+            "BLOCK_ID_1",
+            "BLOCK_ID_2"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_delete_page",
+      "domain": "wedoc",
+      "name": "smartdoc_delete_page",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/delete_page",
+      "method": "POST",
+      "doc": {
+        "title": "删除页面",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101622",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/delete_page?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "page_id",
+            "required": true,
+            "description": "要删除的页面 ID",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_delete_smartsheet",
+      "domain": "wedoc",
+      "name": "smartdoc_delete_smartsheet",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/delete_smartsheet",
+      "method": "POST",
+      "doc": {
+        "title": "删除数据表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101630",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/delete_smartsheet?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "block_id",
+            "required": true,
+            "description": "要删除的数据表 Block ID",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"block_id\": \"BLOCK_ID\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "block_id": "BLOCK_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_export_task",
+      "domain": "wedoc",
+      "name": "smartdoc_export_task",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/export_task",
+      "method": "POST",
+      "doc": {
+        "title": "导出内容块",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101627",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/export_task?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "content_type",
+            "required": true,
+            "description": "期望返回的内容格式类型：1-Markdown 格式（目前仅支持此格式）",
+            "type": "uint32"
+          },
+          {
+            "name": "page_id",
+            "required": false,
+            "description": "指定要导出的 Page ID。若提供，则仅导出该 Page 及其所有子 Block 的内容；若不提供，则导出整个文档",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码（0 表示成功）",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "task_id",
+            "required": null,
+            "description": "异步任务 ID，用于调用 查询任务结果 接口轮询任务状态与结果",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC123456\",\n    \"content_type\": 1,\n    \"url\": \"https://doc.weixin.qq.com/smartdoc/a1_xxxxxxx\",\n    \"page_id\": \"abc123\"\n}",
+        "request_example_json": {
+          "docid": "DOC123456",
+          "content_type": 1,
+          "url": "https://doc.weixin.qq.com/smartdoc/a1_xxxxxxx",
+          "page_id": "abc123"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"task_id\": \"task_sp_20260323_abc123\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "task_id": "task_sp_20260323_abc123"
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_get_block_list",
+      "domain": "wedoc",
+      "name": "smartdoc_get_block_list",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/get_block_list",
+      "method": "POST",
+      "doc": {
+        "title": "获取内容块列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101626",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/get_block_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "page_id",
+            "required": true,
+            "description": "页面的 id",
+            "type": "string"
+          },
+          {
+            "name": "ids",
+            "required": false,
+            "description": "需要获取的 Block ID 列表",
+            "type": "string[]"
+          },
+          {
+            "name": "start",
+            "required": false,
+            "description": "分批起始点，最小为0",
+            "type": "int32"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "分批大小，最大为200，默认为200",
+            "type": "int32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "blocks",
+            "required": null,
+            "description": "返回的 Block 列表",
+            "type": "object[](BlockInfo)"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "true表示还有更多，false表示没有",
+            "type": "string"
+          },
+          {
+            "name": "next_start",
+            "required": null,
+            "description": "下一批的起始点",
+            "type": "int32"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\",\n    \"ids\": [\"BLOCK_ID_1\", \"BLOCK_ID_2\"],\n    \"start\": 0,\n    \"limit\": 200\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID",
+          "ids": [
+            "BLOCK_ID_1",
+            "BLOCK_ID_2"
+          ],
+          "start": 0,
+          "limit": 200
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"blocks\": [\n        {\n            \"id\": \"BLOCK_ID\",\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"content\": \"Hello World\",\n            \"parent_id\": \"PARENT_BLOCK_ID\",\n            \"children\": [\"CHILD_BLOCK_ID_1\"],\n            \"props\": {}\n        }\n    ],\n    \"has_more\": \"true\",\n    \"next_start\": 201\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "blocks": [
+            {
+              "id": "BLOCK_ID",
+              "type": "BLOCK_TYPE_TEXT",
+              "content": "Hello World",
+              "parent_id": "PARENT_BLOCK_ID",
+              "children": [
+                "CHILD_BLOCK_ID_1"
+              ],
+              "props": {}
+            }
+          ],
+          "has_more": "true",
+          "next_start": 201
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_get_page_hierarchy",
+      "domain": "wedoc",
+      "name": "smartdoc_get_page_hierarchy",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/get_page_hierarchy",
+      "method": "POST",
+      "doc": {
+        "title": "获取页面结构",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101619",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/get_page_hierarchy?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "pages",
+            "required": null,
+            "description": "页面层级列表",
+            "type": "object[]"
+          },
+          {
+            "name": "pages_page_id",
+            "required": null,
+            "description": "页面 ID",
+            "type": "string"
+          },
+          {
+            "name": "pages_parent_id",
+            "required": null,
+            "description": "父页面 ID，为空表示是根页面",
+            "type": "string"
+          },
+          {
+            "name": "pages_title",
+            "required": null,
+            "description": "页面标题",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"pages\": [\n        {\n            \"page_id\": \"PAGE_ID_1\",\n            \"parent_id\": \"\",\n            \"title\": \"首页\"\n        },\n        {\n            \"page_id\": \"PAGE_ID_2\",\n            \"parent_id\": \"PAGE_ID_1\",\n            \"title\": \"子页面1\"\n        },\n        {\n            \"page_id\": \"PAGE_ID_3\",\n            \"parent_id\": \"PAGE_ID_1\",\n            \"title\": \"子页面2\"\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "pages": [
+            {
+              "page_id": "PAGE_ID_1",
+              "parent_id": "",
+              "title": "首页"
+            },
+            {
+              "page_id": "PAGE_ID_2",
+              "parent_id": "PAGE_ID_1",
+              "title": "子页面1"
+            },
+            {
+              "page_id": "PAGE_ID_3",
+              "parent_id": "PAGE_ID_1",
+              "title": "子页面2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_get_smartsheet_info",
+      "domain": "wedoc",
+      "name": "smartdoc_get_smartsheet_info",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/get_smartsheet_info",
+      "method": "POST",
+      "doc": {
+        "title": "获取数据源",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101628",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/get_smartsheet_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "ss_docid",
+            "required": null,
+            "description": "绑定的数据表docid。若之前已绑定则返回已有的docid，否则自动创建后返回新的docid",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"ss_docid\": \"SS_DOC_ID\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "ss_docid": "SS_DOC_ID"
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_publish",
+      "domain": "wedoc",
+      "name": "smartdoc_publish",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/publish",
+      "method": "POST",
+      "doc": {
+        "title": "发布智能文档",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101616",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/publish?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          },
+          {
+            "name": "publish_range",
+            "required": false,
+            "description": "发布可见范围。1：企业内可见；3：企业内外可见；4：指定成员可见。不传时默认为1（企业内可见）",
+            "type": "uint32"
+          },
+          {
+            "name": "auth_list",
+            "required": null,
+            "description": "指定可见成员列表，publish_range为4时必填",
+            "type": "obj[]"
+          },
+          {
+            "name": "auth_list_type",
+            "required": true,
+            "description": "成员类型。1：企业成员；2：部门",
+            "type": "uint32"
+          },
+          {
+            "name": "auth_list_userid",
+            "required": null,
+            "description": "企业成员的userid，type为1时必填",
+            "type": "string"
+          },
+          {
+            "name": "auth_list_departmentid",
+            "required": null,
+            "description": "部门id，type为2时必填",
+            "type": "uint64"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "share_code",
+            "required": null,
+            "description": "分享码",
+            "type": "string"
+          },
+          {
+            "name": "publish_url",
+            "required": null,
+            "description": "发布页访问链接，格式为 https://doc.weixin.qq.com/smartdoc/p/{share_code}",
+            "type": "string"
+          },
+          {
+            "name": "version",
+            "required": null,
+            "description": "发布版本号",
+            "type": "uint64"
+          },
+          {
+            "name": "publish_time",
+            "required": null,
+            "description": "发布时间戳（秒）",
+            "type": "uint64"
+          },
+          {
+            "name": "publish_doc_title",
+            "required": null,
+            "description": "发布页标题",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOCID\",\n    \"publish_range\": 1,\n    \"auth_list\": [\n        {\n            \"type\": 1,\n            \"userid\": \"USERID\"\n        },\n        {\n            \"type\": 2,\n            \"departmentid\": 1\n        }\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOCID",
+          "publish_range": 1,
+          "auth_list": [
+            {
+              "type": 1,
+              "userid": "USERID"
+            },
+            {
+              "type": 2,
+              "departmentid": 1
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"share_code\": \"SHARE_CODE\",\n    \"publish_url\": \"PUBLISH_URL\",\n    \"version\": 1,\n    \"publish_time\": 1710000000,\n    \"publish_doc_title\": \"PUBLISH_DOC_TITLE\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "share_code": "SHARE_CODE",
+          "publish_url": "PUBLISH_URL",
+          "version": 1,
+          "publish_time": 1710000000,
+          "publish_doc_title": "PUBLISH_DOC_TITLE"
+        },
+        "notes": [
+          "⚠️ 此接口内部包含异步任务处理，耗时较长（通常 3-8 秒），建议调用方配置超时时间为 10 秒以上。"
+        ]
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_publish_setting",
+      "domain": "wedoc",
+      "name": "smartdoc_publish_setting",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/publish_setting",
+      "method": "POST",
+      "doc": {
+        "title": "修改发布页可查看范围",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101618",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/publish_setting?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "publish_range",
+            "required": null,
+            "description": "发布可见范围。1：企业内可见；3：企业内外可见；4：指定成员可见",
+            "type": "uint32"
+          },
+          {
+            "name": "auth_list",
+            "required": null,
+            "description": "指定可见成员列表，publish_range为4时必填",
+            "type": "obj[]"
+          },
+          {
+            "name": "auth_list_type",
+            "required": true,
+            "description": "成员类型。1：企业成员；2：部门",
+            "type": "uint32"
+          },
+          {
+            "name": "auth_list_userid",
+            "required": null,
+            "description": "企业成员的userid，type为1时必填",
+            "type": "string"
+          },
+          {
+            "name": "auth_list_departmentid",
+            "required": null,
+            "description": "部门id，type为2时必填",
+            "type": "uint64"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOCID\",\n    \"publish_range\": 4,\n    \"auth_list\": [\n        {\n            \"type\": 1,\n            \"userid\": \"USERID\"\n        },\n        {\n            \"type\": 2,\n            \"departmentid\": 1\n        }\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOCID",
+          "publish_range": 4,
+          "auth_list": [
+            {
+              "type": 1,
+              "userid": "USERID"
+            },
+            {
+              "type": 2,
+              "departmentid": 1
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_update_blocks",
+      "domain": "wedoc",
+      "name": "smartdoc_update_blocks",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/update_blocks",
+      "method": "POST",
+      "doc": {
+        "title": "更新内容块",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101624",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/update_blocks?access_token=ACCESS_TOKEN",
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\",\n    \"blocks\": [\n        {\n            \"id\": \"BLOCK_ID\",\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"content\": \"Updated Content\",\n            \"props\": {}\n        }\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID",
+          "blocks": [
+            {
+              "id": "BLOCK_ID",
+              "type": "BLOCK_TYPE_TEXT",
+              "content": "Updated Content",
+              "props": {}
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"blocks\": [\n        {\n            \"id\": \"BLOCK_ID\",\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"title\": \"Updated Content\",\n            \"parent_id\": \"PARENT_BLOCK_ID\",\n            \"children\": [],\n            \"props\": {}\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "blocks": [
+            {
+              "id": "BLOCK_ID",
+              "type": "BLOCK_TYPE_TEXT",
+              "title": "Updated Content",
+              "parent_id": "PARENT_BLOCK_ID",
+              "children": [],
+              "props": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_update_page",
+      "domain": "wedoc",
+      "name": "smartdoc_update_page",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/update_page",
+      "method": "POST",
+      "doc": {
+        "title": "更新页面",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101621",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/update_page?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "需要更新的页面信息",
+            "type": "PageInfo"
+          },
+          {
+            "name": "info_page_id",
+            "required": true,
+            "description": "要更新的页面 ID",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": false,
+            "description": "新的页面标题",
+            "type": "string"
+          },
+          {
+            "name": "info_layout_mode",
+            "required": false,
+            "description": "页面布局模式，参见 PageLayoutMode",
+            "type": "uint32"
+          },
+          {
+            "name": "info_after_id",
+            "required": false,
+            "description": "新的排序位置，表示排在哪个页面之后，为空表示移到最后",
+            "type": "string"
+          },
+          {
+            "name": "info_parent_id",
+            "required": false,
+            "description": "父页面 ID，用于移动页面到其他父节点下",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": null,
+            "description": "更新后的页面信息",
+            "type": "PageInfo"
+          },
+          {
+            "name": "info_page_id",
+            "required": null,
+            "description": "页面 ID",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": null,
+            "description": "页面标题",
+            "type": "string"
+          },
+          {
+            "name": "info_layout_mode",
+            "required": null,
+            "description": "页面布局模式",
+            "type": "uint32"
+          },
+          {
+            "name": "info_after_id",
+            "required": null,
+            "description": "排序位置（在哪个页面之后）",
+            "type": "string"
+          },
+          {
+            "name": "info_parent_id",
+            "required": null,
+            "description": "父页面 ID",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"info\": {\n        \"page_id\": \"PAGE_ID\",\n        \"title\": \"新的页面标题\",\n        \"layout_mode\": 2,\n        \"after_id\": \"AFTER_PAGE_ID\",\n        \"parent_id\": \"PARENT_PAGE_ID\"\n    }\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "info": {
+            "page_id": "PAGE_ID",
+            "title": "新的页面标题",
+            "layout_mode": 2,
+            "after_id": "AFTER_PAGE_ID",
+            "parent_id": "PARENT_PAGE_ID"
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"info\": {\n        \"page_id\": \"PAGE_ID\",\n        \"title\": \"新的页面标题\",\n        \"layout_mode\": 2,\n        \"after_id\": \"AFTER_PAGE_ID\",\n        \"parent_id\": \"PARENT_PAGE_ID\"\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "info": {
+            "page_id": "PAGE_ID",
+            "title": "新的页面标题",
+            "layout_mode": 2,
+            "after_id": "AFTER_PAGE_ID",
+            "parent_id": "PARENT_PAGE_ID"
+          }
+        }
+      }
+    },
+    {
+      "id": "wedoc.smartdoc_update_smartsheet",
+      "domain": "wedoc",
+      "name": "smartdoc_update_smartsheet",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/update_smartsheet",
+      "method": "POST",
+      "doc": {
+        "title": "更新数据表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101631",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/update_smartsheet?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "数据表信息",
+            "type": "object"
+          },
+          {
+            "name": "info_block_id",
+            "required": true,
+            "description": "要更新的 Block ID",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": false,
+            "description": "数据表标题",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": false,
+            "description": "数据表的block_id。新的排序位置，表示排在哪个 Block 之后，为空表示移到最后。不支持非数据表类型的block_id",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"info\": {\n        \"block_id\": \"BLOCK_ID\",\n        \"title\": \"新的数据表标题\",\n        \"after_id\": \"数据表的block_id\"\n    }\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "info": {
+            "block_id": "BLOCK_ID",
+            "title": "新的数据表标题",
+            "after_id": "数据表的block_id"
+          }
+        },
+        "permissions": [
+          "使用示例",
+          "示例1：修改数据表标题",
+          "示例2：调整数据表位置"
+        ]
       }
     },
     {
@@ -24921,7 +26717,7 @@
             "name": "fields",
             "required": true,
             "description": "字段详情",
-            "type": "object [] (AddFiled)"
+            "type": "object [] (AddField)"
           }
         ],
         "response_params": [
@@ -24941,7 +26737,7 @@
             "name": "fields",
             "required": null,
             "description": "字段详情",
-            "type": "object [] (Filed)"
+            "type": "object [] (Field)"
           }
         ],
         "request_example_text": "{\n\t\"docid\": \"DOCID\",\n\t\"sheet_id\": \"SHEETID\",\n\t\"fields\": [{\n\t\t\"field_title\": \"TITLE\",\n\t\t\"field_type\": \"FIELD_TYPE_TEXT\"\n\t}]\n}",
@@ -26099,6 +27895,12 @@
             "required": false,
             "description": "过滤设置，不支持和sort一起使用",
             "type": "object(FilterSpec)"
+          },
+          {
+            "name": "need_formula_result",
+            "required": false,
+            "description": "是否返回公式、引用的结果",
+            "type": "bool"
           }
         ],
         "response_params": [
@@ -26145,7 +27947,7 @@
             "type": "uint32"
           }
         ],
-        "request_example_text": "{\n\t\"docid\": \"DOCID\",\n\t\"sheet_id\": \"123Abc\",\n\t\"view_id\": \"vCRl8n\",\n\t\"record_ids\": [],\n\t\"key_type\": \"CELL_VALUE_KEY_TYPE_FIELD_TITLE\",\n\t\"field_titles\": [],\n\t\"field_ids\": [],\n\t\"sort\": [],\n\t\"offset\": 0,\n\t\"limit\": 100,\n\t\"ver\": 160,\n\t\"filter_spec\": {\n\t\t\"conjunction\": \"CONJUNCTION_AND\",\n\t\t\"conditions\": [{\n\t\t\t\"field_id\": \"f53B4X\",\n\t\t\t\"field_type\": \"FIELD_TYPE_TEXT\",\n\t\t\t\"operator\": \"OPERATOR_CONTAINS\",\n\t\t\t\"string_value\": {\n\t\t\t\t\"value\": [\n\t\t\t\t\t\"123\"\n\t\t\t\t]\n\t\t\t}\n\t\t}]\n\t}\n}",
+        "request_example_text": "{\n\t\"docid\": \"DOCID\",\n\t\"sheet_id\": \"123Abc\",\n\t\"view_id\": \"vCRl8n\",\n\t\"record_ids\": [],\n\t\"key_type\": \"CELL_VALUE_KEY_TYPE_FIELD_TITLE\",\n\t\"field_titles\": [],\n\t\"field_ids\": [],\n\t\"sort\": [],\n\t\"offset\": 0,\n\t\"limit\": 100,\n\t\"ver\": 160,\n\t\"filter_spec\": {\n\t\t\"conjunction\": \"CONJUNCTION_AND\",\n\t\t\"conditions\": [{\n\t\t\t\"field_id\": \"f53B4X\",\n\t\t\t\"field_type\": \"FIELD_TYPE_TEXT\",\n\t\t\t\"operator\": \"OPERATOR_CONTAINS\",\n\t\t\t\"string_value\": {\n\t\t\t\t\"value\": [\n\t\t\t\t\t\"123\"\n\t\t\t\t]\n\t\t\t}\n\t\t}]\n\t},\n\t\"need_formula_result\":false\n}",
         "request_example_json": {
           "docid": "DOCID",
           "sheet_id": "123Abc",
@@ -26172,7 +27974,8 @@
                 }
               }
             ]
-          }
+          },
+          "need_formula_result": false
         },
         "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n\t   \"ver\":160\n}",
         "response_example_json": {
@@ -27575,7 +29378,7 @@
           {
             "name": "md5",
             "required": null,
-            "description": "文件md5。可用于确认是否跟与上传的文件一致，或避免重复上传相同的文件",
+            "description": "文件md5。可用于确认是否跟与上传的文件一致，或避免重复上传相同的文件。注：通过文件分块上传上传的文件，该字段无效",
             "type": "string"
           },
           {
@@ -27589,7 +29392,25 @@
         "request_example_json": {
           "fileid": "FILEID"
         },
-        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file_info\": {\n        \"fileid\": \"FILEID\",\n        \"file_name\": \"FILE_NAME\",\n        \"spaceid\": \"SPACEID\",\n        \"fatherid\": \"FATHERID\",\n        \"file_size\": FILE_SIZE,\n        \"ctime\": CTIME,\n        \"mtime\": MTIME,\n        \"file_type\": FILE_TYPE,\n        \"file_status\": FILE_STATUS,\n        \"sha\": \"SHA\",\n        \"md5\": \"MD5\",\n        \"url\": \"URL\"\n    }\n}"
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file_info\": {\n        \"fileid\": \"FILEID\",\n        \"file_name\": \"FILE_NAME\",\n        \"spaceid\": \"SPACEID\",\n        \"fatherid\": \"FATHERID\",\n        \"file_size\": 1024,\n        \"ctime\": 1782876044,\n        \"mtime\": 1782876044,\n        \"file_type\": 2,\n        \"file_status\": 1,\n        \"sha\": \"SHA\",\n        \"md5\": \"MD5\",\n        \"url\": \"URL\"\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "file_info": {
+            "fileid": "FILEID",
+            "file_name": "FILE_NAME",
+            "spaceid": "SPACEID",
+            "fatherid": "FATHERID",
+            "file_size": 1024,
+            "ctime": 1782876044,
+            "mtime": 1782876044,
+            "file_type": 2,
+            "file_status": 1,
+            "sha": "SHA",
+            "md5": "MD5",
+            "url": "URL"
+          }
+        }
       }
     },
     {

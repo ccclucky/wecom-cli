@@ -419,7 +419,7 @@
         }
       },
       "doc": {
-        "title": "获取授权存档的成员列表",
+        "title": "获取会话存档授权成员列表",
         "source_url": "https://developer.work.weixin.qq.com/document/path/99962",
         "request_url": "https://qyapi.weixin.qq.com/cgi-bin/chatdata/get_auth_user_list?access_token=ACCESS_TOKEN",
         "request_params": [

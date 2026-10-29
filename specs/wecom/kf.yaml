@@ -961,7 +961,7 @@
             "type": "obj[]"
           },
           {
-            "name": "answers_attachments_1",
+            "name": "answers_attachments",
             "required": true,
             "description": "回答附件。具体见附录-问答附件类型",
             "type": "obj"
