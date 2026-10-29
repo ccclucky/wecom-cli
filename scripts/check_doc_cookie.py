@@ -19,14 +19,28 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 
-from discover_wecom_apis import fetch_html
+try:
+    from discover_wecom_apis import fetch_html
+except ImportError:  # imported as a package member (tests), not a standalone script
+    from scripts.discover_wecom_apis import fetch_html
 
 PROBE_URL = "https://developer.work.weixin.qq.com/document/path/90200"
-USERINFO_RE = re.compile(r'"_userinfo":\{"profile":(\{.*?\}),"isLogin":(true|false)\}', re.S)
+
+
+def _parse_userinfo(html: str) -> dict | None:
+    # A logged-in profile contains nested braces, so a regex over the object
+    # stops too early. Decode the JSON value directly instead.
+    idx = html.find('"_userinfo":')
+    if idx < 0:
+        return None
+    try:
+        obj, _ = json.JSONDecoder().raw_decode(html[idx + len('"_userinfo":'):].lstrip())
+    except ValueError:
+        return None
+    return obj if isinstance(obj, dict) else None
 
 
 def main() -> int:
@@ -53,15 +67,15 @@ def main() -> int:
         _write(args.output, result)
         return 3
 
-    match = USERINFO_RE.search(html)
-    if not match:
+    userinfo = _parse_userinfo(html)
+    if userinfo is None:
         result["status"] = "unknown"
         print("Could not locate the _userinfo marker; the page layout may have changed.")
         _write(args.output, result)
         return 3
 
-    profile = json.loads(match.group(1))
-    logged_in = match.group(2) == "true"
+    profile = userinfo.get("profile") or {}
+    logged_in = userinfo.get("isLogin") is True
     result.update(
         {
             "status": "valid" if logged_in else "expired",
