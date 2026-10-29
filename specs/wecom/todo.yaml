@@ -1,0 +1,345 @@
+{
+  "domain": "todo",
+  "operations": [
+    {
+      "name": "get",
+      "cli_action": "get",
+      "summary": "获取待办详情",
+      "method": "POST",
+      "endpoint": "/cgi-bin/todo/get",
+      "args": [
+        {
+          "name": "todo_id",
+          "flag": "--todo-id",
+          "type": "str",
+          "help": "待办ID",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "todo_id": {
+            "from_arg": "todo_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom todo get --todo-id <todo_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "返回码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码描述"
+            },
+            "content": {
+              "type": "string",
+              "description": "待办内容"
+            },
+            "creator": {
+              "type": "string",
+              "description": "待办创建人ID"
+            },
+            "status": {
+              "type": "integer",
+              "description": "待办状态。 0 - 已完成 1 - 进行中"
+            },
+            "create_time": {
+              "type": "integer",
+              "description": "待办创建时间戳"
+            },
+            "attendees": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "userid": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "integer",
+                    "description": "待办状态。 0 - 已完成 1 - 进行中"
+                  }
+                },
+                "required": [
+                  "userid",
+                  "status"
+                ]
+              }
+            },
+            "end_time": {
+              "type": "integer",
+              "description": "待办截止时间戳"
+            },
+            "reminders": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "remind_time": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "remind_time"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "content",
+            "creator",
+            "status",
+            "create_time",
+            "attendees",
+            "end_time",
+            "reminders"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取待办详情",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101524",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/todo/get?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "todo_id",
+            "required": true,
+            "description": "待办ID",
+            "type": null
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "返回码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码描述",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "required": null,
+            "description": "待办内容",
+            "type": "string"
+          },
+          {
+            "name": "creator",
+            "required": null,
+            "description": "待办创建人ID",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "required": null,
+            "description": "待办状态。 0 - 已完成 1 - 进行中",
+            "type": "int32"
+          },
+          {
+            "name": "create_time",
+            "required": null,
+            "description": "待办创建时间戳",
+            "type": "int32"
+          },
+          {
+            "name": "attendees_userid",
+            "required": null,
+            "description": "待办参与人ID",
+            "type": "string"
+          },
+          {
+            "name": "attendees_status",
+            "required": null,
+            "description": "参与人的待办状态 0 - 完成 1 - 进行中",
+            "type": "int32"
+          },
+          {
+            "name": "end_time",
+            "required": null,
+            "description": "待办截止时间戳",
+            "type": "int32"
+          },
+          {
+            "name": "reminders_remind_time",
+            "required": null,
+            "description": "提醒时间戳",
+            "type": "int32"
+          }
+        ],
+        "request_example_text": "{\n\t\"todo_id\": \"17c7d2bd9f20d652840f72f59e796AAA\"\n}",
+        "request_example_json": {
+          "todo_id": "17c7d2bd9f20d652840f72f59e796AAA"
+        },
+        "response_example_text": "{\n  \"errcode\": 0,\n  \"errmsg\": \"ok\",\n  \"content\": \"完成述职PPT\",\n  \"creator\": \"zhangsan\",\n  \"status\": 1,\n  \"create_time\": 177777777,\n  \"attendees\": [\n    {\n      \"userid\": \"lisi\",\n      \"status\": 0\n    },\n    {\n      \"userid\": \"zhangsan\",\n      \"status\": 1\n    }\n  ],\n  \"end_time\": 17777777,\n  \"reminders\": [\n    {\n      \"remind_time\": 17777777\n    }\n  ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "content": "完成述职PPT",
+          "creator": "zhangsan",
+          "status": 1,
+          "create_time": 177777777,
+          "attendees": [
+            {
+              "userid": "lisi",
+              "status": 0
+            },
+            {
+              "userid": "zhangsan",
+              "status": 1
+            }
+          ],
+          "end_time": 17777777,
+          "reminders": [
+            {
+              "remind_time": 17777777
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "update",
+      "cli_action": "update",
+      "summary": "更新待办状态",
+      "method": "POST",
+      "endpoint": "/cgi-bin/todo/update",
+      "args": [
+        {
+          "name": "todo_id",
+          "flag": "--todo-id",
+          "type": "str",
+          "help": "待办ID",
+          "required": true
+        },
+        {
+          "name": "status",
+          "flag": "--status",
+          "type": "str",
+          "help": "待办整体状态。 0 - 完成 1 - 进行中"
+        },
+        {
+          "name": "attendees",
+          "flag": "--attendees",
+          "type": "str",
+          "help": "待办参与人列表，最多支持20个参与人。可不传或传空数组；不传或为空时不修改参与人列表"
+        },
+        {
+          "name": "attendees_userid",
+          "flag": "--attendees-userid",
+          "type": "str",
+          "help": "待办参与人ID。当传入attendees时，该字段必填",
+          "required": true
+        },
+        {
+          "name": "attendees_status",
+          "flag": "--attendees-status",
+          "type": "str",
+          "help": "参与人的待办状态。当传入attendees时，该字段必填。0 - 完成 1 - 进行中",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "todo_id": {
+            "from_arg": "todo_id"
+          },
+          "status": {
+            "from_arg": "status"
+          },
+          "attendees": {
+            "from_arg": "attendees"
+          },
+          "attendees_userid": {
+            "from_arg": "attendees_userid"
+          },
+          "attendees_status": {
+            "from_arg": "attendees_status"
+          }
+        }
+      },
+      "examples": [
+        "wecom todo update --todo-id <todo_id> [--status <status>] [--attendees <attendees>] --attendees-userid <attendees_userid> --attendees-status <attendees_status>"
+      ],
+      "doc": {
+        "title": "更新待办状态",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101534",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/todo/update?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "access_token",
+            "required": true,
+            "description": "调用接口凭证。获取方法查看“获取access_token”",
+            "type": null
+          },
+          {
+            "name": "todo_id",
+            "required": true,
+            "description": "待办ID",
+            "type": null
+          },
+          {
+            "name": "status",
+            "required": false,
+            "description": "待办整体状态。 0 - 完成 1 - 进行中",
+            "type": null
+          },
+          {
+            "name": "attendees",
+            "required": false,
+            "description": "待办参与人列表，最多支持20个参与人。可不传或传空数组；不传或为空时不修改参与人列表",
+            "type": null
+          },
+          {
+            "name": "attendees_userid",
+            "required": true,
+            "description": "待办参与人ID。当传入attendees时，该字段必填",
+            "type": null
+          },
+          {
+            "name": "attendees_status",
+            "required": true,
+            "description": "参与人的待办状态。当传入attendees时，该字段必填。0 - 完成 1 - 进行中",
+            "type": null
+          }
+        ],
+        "request_example_text": "{\n  \"todo_id\": \"17c7d2bd9f20d652840f72f59e796AAA\",\n  \"status\": 1,\n  \"attendees\": [\n    {\n      \"userid\": \"lisi\",\n      \"status\": 2\n    },\n    {\n      \"userid\": \"zhangsan\",\n      \"status\": 1\n    }\n  ]\n}",
+        "request_example_json": {
+          "todo_id": "17c7d2bd9f20d652840f72f59e796AAA",
+          "status": 1,
+          "attendees": [
+            {
+              "userid": "lisi",
+              "status": 2
+            },
+            {
+              "userid": "zhangsan",
+              "status": 1
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -141,6 +141,15 @@ class GeneratedWeComClient:
                 },
         )
 
+    def batch_openuserid_to_userid(self, *, open_userid_list: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/batch/openuserid_to_userid',
+            json_body={
+                'open_userid_list': open_userid_list
+                },
+        )
+
     def chatdata_async_program_task(self, *, program_id: str, ability_id: str, request_data: str) -> dict:
         return self._requester.request(
             method='POST',
@@ -779,6 +788,16 @@ class GeneratedWeComClient:
                 'start_time': start_time,
                 'end_time': end_time,
                 'offset': offset,
+                'limit': limit
+                },
+        )
+
+    def docdata_get_auth_user_list(self, *, cursor: str | None = None, limit: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/docdata/get_auth_user_list',
+            json_body={
+                'cursor': cursor,
                 'limit': limit
                 },
         )
@@ -2740,6 +2759,28 @@ class GeneratedWeComClient:
             endpoint='/cgi-bin/ticket/get',
         )
 
+    def todo_get(self, *, todo_id: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/todo/get',
+            json_body={
+                'todo_id': todo_id
+                },
+        )
+
+    def todo_update(self, *, todo_id: str, status: str | None = None, attendees: str | None = None, attendees_userid: str, attendees_status: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/todo/update',
+            json_body={
+                'todo_id': todo_id,
+                'status': status,
+                'attendees': attendees,
+                'attendees_userid': attendees_userid,
+                'attendees_status': attendees_status
+                },
+        )
+
     def unknown_cgi_bin_get_jsapi_ticket(self) -> dict:
         return self._requester.request(
             method='GET',
@@ -3205,7 +3246,7 @@ class GeneratedWeComClient:
                 },
         )
 
-    def wedoc_smartsheet_get_records(self, *, docid: str, sheet_id: str, view_id: str | None = None, record_ids: str | None = None, key_type: str | None = None, field_titles: str | None = None, field_ids: str | None = None, sort: str | None = None, offset: str | None = None, limit: str | None = None, ver: str | None = None, filter_spec: str | None = None) -> dict:
+    def wedoc_smartsheet_get_records(self, *, docid: str, sheet_id: str, view_id: str | None = None, record_ids: str | None = None, key_type: str | None = None, field_titles: str | None = None, field_ids: str | None = None, sort: str | None = None, offset: str | None = None, limit: str | None = None, ver: str | None = None, filter_spec: str | None = None, need_formula_result: bool | None = None) -> dict:
         return self._requester.request(
             method='POST',
             endpoint='/cgi-bin/wedoc/smartsheet/get_records',
@@ -3221,7 +3262,8 @@ class GeneratedWeComClient:
                 'offset': offset,
                 'limit': limit,
                 'ver': ver,
-                'filter_spec': filter_spec
+                'filter_spec': filter_spec,
+                'need_formula_result': need_formula_result
                 },
         )
 
@@ -3365,6 +3407,221 @@ class GeneratedWeComClient:
             json_body={
                 'cursor': cursor,
                 'limit': limit
+                },
+        )
+
+    def wedoc_file_upload(self, *, docid: str | None = None, file_name: str | None = None, file_base64_content: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/file_upload',
+            json_body={
+                'docid': docid,
+                'file_name': file_name,
+                'file_base64_content': file_base64_content
+                },
+        )
+
+    def wedoc_file_upload_init(self, *, docid: str, file_name: str, size: str, block_sha: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/file_upload_init',
+            json_body={
+                'docid': docid,
+                'file_name': file_name,
+                'size': size,
+                'block_sha': block_sha
+                },
+        )
+
+    def wedoc_smartdoc_add_blocks(self, *, docid: str, page_id: str, blocks: str, blocks_type: str, blocks_title: str | None = None, blocks_parent_id: str | None = None, blocks_after_id: str | None = None, blocks_children: str | None = None, blocks_props: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/add_blocks',
+            json_body={
+                'docid': docid,
+                'page_id': page_id,
+                'blocks': blocks,
+                'blocks_type': blocks_type,
+                'blocks_title': blocks_title,
+                'blocks_parent_id': blocks_parent_id,
+                'blocks_after_id': blocks_after_id,
+                'blocks_children': blocks_children,
+                'blocks_props': blocks_props
+                },
+        )
+
+    def wedoc_smartdoc_add_page(self, *, docid: str, info: str, info_title: str | None = None, info_parent_id: str | None = None, info_after_id: str | None = None, info_layout_mode: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/add_page',
+            json_body={
+                'docid': docid,
+                'info': info,
+                'info_title': info_title,
+                'info_parent_id': info_parent_id,
+                'info_after_id': info_after_id,
+                'info_layout_mode': info_layout_mode
+                },
+        )
+
+    def wedoc_smartdoc_add_smartsheet(self, *, docid: str, info: str, info_title: str | None = None, info_after_id: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/add_smartsheet',
+            json_body={
+                'docid': docid,
+                'info': info,
+                'info_title': info_title,
+                'info_after_id': info_after_id
+                },
+        )
+
+    def wedoc_smartdoc_cancel_publish(self, *, docid: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/cancel_publish',
+            json_body={
+                'docid': docid
+                },
+        )
+
+    def wedoc_smartdoc_delete_blocks(self, *, docid: str, page_id: str, ids: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/delete_blocks',
+            json_body={
+                'docid': docid,
+                'page_id': page_id,
+                'ids': ids
+                },
+        )
+
+    def wedoc_smartdoc_delete_page(self, *, docid: str, page_id: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/delete_page',
+            json_body={
+                'docid': docid,
+                'page_id': page_id
+                },
+        )
+
+    def wedoc_smartdoc_delete_smartsheet(self, *, docid: str, block_id: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/delete_smartsheet',
+            json_body={
+                'docid': docid,
+                'block_id': block_id
+                },
+        )
+
+    def wedoc_smartdoc_export_task(self, *, docid: str, content_type: str, page_id: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/export_task',
+            json_body={
+                'docid': docid,
+                'content_type': content_type,
+                'page_id': page_id
+                },
+        )
+
+    def wedoc_smartdoc_get_block_list(self, *, docid: str, page_id: str, ids: str | None = None, start: str | None = None, limit: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/get_block_list',
+            json_body={
+                'docid': docid,
+                'page_id': page_id,
+                'ids': ids,
+                'start': start,
+                'limit': limit
+                },
+        )
+
+    def wedoc_smartdoc_get_page_hierarchy(self, *, docid: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/get_page_hierarchy',
+            json_body={
+                'docid': docid
+                },
+        )
+
+    def wedoc_smartdoc_get_smartsheet_info(self, *, docid: str) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/get_smartsheet_info',
+            json_body={
+                'docid': docid
+                },
+        )
+
+    def wedoc_smartdoc_publish(self, *, docid: str, publish_range: str | None = None, auth_list: str | None = None, auth_list_type: str, auth_list_userid: str | None = None, auth_list_departmentid: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/publish',
+            json_body={
+                'docid': docid,
+                'publish_range': publish_range,
+                'auth_list': auth_list,
+                'auth_list_type': auth_list_type,
+                'auth_list_userid': auth_list_userid,
+                'auth_list_departmentid': auth_list_departmentid
+                },
+        )
+
+    def wedoc_smartdoc_publish_setting(self, *, docid: str, publish_range: str | None = None, auth_list: str | None = None, auth_list_type: str, auth_list_userid: str | None = None, auth_list_departmentid: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/publish_setting',
+            json_body={
+                'docid': docid,
+                'publish_range': publish_range,
+                'auth_list': auth_list,
+                'auth_list_type': auth_list_type,
+                'auth_list_userid': auth_list_userid,
+                'auth_list_departmentid': auth_list_departmentid
+                },
+        )
+
+    def wedoc_smartdoc_update_blocks(self, *, docid: str | None = None, page_id: str | None = None, blocks: Any | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/update_blocks',
+            json_body={
+                'docid': docid,
+                'page_id': page_id,
+                'blocks': blocks
+                },
+        )
+
+    def wedoc_smartdoc_update_page(self, *, docid: str, info: str, info_page_id: str, info_title: str | None = None, info_layout_mode: str | None = None, info_after_id: str | None = None, info_parent_id: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/update_page',
+            json_body={
+                'docid': docid,
+                'info': info,
+                'info_page_id': info_page_id,
+                'info_title': info_title,
+                'info_layout_mode': info_layout_mode,
+                'info_after_id': info_after_id,
+                'info_parent_id': info_parent_id
+                },
+        )
+
+    def wedoc_smartdoc_update_smartsheet(self, *, docid: str, info: str, info_block_id: str, info_title: str | None = None, info_after_id: str | None = None) -> dict:
+        return self._requester.request(
+            method='POST',
+            endpoint='/cgi-bin/wedoc/smartdoc/update_smartsheet',
+            json_body={
+                'docid': docid,
+                'info': info,
+                'info_block_id': info_block_id,
+                'info_title': info_title,
+                'info_after_id': info_after_id
                 },
         )
 

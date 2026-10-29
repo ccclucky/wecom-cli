@@ -650,7 +650,7 @@
           {
             "name": "md5",
             "required": null,
-            "description": "文件md5。可用于确认是否跟与上传的文件一致，或避免重复上传相同的文件",
+            "description": "文件md5。可用于确认是否跟与上传的文件一致，或避免重复上传相同的文件。注：通过文件分块上传上传的文件，该字段无效",
             "type": "string"
           },
           {
@@ -664,10 +664,118 @@
         "request_example_json": {
           "fileid": "FILEID"
         },
-        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file_info\": {\n        \"fileid\": \"FILEID\",\n        \"file_name\": \"FILE_NAME\",\n        \"spaceid\": \"SPACEID\",\n        \"fatherid\": \"FATHERID\",\n        \"file_size\": FILE_SIZE,\n        \"ctime\": CTIME,\n        \"mtime\": MTIME,\n        \"file_type\": FILE_TYPE,\n        \"file_status\": FILE_STATUS,\n        \"sha\": \"SHA\",\n        \"md5\": \"MD5\",\n        \"url\": \"URL\"\n    }\n}",
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file_info\": {\n        \"fileid\": \"FILEID\",\n        \"file_name\": \"FILE_NAME\",\n        \"spaceid\": \"SPACEID\",\n        \"fatherid\": \"FATHERID\",\n        \"file_size\": 1024,\n        \"ctime\": 1782876044,\n        \"mtime\": 1782876044,\n        \"file_type\": 2,\n        \"file_status\": 1,\n        \"sha\": \"SHA\",\n        \"md5\": \"MD5\",\n        \"url\": \"URL\"\n    }\n}",
         "review_hints": [
           "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
-        ]
+        ],
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "file_info": {
+            "fileid": "FILEID",
+            "file_name": "FILE_NAME",
+            "spaceid": "SPACEID",
+            "fatherid": "FATHERID",
+            "file_size": 1024,
+            "ctime": 1782876044,
+            "mtime": 1782876044,
+            "file_type": 2,
+            "file_status": 1,
+            "sha": "SHA",
+            "md5": "MD5",
+            "url": "URL"
+          }
+        }
+      },
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "file_info": {
+              "type": "object",
+              "properties": {
+                "fileid": {
+                  "type": "string",
+                  "description": "文件fileid"
+                },
+                "file_name": {
+                  "type": "string",
+                  "description": "文件名字"
+                },
+                "spaceid": {
+                  "type": "string",
+                  "description": "文件所在的空间spaceid"
+                },
+                "fatherid": {
+                  "type": "string",
+                  "description": "文件所在的目录fileid, 在根目录时为fileid"
+                },
+                "file_size": {
+                  "type": "integer",
+                  "description": "文件大小"
+                },
+                "ctime": {
+                  "type": "integer",
+                  "description": "文件创建时间"
+                },
+                "mtime": {
+                  "type": "integer",
+                  "description": "文件最后修改时间"
+                },
+                "file_type": {
+                  "type": "integer",
+                  "description": "1: 文件夹 2:文件 3: 文档(文档) 4: 文档(表格) 5:文档(收集表) 6:文档(幻灯片)"
+                },
+                "file_status": {
+                  "type": "integer",
+                  "description": "文件状态, 1:正常 2:删除"
+                },
+                "sha": {
+                  "type": "string",
+                  "description": "文件sha。可用于确认是否跟与上传的文件一致，或避免重复上传相同的文件"
+                },
+                "md5": {
+                  "type": "string",
+                  "description": "文件md5。可用于确认是否跟与上传的文件一致，或避免重复上传相同的文件。注：通过文件分块上传上传的文件，该字段无效"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "仅微文档类型返回访问链接"
+                }
+              },
+              "required": [
+                "fileid",
+                "file_name",
+                "spaceid",
+                "fatherid",
+                "file_size",
+                "ctime",
+                "mtime",
+                "file_type",
+                "file_status",
+                "sha",
+                "md5",
+                "url"
+              ]
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "file_info"
+          ]
+        }
       }
     },
     {

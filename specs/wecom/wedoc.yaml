@@ -1248,7 +1248,7 @@
             "type": "string"
           },
           {
-            "name": "userid_1",
+            "name": "userid",
             "required": null,
             "description": "企业内成员的id，匿名填写不返回",
             "type": "string"
@@ -1260,13 +1260,13 @@
             "type": "object[]"
           },
           {
-            "name": "user_name_1",
+            "name": "user_name",
             "required": null,
             "description": "名字",
             "type": "string"
           },
           {
-            "name": "userid_2",
+            "name": "userid",
             "required": null,
             "description": "企业内成员的id",
             "type": "string"
@@ -2101,12 +2101,6 @@
             "type": "string"
           },
           {
-            "name": "placeholder",
-            "required": false,
-            "description": "编辑提示",
-            "type": "string"
-          },
-          {
             "name": "question_extend_setting",
             "required": false,
             "description": "问题的额外设置。不同问题类型有相应的设置，详见question_extend_setting字段描述",
@@ -2131,7 +2125,7 @@
             "type": "string"
           },
           {
-            "name": "status_1",
+            "name": "status",
             "required": true,
             "description": "选项状态。1：正常；2：被删除",
             "type": "uint32"
@@ -2259,7 +2253,7 @@
             "type": "string"
           }
         ],
-        "request_example_text": "{\n  \"oper\": 1,\n  \"formid\": \"FORMID\",\n  \"form_info\": {\n    \"form_title\": \"FORM_TITLE\",\n    \"form_desc\": \"FORM_DESC\",\n    \"form_header\": \"FORM_HEADER\",\n    \"form_question\": {\n      \"items\": [\n        {\n          \"question_id\": 1,\n          \"title\": \"TITLE\",\n          \"pos\": 1,\n          \"status\": 1,\n          \"reply_type\": 1,\n          \"must_reply\": false,\n          \"note\": \"NOTE\",\n          \"option_item\": [\n            {\n              \"key\": 1,\n              \"value\": \"VALUE\",\n              \"status\": 1\n            }\n          ],\n          \"placeholder\": \"PLACEHOLDER\",\n          \"question_extend_setting\": {}\n        }\n      ]\n    },\n    \"form_setting\": {\n      \"fill_out_auth\": 0,\n      \"fill_in_range\": {\n        \"userids\": [\n          \"USER_1\",\n          \"USER_2\",\n          \"USER_3\"\n        ],\n        \"departmentids\": [\n          10001,\n          10002,\n          10003\n        ]\n      },\n      \"setting_manager_range\": {\n        \"userids\": [\n          \"USER_4\",\n          \"USER_5\",\n          \"USER_6\"\n        ]\n      },\n      \"timed_repeat_info\": {\n        \"enable\": false,\n        \"week_flag\": 0,\n        \"remind_time\": 0,\n        \"repeat_type\": 0,\n        \"skip_holiday\": false,\n        \"day_of_month\": 1,\n        \"fork_finish_type\": 0\n      },\n      \"allow_multi_fill\": false,\n      \"timed_finish\": 0,\n      \"can_anonymous\": false,\n      \"can_notify_submit\": false\n    }\n  }\n}",
+        "request_example_text": "{\n  \"oper\": 1,\n  \"formid\": \"FORMID\",\n  \"form_info\": {\n    \"form_title\": \"FORM_TITLE\",\n    \"form_desc\": \"FORM_DESC\",\n    \"form_header\": \"FORM_HEADER\",\n    \"form_question\": {\n      \"items\": [\n        {\n          \"question_id\": 1,\n          \"title\": \"TITLE\",\n          \"pos\": 1,\n          \"status\": 1,\n          \"reply_type\": 1,\n          \"must_reply\": false,\n          \"note\": \"NOTE\",\n          \"option_item\": [\n            {\n              \"key\": 1,\n              \"value\": \"VALUE\",\n              \"status\": 1\n            }\n          ],\n          \"question_extend_setting\": {}\n        }\n      ]\n    },\n    \"form_setting\": {\n      \"fill_out_auth\": 0,\n      \"fill_in_range\": {\n        \"userids\": [\n          \"USER_1\",\n          \"USER_2\",\n          \"USER_3\"\n        ],\n        \"departmentids\": [\n          10001,\n          10002,\n          10003\n        ]\n      },\n      \"setting_manager_range\": {\n        \"userids\": [\n          \"USER_4\",\n          \"USER_5\",\n          \"USER_6\"\n        ]\n      },\n      \"timed_repeat_info\": {\n        \"enable\": false,\n        \"week_flag\": 0,\n        \"remind_time\": 0,\n        \"repeat_type\": 0,\n        \"skip_holiday\": false,\n        \"day_of_month\": 1,\n        \"fork_finish_type\": 0\n      },\n      \"allow_multi_fill\": false,\n      \"timed_finish\": 0,\n      \"can_anonymous\": false,\n      \"can_notify_submit\": false\n    }\n  }\n}",
         "request_example_json": {
           "oper": 1,
           "formid": "FORMID",
@@ -2284,7 +2278,6 @@
                       "status": 1
                     }
                   ],
-                  "placeholder": "PLACEHOLDER",
                   "question_extend_setting": {}
                 }
               ]
@@ -2675,7 +2668,7 @@
             "name": "fields",
             "required": true,
             "description": "字段详情",
-            "type": "object [] (AddFiled)"
+            "type": "object [] (AddField)"
           }
         ],
         "response_params": [
@@ -2695,7 +2688,7 @@
             "name": "fields",
             "required": null,
             "description": "字段详情",
-            "type": "object [] (Filed)"
+            "type": "object [] (Field)"
           }
         ],
         "request_example_text": "{\n\t\"docid\": \"DOCID\",\n\t\"sheet_id\": \"SHEETID\",\n\t\"fields\": [{\n\t\t\"field_title\": \"TITLE\",\n\t\t\"field_type\": \"FIELD_TYPE_TEXT\"\n\t}]\n}",
@@ -4855,6 +4848,12 @@
           "flag": "--filter-spec",
           "type": "str",
           "help": "过滤设置，不支持和sort一起使用"
+        },
+        {
+          "name": "need_formula_result",
+          "flag": "--need-formula-result",
+          "type": "bool",
+          "help": "是否返回公式、引用的结果"
         }
       ],
       "request": {
@@ -4894,6 +4893,9 @@
           },
           "filter_spec": {
             "from_arg": "filter_spec"
+          },
+          "need_formula_result": {
+            "from_arg": "need_formula_result"
           }
         }
       },
@@ -5003,6 +5005,12 @@
             "required": false,
             "description": "过滤设置，不支持和sort一起使用",
             "type": "object(FilterSpec)"
+          },
+          {
+            "name": "need_formula_result",
+            "required": false,
+            "description": "是否返回公式、引用的结果",
+            "type": "bool"
           }
         ],
         "response_params": [
@@ -5049,7 +5057,7 @@
             "type": "uint32"
           }
         ],
-        "request_example_text": "{\n\t\"docid\": \"DOCID\",\n\t\"sheet_id\": \"123Abc\",\n\t\"view_id\": \"vCRl8n\",\n\t\"record_ids\": [],\n\t\"key_type\": \"CELL_VALUE_KEY_TYPE_FIELD_TITLE\",\n\t\"field_titles\": [],\n\t\"field_ids\": [],\n\t\"sort\": [],\n\t\"offset\": 0,\n\t\"limit\": 100,\n\t\"ver\": 160,\n\t\"filter_spec\": {\n\t\t\"conjunction\": \"CONJUNCTION_AND\",\n\t\t\"conditions\": [{\n\t\t\t\"field_id\": \"f53B4X\",\n\t\t\t\"field_type\": \"FIELD_TYPE_TEXT\",\n\t\t\t\"operator\": \"OPERATOR_CONTAINS\",\n\t\t\t\"string_value\": {\n\t\t\t\t\"value\": [\n\t\t\t\t\t\"123\"\n\t\t\t\t]\n\t\t\t}\n\t\t}]\n\t}\n}",
+        "request_example_text": "{\n\t\"docid\": \"DOCID\",\n\t\"sheet_id\": \"123Abc\",\n\t\"view_id\": \"vCRl8n\",\n\t\"record_ids\": [],\n\t\"key_type\": \"CELL_VALUE_KEY_TYPE_FIELD_TITLE\",\n\t\"field_titles\": [],\n\t\"field_ids\": [],\n\t\"sort\": [],\n\t\"offset\": 0,\n\t\"limit\": 100,\n\t\"ver\": 160,\n\t\"filter_spec\": {\n\t\t\"conjunction\": \"CONJUNCTION_AND\",\n\t\t\"conditions\": [{\n\t\t\t\"field_id\": \"f53B4X\",\n\t\t\t\"field_type\": \"FIELD_TYPE_TEXT\",\n\t\t\t\"operator\": \"OPERATOR_CONTAINS\",\n\t\t\t\"string_value\": {\n\t\t\t\t\"value\": [\n\t\t\t\t\t\"123\"\n\t\t\t\t]\n\t\t\t}\n\t\t}]\n\t},\n\t\"need_formula_result\":false\n}",
         "request_example_json": {
           "docid": "DOCID",
           "sheet_id": "123Abc",
@@ -5076,7 +5084,8 @@
                 }
               }
             ]
-          }
+          },
+          "need_formula_result": false
         },
         "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n\t   \"ver\":160\n}",
         "response_example_json": {
@@ -7085,6 +7094,2906 @@
             "lisi"
           ]
         }
+      }
+    },
+    {
+      "name": "file_upload",
+      "cli_action": "file-upload",
+      "summary": "上传文档文件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/file_upload",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "TODO: docid"
+        },
+        {
+          "name": "file_name",
+          "flag": "--file-name",
+          "type": "str",
+          "help": "TODO: file_name"
+        },
+        {
+          "name": "file_base64_content",
+          "flag": "--file-base64-content",
+          "type": "str",
+          "help": "TODO: file_base64_content"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "file_name": {
+            "from_arg": "file_name"
+          },
+          "file_base64_content": {
+            "from_arg": "file_base64_content"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc file-upload [--docid <docid>] [--file-name <file_name>] [--file-base64-content <file_base64_content>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "file_url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "file_url"
+          ]
+        }
+      },
+      "doc": {
+        "title": "上传文档文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101870",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/file_upload?access_token=ACCESS_TOKEN",
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"file_name\": \"FILE_NAME\",\n    \"file_base64_content\": \"FILE_BASE64_CONTENT\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "file_name": "FILE_NAME",
+          "file_base64_content": "FILE_BASE64_CONTENT"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"file_url\": \"FILE_URL\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "file_url": "FILE_URL"
+        }
+      }
+    },
+    {
+      "name": "file_upload_init",
+      "cli_action": "file-upload-init",
+      "summary": "分块上传文档文件",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/file_upload_init",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "文档id，通过新建文档接口创建后获得",
+          "required": true
+        },
+        {
+          "name": "file_name",
+          "flag": "--file-name",
+          "type": "str",
+          "help": "文件名字",
+          "required": true
+        },
+        {
+          "name": "size",
+          "flag": "--size",
+          "type": "str",
+          "help": "文件大小。最大支持20G",
+          "required": true
+        },
+        {
+          "name": "block_sha",
+          "flag": "--block-sha",
+          "type": "str",
+          "help": "文件分块累积sha值，按分块顺序填入数组。参考附录-分块累积sha说明",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "file_name": {
+            "from_arg": "file_name"
+          },
+          "size": {
+            "from_arg": "size"
+          },
+          "block_sha": {
+            "from_arg": "block_sha"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc file-upload-init --docid <docid> --file-name <file_name> --size <size> --block-sha <block_sha>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "hit_exist": {
+              "type": "boolean",
+              "description": "是否命中秒传"
+            },
+            "upload_key": {
+              "type": "string",
+              "description": "文件上传凭证。不命中秒传时返回，作为file_upload_part参数"
+            },
+            "file_url": {
+              "type": "string",
+              "description": "文件file_url。命中秒传时返回，此时上传流程完成"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "hit_exist",
+            "upload_key",
+            "file_url"
+          ]
+        }
+      },
+      "doc": {
+        "title": "分块上传文档文件",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101871",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/file_upload_init?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "文档id，通过新建文档接口创建后获得",
+            "type": "string"
+          },
+          {
+            "name": "file_name",
+            "required": true,
+            "description": "文件名字",
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "required": true,
+            "description": "文件大小。最大支持20G",
+            "type": "uint64"
+          },
+          {
+            "name": "block_sha",
+            "required": true,
+            "description": "文件分块累积sha值，按分块顺序填入数组。参考附录-分块累积sha说明",
+            "type": "string[]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "hit_exist",
+            "required": null,
+            "description": "是否命中秒传",
+            "type": "bool"
+          },
+          {
+            "name": "upload_key",
+            "required": null,
+            "description": "文件上传凭证。不命中秒传时返回，作为file_upload_part参数",
+            "type": "string"
+          },
+          {
+            "name": "file_url",
+            "required": null,
+            "description": "文件file_url。命中秒传时返回，此时上传流程完成",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"file_name\": \"FILE_NAME\",\n    \"size\": 123,\n    \"block_sha\": [\n        \"STATE1\",\n        \"STATE2\"\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "file_name": "FILE_NAME",
+          "size": 123,
+          "block_sha": [
+            "STATE1",
+            "STATE2"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"hit_exist\": false,\n    \"upload_key\": \"UPLOAD_KEY\",\n    \"file_url\": \"FILE_URL\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "hit_exist": false,
+          "upload_key": "UPLOAD_KEY",
+          "file_url": "FILE_URL"
+        },
+        "permissions": [
+          "分块上传初始化",
+          "请求分块上传初始化接口，如果命中秒传，则流程结束，完成上传。",
+          "请求方式：POST（HTTPS）\n请求地址:  https://qyapi.weixin.qq.com/cgi-bin/wedoc/file_upload_init?access_token=ACCESS_TOKEN",
+          "请求包体"
+        ]
+      }
+    },
+    {
+      "name": "smartdoc_add_blocks",
+      "cli_action": "smartdoc-add-blocks",
+      "summary": "添加内容块",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/add_blocks",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id，可通过 新建文档 接口创建",
+          "required": true
+        },
+        {
+          "name": "page_id",
+          "flag": "--page-id",
+          "type": "str",
+          "help": "页面的id",
+          "required": true
+        },
+        {
+          "name": "blocks",
+          "flag": "--blocks",
+          "type": "str",
+          "help": "需要添加的 Block 列表",
+          "required": true
+        },
+        {
+          "name": "blocks_type",
+          "flag": "--blocks-type",
+          "type": "str",
+          "help": "Block 类型，参见 BlockType",
+          "required": true
+        },
+        {
+          "name": "blocks_title",
+          "flag": "--blocks-title",
+          "type": "str",
+          "help": "Block 的文本内容"
+        },
+        {
+          "name": "blocks_parent_id",
+          "flag": "--blocks-parent-id",
+          "type": "str",
+          "help": "父节点 Block ID"
+        },
+        {
+          "name": "blocks_after_id",
+          "flag": "--blocks-after-id",
+          "type": "str",
+          "help": "插入位置，表示排在哪个 Block 之后，为空表示插入到最前"
+        },
+        {
+          "name": "blocks_children",
+          "flag": "--blocks-children",
+          "type": "str",
+          "help": "子节点 ID 列表"
+        },
+        {
+          "name": "blocks_props",
+          "flag": "--blocks-props",
+          "type": "str",
+          "help": "Block 属性"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "page_id": {
+            "from_arg": "page_id"
+          },
+          "blocks": {
+            "from_arg": "blocks"
+          },
+          "blocks_type": {
+            "from_arg": "blocks_type"
+          },
+          "blocks_title": {
+            "from_arg": "blocks_title"
+          },
+          "blocks_parent_id": {
+            "from_arg": "blocks_parent_id"
+          },
+          "blocks_after_id": {
+            "from_arg": "blocks_after_id"
+          },
+          "blocks_children": {
+            "from_arg": "blocks_children"
+          },
+          "blocks_props": {
+            "from_arg": "blocks_props"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-add-blocks --docid <docid> --page-id <page_id> --blocks <blocks> --blocks-type <blocks_type> [--blocks-title <blocks_title>] [--blocks-parent-id <blocks_parent_id>] [--blocks-after-id <blocks_after_id>] [--blocks-children <blocks_children>] [--blocks-props <blocks_props>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "parent_id": {
+                    "type": "string"
+                  },
+                  "after_id": {
+                    "type": "string"
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "props": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "title",
+                  "parent_id",
+                  "after_id",
+                  "children",
+                  "props"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "blocks"
+          ]
+        }
+      },
+      "doc": {
+        "title": "添加内容块",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101623",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/add_blocks?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          },
+          {
+            "name": "page_id",
+            "required": true,
+            "description": "页面的id",
+            "type": "string"
+          },
+          {
+            "name": "blocks",
+            "required": true,
+            "description": "需要添加的 Block 列表",
+            "type": "object[](BlockInfo)"
+          },
+          {
+            "name": "blocks_type",
+            "required": true,
+            "description": "Block 类型，参见 BlockType",
+            "type": "string"
+          },
+          {
+            "name": "blocks_title",
+            "required": false,
+            "description": "Block 的文本内容",
+            "type": "string"
+          },
+          {
+            "name": "blocks_parent_id",
+            "required": false,
+            "description": "父节点 Block ID",
+            "type": "string"
+          },
+          {
+            "name": "blocks_after_id",
+            "required": false,
+            "description": "插入位置，表示排在哪个 Block 之后，为空表示插入到最前",
+            "type": "string"
+          },
+          {
+            "name": "blocks_children",
+            "required": false,
+            "description": "子节点 ID 列表",
+            "type": "string[]"
+          },
+          {
+            "name": "blocks_props",
+            "required": false,
+            "description": "Block 属性",
+            "type": "object"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\",\n    \"blocks\": [\n        {\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"title\": \"Hello World\",\n            \"parent_id\": \"PARENT_BLOCK_ID\",\n            \"after_id\": \"AFTER_BLOCK_ID\",\n            \"props\": {}\n        }\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID",
+          "blocks": [
+            {
+              "type": "BLOCK_TYPE_TEXT",
+              "title": "Hello World",
+              "parent_id": "PARENT_BLOCK_ID",
+              "after_id": "AFTER_BLOCK_ID",
+              "props": {}
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"blocks\": [\n        {\n            \"id\": \"BLOCK_ID\",\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"title\": \"Hello World\",\n            \"parent_id\": \"PARENT_BLOCK_ID\",\n            \"after_id\": \"AFTER_BLOCK_ID\",\n            \"children\": [],\n            \"props\": {}\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "blocks": [
+            {
+              "id": "BLOCK_ID",
+              "type": "BLOCK_TYPE_TEXT",
+              "title": "Hello World",
+              "parent_id": "PARENT_BLOCK_ID",
+              "after_id": "AFTER_BLOCK_ID",
+              "children": [],
+              "props": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "smartdoc_add_page",
+      "cli_action": "smartdoc-add-page",
+      "summary": "添加页面",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/add_page",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id，可通过 新建文档 接口创建",
+          "required": true
+        },
+        {
+          "name": "info",
+          "flag": "--info",
+          "type": "str",
+          "help": "需要添加的页面信息",
+          "required": true
+        },
+        {
+          "name": "info_title",
+          "flag": "--info-title",
+          "type": "str",
+          "help": "页面标题"
+        },
+        {
+          "name": "info_parent_id",
+          "flag": "--info-parent-id",
+          "type": "str",
+          "help": "父页面 ID，用于创建子页面，为空标识第一层页面"
+        },
+        {
+          "name": "info_after_id",
+          "flag": "--info-after-id",
+          "type": "str",
+          "help": "插入位置，表示排在哪个页面之后，为空表示插入到最前"
+        },
+        {
+          "name": "info_layout_mode",
+          "flag": "--info-layout-mode",
+          "type": "str",
+          "help": "页面布局模式，参见 PageLayoutMode"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "info": {
+            "from_arg": "info"
+          },
+          "info_title": {
+            "from_arg": "info_title"
+          },
+          "info_parent_id": {
+            "from_arg": "info_parent_id"
+          },
+          "info_after_id": {
+            "from_arg": "info_after_id"
+          },
+          "info_layout_mode": {
+            "from_arg": "info_layout_mode"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-add-page --docid <docid> --info <info> [--info-title <info_title>] [--info-parent-id <info_parent_id>] [--info-after-id <info_after_id>] [--info-layout-mode <info_layout_mode>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "info": {
+              "type": "object",
+              "properties": {
+                "page_id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "parent_id": {
+                  "type": "string"
+                },
+                "after_id": {
+                  "type": "string"
+                },
+                "layout_mode": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "page_id",
+                "title",
+                "parent_id",
+                "after_id",
+                "layout_mode"
+              ],
+              "description": "添加成功后返回的页面信息（含生成的 page_id）"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "info"
+          ]
+        }
+      },
+      "doc": {
+        "title": "添加页面",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101620",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/add_page?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "需要添加的页面信息",
+            "type": "object"
+          },
+          {
+            "name": "info_title",
+            "required": false,
+            "description": "页面标题",
+            "type": "string"
+          },
+          {
+            "name": "info_parent_id",
+            "required": false,
+            "description": "父页面 ID，用于创建子页面，为空标识第一层页面",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": false,
+            "description": "插入位置，表示排在哪个页面之后，为空表示插入到最前",
+            "type": "string"
+          },
+          {
+            "name": "info_layout_mode",
+            "required": false,
+            "description": "页面布局模式，参见 PageLayoutMode",
+            "type": "uint32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": null,
+            "description": "添加成功后返回的页面信息（含生成的 page_id）",
+            "type": "PageInfo"
+          },
+          {
+            "name": "info_page_id",
+            "required": null,
+            "description": "页面 ID（系统生成）",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": null,
+            "description": "页面标题",
+            "type": "string"
+          },
+          {
+            "name": "info_parent_id",
+            "required": null,
+            "description": "父页面 ID",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": null,
+            "description": "排序位置（在哪个页面之后）",
+            "type": "string"
+          },
+          {
+            "name": "info_layout_mode",
+            "required": null,
+            "description": "页面布局模式",
+            "type": "uint32"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"info\": {\n        \"title\": \"页面标题\",\n        \"parent_id\": \"PARENT_PAGE_ID\",\n        \"after_id\": \"AFTER_PAGE_ID\",\n        \"layout_mode\": 1\n    }\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "info": {
+            "title": "页面标题",
+            "parent_id": "PARENT_PAGE_ID",
+            "after_id": "AFTER_PAGE_ID",
+            "layout_mode": 1
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"info\": {\n        \"page_id\": \"PAGE_ID\",\n        \"title\": \"页面标题\",\n        \"parent_id\": \"PARENT_PAGE_ID\",\n        \"after_id\": \"AFTER_PAGE_ID\",\n        \"layout_mode\": 1\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "info": {
+            "page_id": "PAGE_ID",
+            "title": "页面标题",
+            "parent_id": "PARENT_PAGE_ID",
+            "after_id": "AFTER_PAGE_ID",
+            "layout_mode": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "smartdoc_add_smartsheet",
+      "cli_action": "smartdoc-add-smartsheet",
+      "summary": "添加数据表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/add_smartsheet",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "info",
+          "flag": "--info",
+          "type": "str",
+          "help": "数据表信息",
+          "required": true
+        },
+        {
+          "name": "info_title",
+          "flag": "--info-title",
+          "type": "str",
+          "help": "数据表标题"
+        },
+        {
+          "name": "info_after_id",
+          "flag": "--info-after-id",
+          "type": "str",
+          "help": "数据表的block_id。不支持非数据表类型的block_id"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "info": {
+            "from_arg": "info"
+          },
+          "info_title": {
+            "from_arg": "info_title"
+          },
+          "info_after_id": {
+            "from_arg": "info_after_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-add-smartsheet --docid <docid> --info <info> [--info-title <info_title>] [--info-after-id <info_after_id>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "info": {
+              "type": "object",
+              "properties": {
+                "block_id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "sheet_id": {
+                  "type": "string"
+                },
+                "ss_docid": {
+                  "type": "string"
+                },
+                "after_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "block_id",
+                "title",
+                "sheet_id",
+                "ss_docid",
+                "after_id"
+              ],
+              "description": "添加成功后返回的数据表信息"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "info"
+          ]
+        }
+      },
+      "doc": {
+        "title": "添加数据表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101629",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/add_smartsheet?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "数据表信息",
+            "type": "object"
+          },
+          {
+            "name": "info_title",
+            "required": false,
+            "description": "数据表标题",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": false,
+            "description": "数据表的block_id。不支持非数据表类型的block_id",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": null,
+            "description": "添加成功后返回的数据表信息",
+            "type": "object"
+          },
+          {
+            "name": "info_block_id",
+            "required": null,
+            "description": "Block ID（系统生成）",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": null,
+            "description": "数据表标题",
+            "type": "string"
+          },
+          {
+            "name": "info_sheet_id",
+            "required": null,
+            "description": "数据表 sheet_id",
+            "type": "string"
+          },
+          {
+            "name": "info_ss_docid",
+            "required": null,
+            "description": "智能文档 docid",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": null,
+            "description": "排序位置（在哪个 Block 之后）",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"info\": {\n        \"title\": \"数据表标题\",\n        \"after_id\": \"数据表的block_id\"\n    }\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "info": {
+            "title": "数据表标题",
+            "after_id": "数据表的block_id"
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"info\": {\n       \"block_id\": \"BLOCK_ID\",\n       \"title\": \"数据表标题\",\n       \"sheet_id\": \"数据表sheet_id\",\n       \"ss_docid\": \"智能文档docid\",\n       \"after_id\": \"BLOCK_ID\"\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "info": {
+            "block_id": "BLOCK_ID",
+            "title": "数据表标题",
+            "sheet_id": "数据表sheet_id",
+            "ss_docid": "智能文档docid",
+            "after_id": "BLOCK_ID"
+          }
+        }
+      }
+    },
+    {
+      "name": "smartdoc_cancel_publish",
+      "cli_action": "smartdoc-cancel-publish",
+      "summary": "取消发布智能文档",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/cancel_publish",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-cancel-publish --docid <docid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "取消发布智能文档",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101617",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/cancel_publish?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOCID\"\n}",
+        "request_example_json": {
+          "docid": "DOCID"
+        },
+        "response_example_text": "{\n\"errcode\": 0,\n\"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "smartdoc_delete_blocks",
+      "cli_action": "smartdoc-delete-blocks",
+      "summary": "删除内容块",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/delete_blocks",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "page_id",
+          "flag": "--page-id",
+          "type": "str",
+          "help": "页面的id",
+          "required": true
+        },
+        {
+          "name": "ids",
+          "flag": "--ids",
+          "type": "str",
+          "help": "需要删除的 Block ID 列表",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "page_id": {
+            "from_arg": "page_id"
+          },
+          "ids": {
+            "from_arg": "ids"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-delete-blocks --docid <docid> --page-id <page_id> --ids <ids>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除内容块",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101625",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/delete_blocks?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "page_id",
+            "required": true,
+            "description": "页面的id",
+            "type": "string"
+          },
+          {
+            "name": "ids",
+            "required": true,
+            "description": "需要删除的 Block ID 列表",
+            "type": "string[]"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\",\n    \"ids\": [\"BLOCK_ID_1\", \"BLOCK_ID_2\"]\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID",
+          "ids": [
+            "BLOCK_ID_1",
+            "BLOCK_ID_2"
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "smartdoc_delete_page",
+      "cli_action": "smartdoc-delete-page",
+      "summary": "删除页面",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/delete_page",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "page_id",
+          "flag": "--page-id",
+          "type": "str",
+          "help": "要删除的页面 ID",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "page_id": {
+            "from_arg": "page_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-delete-page --docid <docid> --page-id <page_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除页面",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101622",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/delete_page?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "page_id",
+            "required": true,
+            "description": "要删除的页面 ID",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "smartdoc_delete_smartsheet",
+      "cli_action": "smartdoc-delete-smartsheet",
+      "summary": "删除数据表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/delete_smartsheet",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "block_id",
+          "flag": "--block-id",
+          "type": "str",
+          "help": "要删除的数据表 Block ID",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "block_id": {
+            "from_arg": "block_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-delete-smartsheet --docid <docid> --block-id <block_id>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "删除数据表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101630",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/delete_smartsheet?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "block_id",
+            "required": true,
+            "description": "要删除的数据表 Block ID",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"block_id\": \"BLOCK_ID\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "block_id": "BLOCK_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "smartdoc_export_task",
+      "cli_action": "smartdoc-export-task",
+      "summary": "导出内容块",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/export_task",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "content_type",
+          "flag": "--content-type",
+          "type": "str",
+          "help": "期望返回的内容格式类型：1-Markdown 格式（目前仅支持此格式）",
+          "required": true
+        },
+        {
+          "name": "page_id",
+          "flag": "--page-id",
+          "type": "str",
+          "help": "指定要导出的 Page ID。若提供，则仅导出该 Page 及其所有子 Block 的内容；若不提供，则导出整个文档"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "content_type": {
+            "from_arg": "content_type"
+          },
+          "page_id": {
+            "from_arg": "page_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-export-task --docid <docid> --content-type <content_type> [--page-id <page_id>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码（0 表示成功）"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "task_id": {
+              "type": "string",
+              "description": "异步任务 ID，用于调用 查询任务结果 接口轮询任务状态与结果"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "task_id"
+          ]
+        }
+      },
+      "doc": {
+        "title": "导出内容块",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101627",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/export_task?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "content_type",
+            "required": true,
+            "description": "期望返回的内容格式类型：1-Markdown 格式（目前仅支持此格式）",
+            "type": "uint32"
+          },
+          {
+            "name": "page_id",
+            "required": false,
+            "description": "指定要导出的 Page ID。若提供，则仅导出该 Page 及其所有子 Block 的内容；若不提供，则导出整个文档",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码（0 表示成功）",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "task_id",
+            "required": null,
+            "description": "异步任务 ID，用于调用 查询任务结果 接口轮询任务状态与结果",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC123456\",\n    \"content_type\": 1,\n    \"url\": \"https://doc.weixin.qq.com/smartdoc/a1_xxxxxxx\",\n    \"page_id\": \"abc123\"\n}",
+        "request_example_json": {
+          "docid": "DOC123456",
+          "content_type": 1,
+          "url": "https://doc.weixin.qq.com/smartdoc/a1_xxxxxxx",
+          "page_id": "abc123"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"task_id\": \"task_sp_20260323_abc123\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "task_id": "task_sp_20260323_abc123"
+        }
+      }
+    },
+    {
+      "name": "smartdoc_get_block_list",
+      "cli_action": "smartdoc-get-block-list",
+      "summary": "获取内容块列表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/get_block_list",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "page_id",
+          "flag": "--page-id",
+          "type": "str",
+          "help": "页面的 id",
+          "required": true
+        },
+        {
+          "name": "ids",
+          "flag": "--ids",
+          "type": "str",
+          "help": "需要获取的 Block ID 列表"
+        },
+        {
+          "name": "start",
+          "flag": "--start",
+          "type": "str",
+          "help": "分批起始点，最小为0"
+        },
+        {
+          "name": "limit",
+          "flag": "--limit",
+          "type": "str",
+          "help": "分批大小，最大为200，默认为200"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "page_id": {
+            "from_arg": "page_id"
+          },
+          "ids": {
+            "from_arg": "ids"
+          },
+          "start": {
+            "from_arg": "start"
+          },
+          "limit": {
+            "from_arg": "limit"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-get-block-list --docid <docid> --page-id <page_id> [--ids <ids>] [--start <start>] [--limit <limit>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "parent_id": {
+                    "type": "string"
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "props": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "content",
+                  "parent_id",
+                  "children",
+                  "props"
+                ]
+              },
+              "description": "返回的 Block 列表"
+            },
+            "has_more": {
+              "type": "string",
+              "description": "true表示还有更多，false表示没有"
+            },
+            "next_start": {
+              "type": "integer",
+              "description": "下一批的起始点"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "blocks",
+            "has_more",
+            "next_start"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取内容块列表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101626",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/get_block_list?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "page_id",
+            "required": true,
+            "description": "页面的 id",
+            "type": "string"
+          },
+          {
+            "name": "ids",
+            "required": false,
+            "description": "需要获取的 Block ID 列表",
+            "type": "string[]"
+          },
+          {
+            "name": "start",
+            "required": false,
+            "description": "分批起始点，最小为0",
+            "type": "int32"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "description": "分批大小，最大为200，默认为200",
+            "type": "int32"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "blocks",
+            "required": null,
+            "description": "返回的 Block 列表",
+            "type": "object[](BlockInfo)"
+          },
+          {
+            "name": "has_more",
+            "required": null,
+            "description": "true表示还有更多，false表示没有",
+            "type": "string"
+          },
+          {
+            "name": "next_start",
+            "required": null,
+            "description": "下一批的起始点",
+            "type": "int32"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\",\n    \"ids\": [\"BLOCK_ID_1\", \"BLOCK_ID_2\"],\n    \"start\": 0,\n    \"limit\": 200\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID",
+          "ids": [
+            "BLOCK_ID_1",
+            "BLOCK_ID_2"
+          ],
+          "start": 0,
+          "limit": 200
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"blocks\": [\n        {\n            \"id\": \"BLOCK_ID\",\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"content\": \"Hello World\",\n            \"parent_id\": \"PARENT_BLOCK_ID\",\n            \"children\": [\"CHILD_BLOCK_ID_1\"],\n            \"props\": {}\n        }\n    ],\n    \"has_more\": \"true\",\n    \"next_start\": 201\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "blocks": [
+            {
+              "id": "BLOCK_ID",
+              "type": "BLOCK_TYPE_TEXT",
+              "content": "Hello World",
+              "parent_id": "PARENT_BLOCK_ID",
+              "children": [
+                "CHILD_BLOCK_ID_1"
+              ],
+              "props": {}
+            }
+          ],
+          "has_more": "true",
+          "next_start": 201
+        }
+      }
+    },
+    {
+      "name": "smartdoc_get_page_hierarchy",
+      "cli_action": "smartdoc-get-page-hierarchy",
+      "summary": "获取页面结构",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/get_page_hierarchy",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id，可通过 新建文档 接口创建",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-get-page-hierarchy --docid <docid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "pages": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "page_id": {
+                    "type": "string"
+                  },
+                  "parent_id": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "page_id",
+                  "parent_id",
+                  "title"
+                ]
+              },
+              "description": "页面层级列表"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "pages"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取页面结构",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101619",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/get_page_hierarchy?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "pages",
+            "required": null,
+            "description": "页面层级列表",
+            "type": "object[]"
+          },
+          {
+            "name": "pages_page_id",
+            "required": null,
+            "description": "页面 ID",
+            "type": "string"
+          },
+          {
+            "name": "pages_parent_id",
+            "required": null,
+            "description": "父页面 ID，为空表示是根页面",
+            "type": "string"
+          },
+          {
+            "name": "pages_title",
+            "required": null,
+            "description": "页面标题",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"pages\": [\n        {\n            \"page_id\": \"PAGE_ID_1\",\n            \"parent_id\": \"\",\n            \"title\": \"首页\"\n        },\n        {\n            \"page_id\": \"PAGE_ID_2\",\n            \"parent_id\": \"PAGE_ID_1\",\n            \"title\": \"子页面1\"\n        },\n        {\n            \"page_id\": \"PAGE_ID_3\",\n            \"parent_id\": \"PAGE_ID_1\",\n            \"title\": \"子页面2\"\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "pages": [
+            {
+              "page_id": "PAGE_ID_1",
+              "parent_id": "",
+              "title": "首页"
+            },
+            {
+              "page_id": "PAGE_ID_2",
+              "parent_id": "PAGE_ID_1",
+              "title": "子页面1"
+            },
+            {
+              "page_id": "PAGE_ID_3",
+              "parent_id": "PAGE_ID_1",
+              "title": "子页面2"
+            }
+          ]
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "smartdoc_get_smartsheet_info",
+      "cli_action": "smartdoc-get-smartsheet-info",
+      "summary": "获取数据源",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/get_smartsheet_info",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id，可通过 新建文档 接口创建",
+          "required": true
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-get-smartsheet-info --docid <docid>"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "ss_docid": {
+              "type": "string",
+              "description": "绑定的数据表docid。若之前已绑定则返回已有的docid，否则自动创建后返回新的docid"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "ss_docid"
+          ]
+        }
+      },
+      "doc": {
+        "title": "获取数据源",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101628",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/get_smartsheet_info?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "ss_docid",
+            "required": null,
+            "description": "绑定的数据表docid。若之前已绑定则返回已有的docid，否则自动创建后返回新的docid",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\"\n}",
+        "request_example_json": {
+          "docid": "DOC_ID"
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"ss_docid\": \"SS_DOC_ID\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "ss_docid": "SS_DOC_ID"
+        },
+        "review_hints": [
+          "POST parameter table is incomplete; json_body auto-generated from example, verify mapping."
+        ]
+      }
+    },
+    {
+      "name": "smartdoc_publish",
+      "cli_action": "smartdoc-publish",
+      "summary": "发布智能文档",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/publish",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id，可通过 新建文档 接口创建",
+          "required": true
+        },
+        {
+          "name": "publish_range",
+          "flag": "--publish-range",
+          "type": "str",
+          "help": "发布可见范围。1：企业内可见；3：企业内外可见；4：指定成员可见。不传时默认为1（企业内可见）"
+        },
+        {
+          "name": "auth_list",
+          "flag": "--auth-list",
+          "type": "str",
+          "help": "指定可见成员列表，publish_range为4时必填"
+        },
+        {
+          "name": "auth_list_type",
+          "flag": "--auth-list-type",
+          "type": "str",
+          "help": "成员类型。1：企业成员；2：部门",
+          "required": true
+        },
+        {
+          "name": "auth_list_userid",
+          "flag": "--auth-list-userid",
+          "type": "str",
+          "help": "企业成员的userid，type为1时必填"
+        },
+        {
+          "name": "auth_list_departmentid",
+          "flag": "--auth-list-departmentid",
+          "type": "str",
+          "help": "部门id，type为2时必填"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "publish_range": {
+            "from_arg": "publish_range"
+          },
+          "auth_list": {
+            "from_arg": "auth_list"
+          },
+          "auth_list_type": {
+            "from_arg": "auth_list_type"
+          },
+          "auth_list_userid": {
+            "from_arg": "auth_list_userid"
+          },
+          "auth_list_departmentid": {
+            "from_arg": "auth_list_departmentid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-publish --docid <docid> [--publish-range <publish_range>] [--auth-list <auth_list>] --auth-list-type <auth_list_type> [--auth-list-userid <auth_list_userid>] [--auth-list-departmentid <auth_list_departmentid>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "share_code": {
+              "type": "string",
+              "description": "分享码"
+            },
+            "publish_url": {
+              "type": "string",
+              "description": "发布页访问链接，格式为 https://doc.weixin.qq.com/smartdoc/p/{share_code}"
+            },
+            "version": {
+              "type": "integer",
+              "description": "发布版本号"
+            },
+            "publish_time": {
+              "type": "integer",
+              "description": "发布时间戳（秒）"
+            },
+            "publish_doc_title": {
+              "type": "string",
+              "description": "发布页标题"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "share_code",
+            "publish_url",
+            "version",
+            "publish_time",
+            "publish_doc_title"
+          ]
+        }
+      },
+      "doc": {
+        "title": "发布智能文档",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101616",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/publish?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id，可通过 新建文档 接口创建",
+            "type": "string"
+          },
+          {
+            "name": "publish_range",
+            "required": false,
+            "description": "发布可见范围。1：企业内可见；3：企业内外可见；4：指定成员可见。不传时默认为1（企业内可见）",
+            "type": "uint32"
+          },
+          {
+            "name": "auth_list",
+            "required": null,
+            "description": "指定可见成员列表，publish_range为4时必填",
+            "type": "obj[]"
+          },
+          {
+            "name": "auth_list_type",
+            "required": true,
+            "description": "成员类型。1：企业成员；2：部门",
+            "type": "uint32"
+          },
+          {
+            "name": "auth_list_userid",
+            "required": null,
+            "description": "企业成员的userid，type为1时必填",
+            "type": "string"
+          },
+          {
+            "name": "auth_list_departmentid",
+            "required": null,
+            "description": "部门id，type为2时必填",
+            "type": "uint64"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "share_code",
+            "required": null,
+            "description": "分享码",
+            "type": "string"
+          },
+          {
+            "name": "publish_url",
+            "required": null,
+            "description": "发布页访问链接，格式为 https://doc.weixin.qq.com/smartdoc/p/{share_code}",
+            "type": "string"
+          },
+          {
+            "name": "version",
+            "required": null,
+            "description": "发布版本号",
+            "type": "uint64"
+          },
+          {
+            "name": "publish_time",
+            "required": null,
+            "description": "发布时间戳（秒）",
+            "type": "uint64"
+          },
+          {
+            "name": "publish_doc_title",
+            "required": null,
+            "description": "发布页标题",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOCID\",\n    \"publish_range\": 1,\n    \"auth_list\": [\n        {\n            \"type\": 1,\n            \"userid\": \"USERID\"\n        },\n        {\n            \"type\": 2,\n            \"departmentid\": 1\n        }\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOCID",
+          "publish_range": 1,
+          "auth_list": [
+            {
+              "type": 1,
+              "userid": "USERID"
+            },
+            {
+              "type": 2,
+              "departmentid": 1
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"share_code\": \"SHARE_CODE\",\n    \"publish_url\": \"PUBLISH_URL\",\n    \"version\": 1,\n    \"publish_time\": 1710000000,\n    \"publish_doc_title\": \"PUBLISH_DOC_TITLE\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "share_code": "SHARE_CODE",
+          "publish_url": "PUBLISH_URL",
+          "version": 1,
+          "publish_time": 1710000000,
+          "publish_doc_title": "PUBLISH_DOC_TITLE"
+        },
+        "notes": [
+          "⚠️ 此接口内部包含异步任务处理，耗时较长（通常 3-8 秒），建议调用方配置超时时间为 10 秒以上。"
+        ],
+        "review_hints": [
+          "Review doc.notes for conditional fields, limits, and permission caveats."
+        ]
+      }
+    },
+    {
+      "name": "smartdoc_publish_setting",
+      "cli_action": "smartdoc-publish-setting",
+      "summary": "修改发布页可查看范围",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/publish_setting",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "publish_range",
+          "flag": "--publish-range",
+          "type": "str",
+          "help": "发布可见范围。1：企业内可见；3：企业内外可见；4：指定成员可见"
+        },
+        {
+          "name": "auth_list",
+          "flag": "--auth-list",
+          "type": "str",
+          "help": "指定可见成员列表，publish_range为4时必填"
+        },
+        {
+          "name": "auth_list_type",
+          "flag": "--auth-list-type",
+          "type": "str",
+          "help": "成员类型。1：企业成员；2：部门",
+          "required": true
+        },
+        {
+          "name": "auth_list_userid",
+          "flag": "--auth-list-userid",
+          "type": "str",
+          "help": "企业成员的userid，type为1时必填"
+        },
+        {
+          "name": "auth_list_departmentid",
+          "flag": "--auth-list-departmentid",
+          "type": "str",
+          "help": "部门id，type为2时必填"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "publish_range": {
+            "from_arg": "publish_range"
+          },
+          "auth_list": {
+            "from_arg": "auth_list"
+          },
+          "auth_list_type": {
+            "from_arg": "auth_list_type"
+          },
+          "auth_list_userid": {
+            "from_arg": "auth_list_userid"
+          },
+          "auth_list_departmentid": {
+            "from_arg": "auth_list_departmentid"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-publish-setting --docid <docid> [--publish-range <publish_range>] [--auth-list <auth_list>] --auth-list-type <auth_list_type> [--auth-list-userid <auth_list_userid>] [--auth-list-departmentid <auth_list_departmentid>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg"
+          ]
+        }
+      },
+      "doc": {
+        "title": "修改发布页可查看范围",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101618",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/publish_setting?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "publish_range",
+            "required": null,
+            "description": "发布可见范围。1：企业内可见；3：企业内外可见；4：指定成员可见",
+            "type": "uint32"
+          },
+          {
+            "name": "auth_list",
+            "required": null,
+            "description": "指定可见成员列表，publish_range为4时必填",
+            "type": "obj[]"
+          },
+          {
+            "name": "auth_list_type",
+            "required": true,
+            "description": "成员类型。1：企业成员；2：部门",
+            "type": "uint32"
+          },
+          {
+            "name": "auth_list_userid",
+            "required": null,
+            "description": "企业成员的userid，type为1时必填",
+            "type": "string"
+          },
+          {
+            "name": "auth_list_departmentid",
+            "required": null,
+            "description": "部门id，type为2时必填",
+            "type": "uint64"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOCID\",\n    \"publish_range\": 4,\n    \"auth_list\": [\n        {\n            \"type\": 1,\n            \"userid\": \"USERID\"\n        },\n        {\n            \"type\": 2,\n            \"departmentid\": 1\n        }\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOCID",
+          "publish_range": 4,
+          "auth_list": [
+            {
+              "type": 1,
+              "userid": "USERID"
+            },
+            {
+              "type": 2,
+              "departmentid": 1
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\"\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok"
+        }
+      }
+    },
+    {
+      "name": "smartdoc_update_blocks",
+      "cli_action": "smartdoc-update-blocks",
+      "summary": "更新内容块",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/update_blocks",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "TODO: docid"
+        },
+        {
+          "name": "page_id",
+          "flag": "--page-id",
+          "type": "str",
+          "help": "TODO: page_id"
+        },
+        {
+          "name": "blocks",
+          "flag": "--blocks",
+          "type": "json",
+          "help": "TODO: blocks"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "page_id": {
+            "from_arg": "page_id"
+          },
+          "blocks": {
+            "from_arg": "blocks"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-update-blocks [--docid <docid>] [--page-id <page_id>] [--blocks <blocks>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer"
+            },
+            "errmsg": {
+              "type": "string"
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "parent_id": {
+                    "type": "string"
+                  },
+                  "children": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "props": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "title",
+                  "parent_id",
+                  "children",
+                  "props"
+                ]
+              }
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "blocks"
+          ]
+        }
+      },
+      "doc": {
+        "title": "更新内容块",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101624",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/update_blocks?access_token=ACCESS_TOKEN",
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"page_id\": \"PAGE_ID\",\n    \"blocks\": [\n        {\n            \"id\": \"BLOCK_ID\",\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"content\": \"Updated Content\",\n            \"props\": {}\n        }\n    ]\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "page_id": "PAGE_ID",
+          "blocks": [
+            {
+              "id": "BLOCK_ID",
+              "type": "BLOCK_TYPE_TEXT",
+              "content": "Updated Content",
+              "props": {}
+            }
+          ]
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"blocks\": [\n        {\n            \"id\": \"BLOCK_ID\",\n            \"type\": \"BLOCK_TYPE_TEXT\",\n            \"title\": \"Updated Content\",\n            \"parent_id\": \"PARENT_BLOCK_ID\",\n            \"children\": [],\n            \"props\": {}\n        }\n    ]\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "blocks": [
+            {
+              "id": "BLOCK_ID",
+              "type": "BLOCK_TYPE_TEXT",
+              "title": "Updated Content",
+              "parent_id": "PARENT_BLOCK_ID",
+              "children": [],
+              "props": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "smartdoc_update_page",
+      "cli_action": "smartdoc-update-page",
+      "summary": "更新页面",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/update_page",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "info",
+          "flag": "--info",
+          "type": "str",
+          "help": "需要更新的页面信息",
+          "required": true
+        },
+        {
+          "name": "info_page_id",
+          "flag": "--info-page-id",
+          "type": "str",
+          "help": "要更新的页面 ID",
+          "required": true
+        },
+        {
+          "name": "info_title",
+          "flag": "--info-title",
+          "type": "str",
+          "help": "新的页面标题"
+        },
+        {
+          "name": "info_layout_mode",
+          "flag": "--info-layout-mode",
+          "type": "str",
+          "help": "页面布局模式，参见 PageLayoutMode"
+        },
+        {
+          "name": "info_after_id",
+          "flag": "--info-after-id",
+          "type": "str",
+          "help": "新的排序位置，表示排在哪个页面之后，为空表示移到最后"
+        },
+        {
+          "name": "info_parent_id",
+          "flag": "--info-parent-id",
+          "type": "str",
+          "help": "父页面 ID，用于移动页面到其他父节点下"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "info": {
+            "from_arg": "info"
+          },
+          "info_page_id": {
+            "from_arg": "info_page_id"
+          },
+          "info_title": {
+            "from_arg": "info_title"
+          },
+          "info_layout_mode": {
+            "from_arg": "info_layout_mode"
+          },
+          "info_after_id": {
+            "from_arg": "info_after_id"
+          },
+          "info_parent_id": {
+            "from_arg": "info_parent_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-update-page --docid <docid> --info <info> --info-page-id <info_page_id> [--info-title <info_title>] [--info-layout-mode <info_layout_mode>] [--info-after-id <info_after_id>] [--info-parent-id <info_parent_id>]"
+      ],
+      "output": {
+        "formats": [
+          "json"
+        ],
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "errcode": {
+              "type": "integer",
+              "description": "错误码"
+            },
+            "errmsg": {
+              "type": "string",
+              "description": "错误码说明"
+            },
+            "info": {
+              "type": "object",
+              "properties": {
+                "page_id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "layout_mode": {
+                  "type": "integer"
+                },
+                "after_id": {
+                  "type": "string"
+                },
+                "parent_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "page_id",
+                "title",
+                "layout_mode",
+                "after_id",
+                "parent_id"
+              ],
+              "description": "更新后的页面信息"
+            }
+          },
+          "required": [
+            "errcode",
+            "errmsg",
+            "info"
+          ]
+        }
+      },
+      "doc": {
+        "title": "更新页面",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101621",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/update_page?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "需要更新的页面信息",
+            "type": "PageInfo"
+          },
+          {
+            "name": "info_page_id",
+            "required": true,
+            "description": "要更新的页面 ID",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": false,
+            "description": "新的页面标题",
+            "type": "string"
+          },
+          {
+            "name": "info_layout_mode",
+            "required": false,
+            "description": "页面布局模式，参见 PageLayoutMode",
+            "type": "uint32"
+          },
+          {
+            "name": "info_after_id",
+            "required": false,
+            "description": "新的排序位置，表示排在哪个页面之后，为空表示移到最后",
+            "type": "string"
+          },
+          {
+            "name": "info_parent_id",
+            "required": false,
+            "description": "父页面 ID，用于移动页面到其他父节点下",
+            "type": "string"
+          }
+        ],
+        "response_params": [
+          {
+            "name": "errcode",
+            "required": null,
+            "description": "错误码",
+            "type": "int32"
+          },
+          {
+            "name": "errmsg",
+            "required": null,
+            "description": "错误码说明",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": null,
+            "description": "更新后的页面信息",
+            "type": "PageInfo"
+          },
+          {
+            "name": "info_page_id",
+            "required": null,
+            "description": "页面 ID",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": null,
+            "description": "页面标题",
+            "type": "string"
+          },
+          {
+            "name": "info_layout_mode",
+            "required": null,
+            "description": "页面布局模式",
+            "type": "uint32"
+          },
+          {
+            "name": "info_after_id",
+            "required": null,
+            "description": "排序位置（在哪个页面之后）",
+            "type": "string"
+          },
+          {
+            "name": "info_parent_id",
+            "required": null,
+            "description": "父页面 ID",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"info\": {\n        \"page_id\": \"PAGE_ID\",\n        \"title\": \"新的页面标题\",\n        \"layout_mode\": 2,\n        \"after_id\": \"AFTER_PAGE_ID\",\n        \"parent_id\": \"PARENT_PAGE_ID\"\n    }\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "info": {
+            "page_id": "PAGE_ID",
+            "title": "新的页面标题",
+            "layout_mode": 2,
+            "after_id": "AFTER_PAGE_ID",
+            "parent_id": "PARENT_PAGE_ID"
+          }
+        },
+        "response_example_text": "{\n    \"errcode\": 0,\n    \"errmsg\": \"ok\",\n    \"info\": {\n        \"page_id\": \"PAGE_ID\",\n        \"title\": \"新的页面标题\",\n        \"layout_mode\": 2,\n        \"after_id\": \"AFTER_PAGE_ID\",\n        \"parent_id\": \"PARENT_PAGE_ID\"\n    }\n}",
+        "response_example_json": {
+          "errcode": 0,
+          "errmsg": "ok",
+          "info": {
+            "page_id": "PAGE_ID",
+            "title": "新的页面标题",
+            "layout_mode": 2,
+            "after_id": "AFTER_PAGE_ID",
+            "parent_id": "PARENT_PAGE_ID"
+          }
+        }
+      }
+    },
+    {
+      "name": "smartdoc_update_smartsheet",
+      "cli_action": "smartdoc-update-smartsheet",
+      "summary": "更新数据表",
+      "method": "POST",
+      "endpoint": "/cgi-bin/wedoc/smartdoc/update_smartsheet",
+      "args": [
+        {
+          "name": "docid",
+          "flag": "--docid",
+          "type": "str",
+          "help": "智能文档的文档 id",
+          "required": true
+        },
+        {
+          "name": "info",
+          "flag": "--info",
+          "type": "str",
+          "help": "数据表信息",
+          "required": true
+        },
+        {
+          "name": "info_block_id",
+          "flag": "--info-block-id",
+          "type": "str",
+          "help": "要更新的 Block ID",
+          "required": true
+        },
+        {
+          "name": "info_title",
+          "flag": "--info-title",
+          "type": "str",
+          "help": "数据表标题"
+        },
+        {
+          "name": "info_after_id",
+          "flag": "--info-after-id",
+          "type": "str",
+          "help": "数据表的block_id。新的排序位置，表示排在哪个 Block 之后，为空表示移到最后。不支持非数据表类型的block_id"
+        }
+      ],
+      "request": {
+        "json_body": {
+          "docid": {
+            "from_arg": "docid"
+          },
+          "info": {
+            "from_arg": "info"
+          },
+          "info_block_id": {
+            "from_arg": "info_block_id"
+          },
+          "info_title": {
+            "from_arg": "info_title"
+          },
+          "info_after_id": {
+            "from_arg": "info_after_id"
+          }
+        }
+      },
+      "examples": [
+        "wecom wedoc smartdoc-update-smartsheet --docid <docid> --info <info> --info-block-id <info_block_id> [--info-title <info_title>] [--info-after-id <info_after_id>]"
+      ],
+      "doc": {
+        "title": "更新数据表",
+        "source_url": "https://developer.work.weixin.qq.com/document/path/101631",
+        "request_url": "https://qyapi.weixin.qq.com/cgi-bin/wedoc/smartdoc/update_smartsheet?access_token=ACCESS_TOKEN",
+        "request_params": [
+          {
+            "name": "docid",
+            "required": true,
+            "description": "智能文档的文档 id",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "required": true,
+            "description": "数据表信息",
+            "type": "object"
+          },
+          {
+            "name": "info_block_id",
+            "required": true,
+            "description": "要更新的 Block ID",
+            "type": "string"
+          },
+          {
+            "name": "info_title",
+            "required": false,
+            "description": "数据表标题",
+            "type": "string"
+          },
+          {
+            "name": "info_after_id",
+            "required": false,
+            "description": "数据表的block_id。新的排序位置，表示排在哪个 Block 之后，为空表示移到最后。不支持非数据表类型的block_id",
+            "type": "string"
+          }
+        ],
+        "request_example_text": "{\n    \"docid\": \"DOC_ID\",\n    \"info\": {\n        \"block_id\": \"BLOCK_ID\",\n        \"title\": \"新的数据表标题\",\n        \"after_id\": \"数据表的block_id\"\n    }\n}",
+        "request_example_json": {
+          "docid": "DOC_ID",
+          "info": {
+            "block_id": "BLOCK_ID",
+            "title": "新的数据表标题",
+            "after_id": "数据表的block_id"
+          }
+        },
+        "permissions": [
+          "使用示例",
+          "示例1：修改数据表标题",
+          "示例2：调整数据表位置"
+        ]
       }
     }
   ]
