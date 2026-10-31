@@ -57,6 +57,7 @@ graphify-out/
 CLAUDE.local.md
 
 # Crawl progress for the in-flight catalog sweep (persisted through Actions cache)
+cookie_probe.json
 specs/wecom/crawl_state.json
 
 # OS
