@@ -32,10 +32,13 @@ jobs:
           WECOM_DOC_COOKIE: ${{ secrets.WECOM_DOC_COOKIE }}
         run: |
           cd scripts
+          # Any probe result (valid / expired / unknown) is a valid outcome —
+          # never fail the job. The default shell is `bash -e`, so capture the
+          # exit code via `||` to keep the step alive and report via annotations.
+          code=0
           python check_doc_cookie.py \
             --cookie "$WECOM_DOC_COOKIE" \
-            --output ../cookie_probe.json
-          code=$?
+            --output ../cookie_probe.json || code=$?
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           if [ "$code" -eq 0 ]; then
             echo "::notice::WECOM_DOC_COOKIE is valid (isLogin=true)."
