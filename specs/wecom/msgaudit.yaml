@@ -499,9 +499,7 @@
           "只能通过会话存档的access_token获取。"
         ],
         "notes": [
-          "linux环境 SDK：",
-          "x86服务器 下载 SDK v2.0 [更新时间：2024-6-6    更新特性：修复一些已知问题]\nx86服务器 下载 SDK v3.0 [更新时间：2025-2-13    更新特性：openssl 3.0版本]\narm服务器  下载 SDK v3.0 [更新时间：2025-2-13    更新特性：openssl 3.0版本]",
-          "windows环境 SDK：\n下载 SDK v2.0[更新时间：2024-6-6    更新特性：修复一些已知问题]\n下载 SDK v3.0[更新时间：2025-2-13    更新特性：openssl3.0版本]"
+          "SDK v4 升级注意事项\nSDK v4 与旧版本的接口不完全兼容，升级时请注意：\n- 函数声明新增证书路径参数，需要更新替换相关文件，请勿混用旧版函数声明文件"
         ],
         "review_hints": [
           "Review doc.notes for conditional fields, limits, and permission caveats."
